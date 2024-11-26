@@ -1,4 +1,7 @@
+
+
 import 'package:flutter/material.dart';
+import 'HomePage.dart';
 
 class LoginScreen extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
@@ -77,8 +80,12 @@ class LoginScreen extends StatelessWidget {
   Widget _buildLoginButton(BuildContext context) {
     return ElevatedButton(
       style: _buttonStyle(),
-      onPressed: () => _handleLogin(context),
-      child: const Text('Acessar'),
+      onPressed: () {
+        if(_handleLogin(context)) {
+          _navigateToHomePage(context);
+        }
+      },
+      child: const Text('Acessar')
     );
   }
 
@@ -89,11 +96,21 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  void _handleLogin(BuildContext context) {
+
+  void _navigateToHomePage(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => MyHomePage()),
+    );
+  }
+  
+  // confere se os campos estao preenchidos
+  bool _handleLogin(BuildContext context) {
     if (_formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Login realizado com sucesso')),
-      );
+      return true;
     }
+    return false;
   }
 }
+
+
