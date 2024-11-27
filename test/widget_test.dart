@@ -8,7 +8,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:cadastro_flutter_test/Principal_Telas.dart';
+import 'filmin/Principal_Telas.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
