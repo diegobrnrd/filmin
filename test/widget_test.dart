@@ -8,12 +8,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:filmin/Principal_Telas.dart';
+import 'package:filmin/main.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const Filmln());
+    await tester.pumpWidget(const FilmIn());
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);
