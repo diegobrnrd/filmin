@@ -11,21 +11,18 @@ class LoginScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 50.0), // Ajuste o valor conforme necessário
-              child: CircleAvatar(
-                radius: 70,
-                backgroundImage: const AssetImage('assets/login.png'),
-                backgroundColor: Colors.transparent,
-                child: Container(
-                  width: 200,
-                  height: 200,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: const Color(0xFF208BFE),
-                      width: 1,
-                    ),
+            CircleAvatar(
+              radius: 70,
+              backgroundImage: const AssetImage('assets/login.png'),
+              backgroundColor: Colors.transparent,
+              child: Container(
+                width: 200,
+                height: 200,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: const Color(0xFF208BFE),
+                    width: 1,
                   ),
                 ),
               ),
@@ -39,7 +36,7 @@ class LoginScreen extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 15),
             _buildTextField(
               'Nome de usuário ou endereço de e-mail',
               fillColor: const Color(0xFF1E2936),
@@ -57,7 +54,7 @@ class LoginScreen extends StatelessWidget {
               inputTextColor: const Color(0xFFF1F3F5),
               cursorColor: const Color(0xFFF1F3F5),
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 28),
             _buildButton(
                 'Acessar',
                 backgroundColor: const Color(0xFF208BFE),
@@ -85,7 +82,6 @@ class LoginScreen extends StatelessWidget {
     return Focus(
       onFocusChange: (hasFocus) {
         if (hasFocus) {
-          // Change the text color when the field is focused
         }
       },
       child: Builder(
