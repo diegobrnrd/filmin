@@ -1,6 +1,5 @@
-
 import 'package:flutter/material.dart';
-
+import 'tela_inicio.dart';
 
 class MyHomePage extends StatelessWidget {
   // Define uma GlobalKey para o ScaffoldState
@@ -13,7 +12,7 @@ class MyHomePage extends StatelessWidget {
     return Scaffold(
       key: _scaffoldKey,
       appBar: _buildAppBar(),
-      drawer: _buildDrawer(),
+      drawer: _buildDrawer(context),
       body: _buildBody(),
     );
   }
@@ -30,7 +29,7 @@ class MyHomePage extends StatelessWidget {
     );
   }
 
-  Drawer _buildDrawer() {
+  Drawer _buildDrawer(BuildContext context) {
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -40,7 +39,7 @@ class MyHomePage extends StatelessWidget {
             icon: Icons.account_circle,
             text: 'Perfil',
             onTap: () {
-              
+           
             },
           ),
           _buildDrawerItem(
@@ -53,7 +52,12 @@ class MyHomePage extends StatelessWidget {
           _buildDrawerItem(
             icon: Icons.logout,
             text: 'Sair',
-            onTap: () {    
+            onTap: () { 
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const HomeScreen()),
+                (route) => false,
+             );
 
           }        
           ),
@@ -88,6 +92,7 @@ class MyHomePage extends StatelessWidget {
       onTap: onTap,
     );
   }
+
 
 
   Widget _buildBody() {
