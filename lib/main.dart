@@ -22,6 +22,11 @@ class FilmIn extends StatelessWidget {
       title: 'Filmln',
       theme: ThemeData(
         scaffoldBackgroundColor: const Color(0xFF161E27),
+        textSelectionTheme: const TextSelectionThemeData(
+          cursorColor: Color(0xFFF1F3F5),
+          selectionColor: Color(0xFF208BFE),
+          selectionHandleColor: Color(0xFF208BFE),
+        ),
       ),
       home: const LoginScreen(),
     );
