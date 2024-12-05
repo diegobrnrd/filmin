@@ -32,7 +32,15 @@ class CriticasScreen extends StatelessWidget {
       children: [
         Text("Título do Filme"),
         Row(
-          children: [FilmeWidget(titulo: titulo_filme), Text(texto_critica)],
+          children: [
+            FilmeWidget(titulo: titulo_filme), 
+            Text(texto_critica, style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              color: Colors.blue
+          ),
+          )
+          ],
         )
       ],
     );

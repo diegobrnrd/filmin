@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:filmin/login.dart';
+import 'package:filmin/criticas.dart';
 
 void main() {
   runApp(const FilmIn());
@@ -19,7 +20,7 @@ class FilmIn extends StatelessWidget {
           selectionHandleColor: Color(0xFF208BFE),
         ),
       ),
-      home: const LoginScreen(),
+      home: const CriticasScreen(),
     );
   }
 }
