@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'cadastro.dart';
-import 'redefinir_senha.dart';
+import 'package:filmin/cadastro.dart';
+import 'package:filmin/redefinir_senha.dart';
+import 'package:filmin/home.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -82,7 +83,12 @@ class LoginScreenState extends State<LoginScreen> {
               'Entrar',
               backgroundColor: const Color(0xFF208BFE),
               textColor: const Color(0xFFF1F3F5),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MyHomePage()),
+                );
+              },
             ),
             SizedBox(height: screenHeight * 0.006),
             _buildButton(

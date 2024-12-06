@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'cadastro2.dart';
-import 'login.dart';
+import 'package:filmin/cadastro2.dart';
+import 'package:filmin/login.dart';
 
 class CadastroScreen extends StatefulWidget {
   const CadastroScreen({super.key});
