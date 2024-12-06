@@ -20,21 +20,23 @@ class CriticasScreen extends StatelessWidget {
     
     // TODO: implement build
     return Scaffold(
-      appBar: AppBar(title: Text("Críticas")),
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
+        title: const Text("Críticas")),
       body: Column(
         children: _criticas,
       ),
     );
   }
 
-  Widget _buildCritica(String titulo_filme, String texto_critica) {
+  Widget _buildCritica(String tituloFilme, String textoCritica) {
     return Column(
       children: [
         Text("Título do Filme"),
         Row(
           children: [
-            FilmeWidget(titulo: titulo_filme), 
-            Text(texto_critica, style: const TextStyle(
+            FilmeWidget(titulo: tituloFilme), 
+            Text(textoCritica, style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 16,
               color: Colors.blue
