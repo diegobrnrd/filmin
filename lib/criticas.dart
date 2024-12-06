@@ -23,25 +23,33 @@ class CriticasScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.blue,
         title: const Text("Críticas")),
-      body: Center(
-      child: Column(
-        children: _criticas,
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            children: _criticas,
       )),
-    );
+    ));
   }
 
   Widget _buildCritica(String tituloFilme, String textoCritica) {
     return Column(
       children: [
-        Text("Título do Filme"),
+        const Text("Título do Filme", style: TextStyle(
+          fontWeight: FontWeight.bold,
+              fontSize: 20,
+              color: Colors.blue
+        ),),
         Row(
           children: [
-            FilmeWidget(titulo: tituloFilme), 
-            Text(textoCritica, style: const TextStyle(
-              fontWeight: FontWeight.bold,
+            FilmeWidget(titulo: tituloFilme),
+            const SizedBox(width: 20,),
+            Expanded( 
+            child: Text(textoCritica, style: const TextStyle(
+              fontWeight: FontWeight.normal,
               fontSize: 16,
-              color: Colors.blue
+              color: Colors.white
           ),
+          )
           )
           ],
         )
