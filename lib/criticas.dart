@@ -17,28 +17,48 @@ class CriticasScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
-        title: const Text("Críticas")),
+        title: const Text("Críticas"), 
+        leading: IconButton(
+        icon: const Icon(Icons.arrow_back),
+        onPressed: () {
+        Navigator.pop(context); // Retorna à tela anterior
+          },
+        ),
+      ),
       body: SingleChildScrollView(
+        child: Padding(
+        padding: const EdgeInsets.all(5.0),
         child: Center(
           child: Column(
             children: _criticas,
       )),
-    ));
+    )));
   }
 
   Widget _buildCritica(String tituloFilme, String textoCritica) {
-    return Column(
+    return  Container(
+    margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0), // Define a margem
+    padding: const EdgeInsets.all(8.0), // (Opcional) 
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text("Título do Filme", style: TextStyle(
+        const Row(children: [
+        Text("Título do Filme", style: TextStyle(
           fontWeight: FontWeight.bold,
               fontSize: 20,
               color: Colors.blue
         ),),
+        SizedBox(width: 10,),
+        Text("2024", style: 
+        TextStyle(
+          fontWeight: FontWeight.bold,
+              fontSize: 12,
+              color: Colors.grey),)]),
+        const SizedBox(height: 15,),
         Row(
           children: [
             FilmeWidget(titulo: tituloFilme),
@@ -54,6 +74,6 @@ class CriticasScreen extends StatelessWidget {
           ],
         )
       ],
-    );
+    ));
   }
 }
