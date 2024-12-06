@@ -9,7 +9,7 @@ class FilmeWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 150,
-      height: 50,
+      height: 120,
       decoration: BoxDecoration(
         border: Border.all(color: Colors.blue, width: 2),
         borderRadius: BorderRadius.circular(10),

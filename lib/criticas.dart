@@ -10,7 +10,7 @@ class CriticasScreen extends StatelessWidget {
       5,
       (index) => _buildCritica(
         'Filme $index',
-        'Esta é a crítica para o filme $index.',
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque hendrerit lacinia consequat. Ut eu ex in magna porttitor feugiat. Cras eu nisi nec tortor bibendum blandit eu a mauris. Vivamus egestas felis felis, id convallis metus eleifend malesuada. Nulla laoreet sit amet ligula sit amet fermentum. Fusce pretium iaculis tincidunt.',
       ),
     );
   }
@@ -23,9 +23,10 @@ class CriticasScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.blue,
         title: const Text("Críticas")),
-      body: Column(
+      body: Center(
+      child: Column(
         children: _criticas,
-      ),
+      )),
     );
   }
 
