@@ -77,22 +77,6 @@ class CadastroScreenState extends State<CadastroScreen> {
                 onPressed: _togglePasswordVisibility,
               ),
             ),
-            SizedBox(height: screenHeight * 0.010),
-            _buildTextField(
-              'Confirme a senha',
-              obscureText: _isPasswordHidden,
-              fillColor: const Color(0xFF1E2936),
-              textColor: const Color(0xFF788EA5),
-              focusedTextColor: const Color(0xFF208BFE),
-              inputTextColor: const Color(0xFFF1F3F5),
-              suffixIcon: IconButton(
-                icon: Icon(
-                  _isPasswordHidden ? Icons.visibility : Icons.visibility_off,
-                  color: const Color(0xFF788EA5),
-                ),
-                onPressed: _togglePasswordVisibility,
-              ),
-            ),
             SizedBox(height: screenHeight * 0.04),
             _buildButton(
               'Próximo',

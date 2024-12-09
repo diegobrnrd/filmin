@@ -1,9 +1,7 @@
-import 'package:filmin/alterar_email.dart';
 import 'package:flutter/material.dart';
-import 'package:filmin/alterar_senha.dart';
 
-class ConfiguracoesScreen extends StatelessWidget {
-  const ConfiguracoesScreen({super.key});
+class AlterarEmailScreen extends StatelessWidget {
+  const AlterarEmailScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -11,26 +9,13 @@ class ConfiguracoesScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Configurações de Perfil',
+          'Alterar E-mail',
           style: TextStyle(color: Color(0xFFAEBBC9)),
         ),
         backgroundColor: const Color(0xFF161E27),
         iconTheme: const IconThemeData(
           color: Color(0xFFAEBBC9),
         ),
-        leading: IconButton(
-          icon: const Icon(Icons.close),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.check),
-            onPressed: () {
-            },
-          ),
-        ],
       ),
       body: Column(
         children: [
@@ -47,7 +32,7 @@ class ConfiguracoesScreen extends StatelessWidget {
                 children: [
                   SizedBox(height: screenHeight * 0.01),
                   _buildTextField(
-                    'Nome',
+                    'Email',
                     fillColor: const Color(0xFF1E2936),
                     textColor: const Color(0xFF788EA5),
                     focusedTextColor: const Color(0xFF208BFE),
@@ -55,43 +40,20 @@ class ConfiguracoesScreen extends StatelessWidget {
                   ),
                   SizedBox(height: screenHeight * 0.01),
                   _buildTextField(
-                    'Sobrenome',
+                    'Senha atual',
                     fillColor: const Color(0xFF1E2936),
                     textColor: const Color(0xFF788EA5),
                     focusedTextColor: const Color(0xFF208BFE),
                     inputTextColor: const Color(0xFFF1F3F5),
                   ),
                   SizedBox(height: screenHeight * 0.04),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: _buildButton(
-                      context,
-                      'Alterar Email',
-                      backgroundColor: const Color(0xFF1E2936),
-                      textColor: const Color(0xFF788EA5),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const AlterarEmailScreen()),
-                        );
-                      },
-                    ),
-                  ),
-                  SizedBox(height: screenHeight * 0.01),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: _buildButton(
-                      context,
-                      'Alterar Senha',
-                      backgroundColor: const Color(0xFF1E2936),
-                      textColor: const Color(0xFF788EA5),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const AlterarSenhaScreen()),
-                        );
-                      },
-                    ),
+                  _buildButton(
+                    context,
+                    'Salvar Alterações',
+                    backgroundColor: const Color(0xFF208BFE),
+                    textColor: const Color(0xFFF1F3F5),
+                    onPressed: () {
+                    },
                   ),
                 ],
               ),

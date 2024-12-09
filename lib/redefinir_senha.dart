@@ -16,7 +16,7 @@ class RedefinirSenhaScreen extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: screenWidth * 0.18,
-              backgroundImage: const AssetImage('assets/redefinir_Senha.png'),
+              backgroundImage: const AssetImage('assets/redefinir_senha.png'),
               backgroundColor: Colors.transparent,
               child: Container(
                 width: screenWidth * 0.4,

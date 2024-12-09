@@ -8,11 +8,10 @@ class FilmeWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 150,
-      height: 250,
+      width: 100,
+      height: 150,
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.blue, width: 2),
-        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: const Color(0xFF1E2936), width: 1),
       ),
       child: Center(
         child: Text(
