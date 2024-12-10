@@ -23,6 +23,7 @@ class CriticasScreen extends StatelessWidget {
         backgroundColor: const Color(0xFF161E27),
         title: const Text("Críticas", style: TextStyle(color:  Color(0xFFAEBBC9)),), 
         leading: IconButton(
+        color: const Color(0xFFAEBBC9),
         icon: const Icon(Icons.arrow_back),
         onPressed: () {
         Navigator.pop(context); // Retorna à tela anterior
@@ -52,7 +53,7 @@ class CriticasScreen extends StatelessWidget {
         Text("Título do Filme", style: TextStyle(
           fontWeight: FontWeight.bold,
               fontSize: 20,
-              color: Colors.blue
+              color: Color(0xFFAEBBC9)
         ),),
         SizedBox(width: 10,),
         Text("2024", style: 
@@ -68,7 +69,7 @@ class CriticasScreen extends StatelessWidget {
             Expanded( 
             child: Text(textoCritica, style: const TextStyle(
               fontWeight: FontWeight.normal,
-              fontSize: 16,
+              fontSize: 13,
               color: Colors.white
           ),
           )
