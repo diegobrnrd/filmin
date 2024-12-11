@@ -19,6 +19,7 @@ class BuscaScreenState extends State<BuscaScreen> {
     setState(() {
       _selectedIndex = index;
       _searchResults.clear();
+      _controller.clear();
     });
   }
 
