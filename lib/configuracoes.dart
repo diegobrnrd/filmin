@@ -37,7 +37,7 @@ class ConfiguracoesScreen extends StatelessWidget {
           const Divider(
             color: Color(0xFF1E2936),
             height: 1,
-            thickness: 1,
+            thickness: 2,
           ),
           Expanded(
             child: Padding(

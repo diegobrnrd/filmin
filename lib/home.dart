@@ -1,3 +1,4 @@
+import 'package:filmin/busca.dart';
 import 'package:filmin/configuracoes.dart';
 import 'package:filmin/perfil.dart';
 import 'package:filmin/criticas.dart';
@@ -43,7 +44,12 @@ class HomeScreenState extends State<HomeScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.search),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const BuscaScreen()),
+              );
+            },
           ),
         ],
       ),
@@ -108,7 +114,10 @@ class HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               onTap: () {
-                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const BuscaScreen()),
+                );
               },
             ),
             ListTile(
