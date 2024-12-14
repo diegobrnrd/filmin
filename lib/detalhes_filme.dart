@@ -1,48 +1,172 @@
 import 'package:flutter/material.dart';
 
-class DetalhesFilmeScreen extends StatelessWidget {
+class DetalhesFilmeScreen extends StatefulWidget {
   final Map<String, dynamic> movieDetails;
 
   const DetalhesFilmeScreen({super.key, required this.movieDetails});
 
   @override
+  DetalhesFilmeScreenState createState() => DetalhesFilmeScreenState();
+}
+
+class DetalhesFilmeScreenState extends State<DetalhesFilmeScreen> {
+  bool isFavorite = false;
+  bool isWatched = false;
+  bool isWatchLater = false;
+
+  void _toggleFavorite() {
+    setState(() {
+      isFavorite = !isFavorite;
+    });
+  }
+
+  void _toggleWatched() {
+    setState(() {
+      isWatched = !isWatched;
+    });
+  }
+
+  void _toggleWatchLater() {
+    setState(() {
+      isWatchLater = !isWatchLater;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final backdropPath = movieDetails['backdrop_path'];
+    final posterPath = widget.movieDetails['poster_path'];
+    final crew = widget.movieDetails['credits']['crew'] as List<dynamic>;
+    final director = crew.firstWhere((member) => member['job'] == 'Director',
+        orElse: () => {'name': 'N/A'})['name'];
+    final releaseDate = widget.movieDetails['release_date'] != null
+        ? widget.movieDetails['release_date'].split('-')[0]
+        : 'N/A';
+    final duration = widget.movieDetails['runtime'] != null
+        ? '${widget.movieDetails['runtime']} min'
+        : 'N/A';
+    final synopsis =
+        widget.movieDetails['overview'] ?? 'Sinopse não disponível';
+
     return Scaffold(
-      body: Stack(
-        children: [
-          if (backdropPath != null && backdropPath.isNotEmpty)
-            Image.network(
-              'https://image.tmdb.org/t/p/w500$backdropPath',
-              fit: BoxFit.cover,
-              width: double.infinity,
-              height: 250,
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF161E27),
+        iconTheme: const IconThemeData(
+          color: Color(0xFFAEBBC9),
+        ),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (posterPath != null && posterPath.isNotEmpty)
+                  Image.network(
+                    'https://image.tmdb.org/t/p/w154$posterPath',
+                    fit: BoxFit.cover,
+                    width: 100,
+                    height: 150,
+                  )
+                else
+                  const Icon(Icons.movie, color: Color(0xFFAEBBC9), size: 100),
+                const SizedBox(width: 16.0),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.movieDetails['title'],
+                        style: const TextStyle(
+                            color: Color(0xFFAEBBC9),
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 8.0),
+                      const Text(
+                        'Dirigido por',
+                        style:
+                            TextStyle(color: Color(0xFFAEBBC9), fontSize: 16),
+                      ),
+                      Text(
+                        director,
+                        style: const TextStyle(
+                            color: Color(0xFFAEBBC9), fontSize: 16),
+                      ),
+                      const SizedBox(height: 8.0),
+                      Row(
+                        children: [
+                          Text(
+                            'Ano: $releaseDate',
+                            style: const TextStyle(
+                                color: Color(0xFFAEBBC9), fontSize: 16),
+                          ),
+                          const SizedBox(width: 16.0),
+                          Text(
+                            'Duração: $duration',
+                            style: const TextStyle(
+                                color: Color(0xFFAEBBC9), fontSize: 16),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          if (backdropPath != null && backdropPath.isNotEmpty)
-            Positioned(
-              top: 40,
-              left: 10,
-              child: IconButton(
-                icon: const Icon(Icons.arrow_back, color: Color(0xFFAEBBC9)),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-            ),
-          Container(
-            margin: EdgeInsets.only(top: backdropPath != null && backdropPath.isNotEmpty ? 250 : 0),
-            padding: const EdgeInsets.all(16.0),
-            decoration: BoxDecoration(
-              color: const Color(0xFF161E27).withOpacity(0.7), // Updated background color
-            ),
-            child: Center(
+            const SizedBox(height: 16.0),
+            Container(
+              padding: const EdgeInsets.all(8.0),
               child: Text(
-                'Details for movie: ${movieDetails['title']}',
-                style: const TextStyle(color: Color(0xFFAEBBC9)),
+                synopsis,
+                style: const TextStyle(color: Color(0xFFAEBBC9), fontSize: 16),
               ),
             ),
-          ),
-        ],
+            const Divider(color: Color(0xFF1E2936), height: 1, thickness: 2),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                IconButton(
+                  icon: Icon(Icons.remove_red_eye,
+                      color:
+                          isWatched ? Colors.green : const Color(0xFFAEBBC9)),
+                  iconSize: 30,
+                  onPressed: _toggleWatched,
+                ),
+                IconButton(
+                  icon: Icon(
+                      isFavorite ? Icons.favorite : Icons.favorite_border,
+                      color: isFavorite ? Colors.red : const Color(0xFFAEBBC9)),
+                  iconSize: 30,
+                  onPressed: _toggleFavorite,
+                ),
+                IconButton(
+                  icon: Icon(Icons.watch_later,
+                      color:
+                          isWatchLater ? Colors.blue : const Color(0xFFAEBBC9)),
+                  iconSize: 30,
+                  onPressed: _toggleWatchLater,
+                ),
+                IconButton(
+                  icon: const Icon(Icons.rate_review, color: Color(0xFFAEBBC9)),
+                  iconSize: 30,
+                  onPressed: () {
+                    // Adicionar lógica para "crítica"
+                  },
+                ),
+                IconButton(
+                  icon: const Icon(Icons.share, color: Color(0xFFAEBBC9)),
+                  iconSize: 30,
+                  onPressed: () {
+                    // Adicionar lógica para "compartilhar"
+                  },
+                ),
+              ],
+            ),
+            const Divider(color: Color(0xFF1E2936), height: 1, thickness: 2),
+          ],
+        ),
       ),
     );
   }

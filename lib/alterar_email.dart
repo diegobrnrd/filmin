@@ -52,8 +52,7 @@ class AlterarEmailScreen extends StatelessWidget {
                     'Salvar Alterações',
                     backgroundColor: const Color(0xFF208BFE),
                     textColor: const Color(0xFFF1F3F5),
-                    onPressed: () {
-                    },
+                    onPressed: () {},
                   ),
                 ],
               ),
@@ -64,11 +63,16 @@ class AlterarEmailScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTextField(String label, {bool obscureText = false, Color fillColor = Colors.transparent, Color textColor = Colors.black, Color focusedTextColor = Colors.black, Color inputTextColor = Colors.black, Widget? suffixIcon}) {
+  Widget _buildTextField(String label,
+      {bool obscureText = false,
+      Color fillColor = Colors.transparent,
+      Color textColor = Colors.black,
+      Color focusedTextColor = Colors.black,
+      Color inputTextColor = Colors.black,
+      Widget? suffixIcon}) {
     return Focus(
       onFocusChange: (hasFocus) {
-        if (hasFocus) {
-        }
+        if (hasFocus) {}
       },
       child: Builder(
         builder: (context) {
@@ -76,7 +80,8 @@ class AlterarEmailScreen extends StatelessWidget {
           return TextFormField(
             decoration: InputDecoration(
               labelText: label,
-              labelStyle: TextStyle(color: isFocused ? focusedTextColor : textColor),
+              labelStyle:
+                  TextStyle(color: isFocused ? focusedTextColor : textColor),
               border: const OutlineInputBorder(),
               filled: true,
               fillColor: fillColor,
@@ -96,7 +101,10 @@ class AlterarEmailScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildButton(BuildContext context, String text, {required Color backgroundColor, required Color textColor, required VoidCallback onPressed}) {
+  Widget _buildButton(BuildContext context, String text,
+      {required Color backgroundColor,
+      required Color textColor,
+      required VoidCallback onPressed}) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     return SizedBox(

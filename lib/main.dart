@@ -9,7 +9,6 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(const FilmIn());
-  runApp(const FilmIn());
 }
 
 class FilmIn extends StatelessWidget {

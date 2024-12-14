@@ -28,7 +28,8 @@ class Perfil extends StatelessWidget {
     );
   }
 
-  Widget _criarBotao(BuildContext context, String tituloBotao, String tituloAppBar) {
+  Widget _criarBotao(
+      BuildContext context, String tituloBotao, String tituloAppBar) {
     return ElevatedButton(
       onPressed: () {
         Navigator.push(
@@ -49,6 +50,7 @@ class Perfil extends StatelessWidget {
   }
 
   List<FilmeWidget> _mockFilmes() {
-    return List.generate(10, (index) =>  FilmeWidget(titulo: 'Filme ${index + 1}'));
+    return List.generate(
+        40, (index) => FilmeWidget(titulo: 'Filme ${index + 1}'));
   }
 }

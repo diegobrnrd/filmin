@@ -98,8 +98,11 @@ class LoginScreenState extends State<LoginScreen> {
                     .then((String? erro) {
                   if (erro != null) {
                     final snackBar = SnackBar(
-                      content: Text(erro),
-                      backgroundColor: Colors.red,
+                      content: Text(
+                        erro,
+                        style: const TextStyle(color: Color(0xFFF1F3F5)),
+                      ),
+                      backgroundColor: const Color(0xFFF52958),
                     );
                     ScaffoldMessenger.of(context).showSnackBar(snackBar);
                   } else {

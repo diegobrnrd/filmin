@@ -17,10 +17,7 @@ class FilmeWidget extends StatelessWidget {
         child: Text(
           titulo,
           style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-            color: Colors.blue
-          ),
+              fontWeight: FontWeight.bold, fontSize: 16, color: Colors.blue),
         ),
       ),
     );
