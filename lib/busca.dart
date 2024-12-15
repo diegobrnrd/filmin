@@ -136,10 +136,6 @@ class BuscaScreenState extends State<BuscaScreen> {
                   child: Container(
                     padding: const EdgeInsets.all(8.0),
                     margin: const EdgeInsets.symmetric(vertical: 4.0),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF1E2936),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
                     child: Row(
                       children: [
                         if (posterPath != null && posterPath.isNotEmpty)

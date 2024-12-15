@@ -19,11 +19,11 @@ class CriticasScreen extends StatelessWidget {
     // TODO: implement build
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: const Color(0xFF161E27),
           title: const Text(
             "Críticas",
             style: TextStyle(color: Color(0xFFAEBBC9)),
           ),
+          backgroundColor: const Color(0xFF161E27),
           leading: IconButton(
             color: const Color(0xFFAEBBC9),
             icon: const Icon(Icons.arrow_back),
@@ -33,15 +33,13 @@ class CriticasScreen extends StatelessWidget {
           ),
         ),
         body: SingleChildScrollView(
-            child: Container(
-                color: const Color(0xFF1E2936),
-                child: Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: Center(
-                      child: Column(
-                    children: _criticas,
-                  )),
-                ))));
+            child: Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Center(
+                  child: Column(
+                children: _criticas,
+              )),
+            )));
   }
 
   Widget _buildCritica(String tituloFilme, String textoCritica) {
