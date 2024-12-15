@@ -34,12 +34,12 @@ class CriticasScreen extends StatelessWidget {
         ),
         body: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: Center(
-                  child: Column(
-                children: _criticas,
-              )),
-            )));
+          padding: const EdgeInsets.all(5.0),
+          child: Center(
+              child: Column(
+            children: _criticas,
+          )),
+        )));
   }
 
   Widget _buildCritica(String tituloFilme, String textoCritica) {
@@ -74,7 +74,9 @@ class CriticasScreen extends StatelessWidget {
             ),
             Row(
               children: [
-                FilmeWidget(titulo: tituloFilme),
+                const FilmeWidget(
+                  posterPath: '',
+                ),
                 const SizedBox(
                   width: 20,
                 ),

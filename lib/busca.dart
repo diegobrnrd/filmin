@@ -27,7 +27,7 @@ class BuscaScreenState extends State<BuscaScreen> {
     try {
       final results = await Controlador().buscarFilmes(query);
       final filteredResults =
-      results.where((movie) => movie['original_language'] == 'pt').toList();
+          results.where((movie) => movie['original_language'] == 'pt').toList();
       setState(() {
         _searchResults = filteredResults;
       });

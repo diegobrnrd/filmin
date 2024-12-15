@@ -279,10 +279,10 @@ class HomeScreenState extends State<HomeScreen> {
             scrollDirection: Axis.horizontal,
             itemCount: 20,
             itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
+              return const Padding(
+                padding: EdgeInsets.all(8.0),
                 child: FilmeWidget(
-                  titulo: 'Filme ${index + 1}',
+                  posterPath: '',
                 ),
               );
             },
@@ -294,7 +294,10 @@ class HomeScreenState extends State<HomeScreen> {
 
   List<FilmeWidget> _mockFilmes() {
     return List.generate(
-        40, (index) => FilmeWidget(titulo: 'Filme ${index + 1}'));
+        40,
+        (index) => const FilmeWidget(
+              posterPath: '',
+            ));
   }
 }
 

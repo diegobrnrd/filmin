@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'filmes_grid.dart';
 import 'filme.dart';
 import 'criticas.dart';
+import 'package:filmin/controlador/favorite_movie_service.dart';
 
 class Perfil extends StatelessWidget {
   const Perfil({super.key});
@@ -60,14 +61,31 @@ class Perfil extends StatelessWidget {
     );
   }
 
-  Widget _criarBotao(BuildContext context, String tituloBotao, String tituloAppBar, int quantidade) {
+  Widget _criarBotao(BuildContext context, String tituloBotao,
+      String tituloAppBar, int quantidade) {
     return TextButton(
-      onPressed: () {
+      onPressed: () async {
         if (tituloBotao == 'Crítica') {
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => const CriticasScreen(),
+            ),
+          );
+        } else if (tituloBotao == 'Favoritos') {
+          final favoriteMovies =
+              await FavoriteMovieService().getFavoriteMoviesOnce();
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => FilmeGrid(
+                tituloAppBar: tituloAppBar,
+                filmes: favoriteMovies
+                    .map((movie) => FilmeWidget(
+                          posterPath: movie['poster_path'] ?? '',
+                        ))
+                    .toList(),
+              ),
             ),
           );
         } else {
@@ -104,6 +122,10 @@ class Perfil extends StatelessWidget {
 
   List<FilmeWidget> _mockFilmes() {
     return List.generate(
-        40, (index) => FilmeWidget(titulo: 'Filme ${index + 1}'));
+      0,
+      (index) => FilmeWidget(
+        posterPath: '/path/to/poster${index + 1}.jpg',
+      ),
+    );
   }
 }

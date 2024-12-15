@@ -35,8 +35,8 @@ class QueroAssistirScreen extends StatelessWidget {
             ),
             delegate: SliverChildBuilderDelegate(
               (context, index) {
-                return FilmeWidget(
-                  titulo: 'Filme ${index + 1}',
+                return const FilmeWidget(
+                  posterPath: '',
                 );
               },
               childCount: 20,

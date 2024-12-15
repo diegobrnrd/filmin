@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:filmin/controlador/favorite_movie_service.dart';
 
 class DetalhesFilmeScreen extends StatefulWidget {
   final Map<String, dynamic> movieDetails;
@@ -13,11 +14,49 @@ class DetalhesFilmeScreenState extends State<DetalhesFilmeScreen> {
   bool isFavorite = false;
   bool isWatched = false;
   bool isWatchLater = false;
+  final FavoriteMovieService _favoriteMovieService = FavoriteMovieService();
 
-  void _toggleFavorite() {
+  @override
+  void initState() {
+    super.initState();
+    _checkIfFavorite();
+  }
+
+  void _checkIfFavorite() async {
+    final user = _favoriteMovieService.getCurrentUser();
+    if (user != null) {
+      final favoriteMovies =
+          await _favoriteMovieService.getFavoriteMoviesOnce();
+      setState(() {
+        isFavorite = favoriteMovies
+            .any((movie) => movie['id'] == widget.movieDetails['id']);
+      });
+    }
+  }
+
+  void _toggleFavorite() async {
     setState(() {
       isFavorite = !isFavorite;
     });
+
+    final user = _favoriteMovieService.getCurrentUser();
+    if (user != null) {
+      if (isFavorite) {
+        await _favoriteMovieService.addFavoriteMovie(widget.movieDetails);
+      } else {
+        final favoriteMovies =
+            await _favoriteMovieService.getFavoriteMoviesOnce();
+        final movieToDelete = favoriteMovies.firstWhere(
+          (movie) => movie['id'] == widget.movieDetails['id'],
+          orElse: () => {},
+        );
+
+        if (movieToDelete.isNotEmpty) {
+          await _favoriteMovieService
+              .deleteFavoriteMovie(movieToDelete['documentId']);
+        }
+      }
+    }
   }
 
   void _toggleWatched() {
