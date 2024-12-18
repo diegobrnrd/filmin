@@ -20,7 +20,10 @@ class FavoriteMovieService {
         'id': movie['id'],
         'release_date': movie['release_date'],
         'poster_path': movie['poster_path'],
-        'genre_ids': movie['genre_ids'],
+        'genres': movie['genres'].map((genre) => {
+          'id': genre['id'],
+          'name': genre['name'],
+        }).toList(),
         'runtime': movie['runtime'],
         'dateAdded': Timestamp.now(),
       });
@@ -30,8 +33,7 @@ class FavoriteMovieService {
     }
   }
 
-  Future<void> updateFavoriteMovie(
-      String movieId, Map<String, dynamic> updatedData) async {
+  Future<void> updateFavoriteMovie(String movieId, Map<String, dynamic> updatedData) async {
     final User? user = _auth.currentUser;
     if (user != null) {
       await _firestore
@@ -42,7 +44,10 @@ class FavoriteMovieService {
           .update({
         'release_date': updatedData['release_date'],
         'poster_path': updatedData['poster_path'],
-        'genre_ids': updatedData['genre_ids'],
+        'genres': updatedData['genres'].map((genre) => {
+          'id': genre['id'],
+          'name': genre['name'],
+        }).toList(),
         'runtime': updatedData['runtime'],
         'dateAdded': updatedData['dateAdded'],
       });
@@ -75,7 +80,7 @@ class FavoriteMovieService {
                     'id': doc['id'],
                     'release_date': doc['release_date'],
                     'poster_path': doc['poster_path'],
-                    'genre_ids': doc['genre_ids'],
+                    'genres': doc['genres'],
                     'runtime': doc['runtime'],
                     'dateAdded': doc['dateAdded'],
                   })
@@ -99,7 +104,7 @@ class FavoriteMovieService {
                 'id': doc['id'],
                 'release_date': doc['release_date'],
                 'poster_path': doc['poster_path'],
-                'genre_ids': doc['genre_ids'],
+                'genres': doc['genres'],
                 'runtime': doc['runtime'],
                 'dateAdded': doc['dateAdded'],
               })

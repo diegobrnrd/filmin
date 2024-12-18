@@ -1,7 +1,6 @@
 import 'package:filmin/home.dart';
 import 'package:filmin/login.dart';
 import 'package:flutter/material.dart';
-
 import 'auth_service.dart';
 
 class CadastroScreen extends StatefulWidget {
@@ -14,9 +13,17 @@ class CadastroScreen extends StatefulWidget {
 class CadastroScreenState extends State<CadastroScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _isPasswordHidden = true;
+
+  void _togglePasswordVisibility() {
+    setState(() {
+      _isPasswordHidden = !_isPasswordHidden;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Padding(
@@ -24,7 +31,32 @@ class CadastroScreenState extends State<CadastroScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            CircleAvatar(
+              radius: screenWidth * 0.18,
+              backgroundImage: const AssetImage('assets/cadastro.png'),
+              backgroundColor: Colors.transparent,
+              child: Container(
+                width: screenWidth * 0.4,
+                height: screenWidth * 0.4,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: const Color(0xFF208BFE),
+                    width: screenWidth * 0.0025,
+                  ),
+                ),
+              ),
+            ),
             SizedBox(height: screenHeight * 0.04),
+            Text(
+              'Cadastro',
+              style: TextStyle(
+                color: const Color(0xFF208BFE),
+                fontSize: screenHeight * 0.040,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: screenHeight * 0.02),
             _buildTextField(
               'Email',
               controller: _emailController,
@@ -33,15 +65,22 @@ class CadastroScreenState extends State<CadastroScreen> {
               focusedTextColor: const Color(0xFF208BFE),
               inputTextColor: const Color(0xFFF1F3F5),
             ),
-            SizedBox(height: screenHeight * 0.01),
+            SizedBox(height: screenHeight * 0.010),
             _buildTextField(
               'Senha',
               controller: _passwordController,
-              obscureText: true,
+              obscureText: _isPasswordHidden,
               fillColor: const Color(0xFF1E2936),
               textColor: const Color(0xFF788EA5),
               focusedTextColor: const Color(0xFF208BFE),
               inputTextColor: const Color(0xFFF1F3F5),
+              suffixIcon: IconButton(
+                icon: Icon(
+                  _isPasswordHidden ? Icons.visibility : Icons.visibility_off,
+                  color: const Color(0xFF788EA5),
+                ),
+                onPressed: _togglePasswordVisibility,
+              ),
             ),
             SizedBox(height: screenHeight * 0.04),
             _buildButton(
@@ -52,8 +91,8 @@ class CadastroScreenState extends State<CadastroScreen> {
                 AuthService autoService = AuthService();
                 autoService
                     .signUpWithEmailAndPassword(
-                        email: _emailController.text,
-                        senha: _passwordController.text)
+                    email: _emailController.text,
+                    senha: _passwordController.text)
                     .then((String? erro) {
                   if (erro != null) {
                     final snackBar = SnackBar(
@@ -94,12 +133,12 @@ class CadastroScreenState extends State<CadastroScreen> {
 
   Widget _buildTextField(String label,
       {required TextEditingController controller,
-      bool obscureText = false,
-      Color fillColor = Colors.transparent,
-      Color textColor = Colors.black,
-      Color focusedTextColor = Colors.black,
-      Color inputTextColor = Colors.black,
-      Widget? suffixIcon}) {
+        bool obscureText = false,
+        Color fillColor = Colors.transparent,
+        Color textColor = Colors.black,
+        Color focusedTextColor = Colors.black,
+        Color inputTextColor = Colors.black,
+        Widget? suffixIcon}) {
     return Focus(
       onFocusChange: (hasFocus) {
         if (hasFocus) {}
@@ -112,7 +151,7 @@ class CadastroScreenState extends State<CadastroScreen> {
             decoration: InputDecoration(
               labelText: label,
               labelStyle:
-                  TextStyle(color: isFocused ? focusedTextColor : textColor),
+              TextStyle(color: isFocused ? focusedTextColor : textColor),
               border: const OutlineInputBorder(),
               filled: true,
               fillColor: fillColor,
@@ -134,8 +173,8 @@ class CadastroScreenState extends State<CadastroScreen> {
 
   Widget _buildButton(String text,
       {required Color backgroundColor,
-      required Color textColor,
-      required VoidCallback onPressed}) {
+        required Color textColor,
+        required VoidCallback onPressed}) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     return SizedBox(

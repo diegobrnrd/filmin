@@ -158,7 +158,7 @@ class BuscaScreenState extends State<BuscaScreen> {
                                       color: Color(0xFFAEBBC9), fontSize: 18)),
                               const SizedBox(height: 8.0),
                               Text(
-                                  'Ano: ${movie['release_date'] != null ? movie['release_date'].split('-')[0] : 'N/A'}',
+                                  '${movie['release_date'] != null ? movie['release_date'].split('-')[0] : 'N/A'}',
                                   style: const TextStyle(
                                       color: Color(0xFFAEBBC9))),
                             ],
