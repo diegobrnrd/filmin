@@ -9,11 +9,15 @@ class FavoritosScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return FilmeGrid(
       tituloAppBar: 'Favoritos',
-      filmes: _mockFilmes(), 
+      filmes: _mockFilmes(),
     );
   }
 
   List<FilmeWidget> _mockFilmes() {
-    return List.generate(5, (index) => FilmeWidget(titulo: 'Filme ${index + 1}'));
+    return List.generate(
+        5,
+        (index) => const FilmeWidget(
+              posterPath: '',
+            ));
   }
 }

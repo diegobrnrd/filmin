@@ -1,7 +1,8 @@
-// perfil.dart
 import 'package:flutter/material.dart';
 import 'filmes_grid.dart';
 import 'filme.dart';
+import 'criticas.dart';
+import 'package:filmin/controlador/favorite_movie_service.dart';
 
 class Perfil extends StatelessWidget {
   const Perfil({super.key});
@@ -10,45 +11,121 @@ class Perfil extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Perfil'),
-      ),
-      backgroundColor: Colors.black,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _criarBotao(context, 'Filmes', 'Filmes'),
-            const SizedBox(height: 20),
-            _criarBotao(context, 'Favoritos', 'Favoritos'),
-            const SizedBox(height: 20),
-            _criarBotao(context, 'Quero Assistir', 'Quero Assistir'),
-          ],
+        title: const Text(
+          'Perfil',
+          style: TextStyle(color: Color(0xFFAEBBC9)),
         ),
+        backgroundColor: const Color(0xFF161E27),
+        iconTheme: const IconThemeData(
+          color: Color(0xFFAEBBC9),
+        ),
+      ),
+      body: Column(
+        children: [
+          const Divider(
+            color: Color(0xFF1E2936),
+            height: 1,
+            thickness: 2,
+          ),
+          const SizedBox(height: 20),
+          const CircleAvatar(
+            radius: 50,
+            backgroundImage: NetworkImage('URL_DA_FOTO_DO_USUARIO'),
+          ),
+          const SizedBox(height: 20),
+          const Divider(
+            color: Color(0xFF1E2936),
+            height: 1,
+            thickness: 2,
+          ),
+          const SizedBox(height: 20),
+          Expanded(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  _criarBotao(context, 'Filmes', 'Filmes', 0),
+                  const SizedBox(height: 20),
+                  _criarBotao(context, 'Críticas', 'Crítica', 0),
+                  const SizedBox(height: 20),
+                  _criarBotao(context, 'Quero Assistir', 'Quero Assistir', 0),
+                  const SizedBox(height: 20),
+                  _criarBotao(context, 'Favoritos', 'Favoritos', 0),
+                  const SizedBox(height: 20),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _criarBotao(BuildContext context, String tituloBotao, String tituloAppBar) {
-    return ElevatedButton(
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => FilmeGrid(
-              tituloAppBar: tituloAppBar,
-              filmes: _mockFilmes(),
+  Widget _criarBotao(BuildContext context, String tituloBotao,
+      String tituloAppBar, int quantidade) {
+    return TextButton(
+      onPressed: () async {
+        if (tituloBotao == 'Crítica') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const CriticasScreen(),
             ),
-          ),
-        );
+          );
+        } else if (tituloBotao == 'Favoritos') {
+          final favoriteMovies =
+              await FavoriteMovieService().getFavoriteMoviesOnce();
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => FilmeGrid(
+                tituloAppBar: tituloAppBar,
+                filmes: favoriteMovies
+                    .map((movie) => FilmeWidget(
+                          posterPath: movie['poster_path'] ?? '',
+                        ))
+                    .toList(),
+              ),
+            ),
+          );
+        } else {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => FilmeGrid(
+                tituloAppBar: tituloAppBar,
+                filmes: _mockFilmes(),
+              ),
+            ),
+          );
+        }
       },
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.blue,
+      style: TextButton.styleFrom(
+        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+        backgroundColor: Colors.transparent,
       ),
-      child: Text(tituloBotao),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            tituloBotao,
+            style: const TextStyle(color: Color(0xFFAEBBC9), fontSize: 16),
+          ),
+          Text(
+            quantidade.toString(),
+            style: const TextStyle(color: Color(0xFFAEBBC9), fontSize: 16),
+          ),
+        ],
+      ),
     );
   }
 
   List<FilmeWidget> _mockFilmes() {
-    return List.generate(10, (index) =>  FilmeWidget(titulo: 'Filme ${index + 1}'));
+    return List.generate(
+      0,
+      (index) => FilmeWidget(
+        posterPath: '/path/to/poster${index + 1}.jpg',
+      ),
+    );
   }
 }

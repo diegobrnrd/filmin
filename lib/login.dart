@@ -1,3 +1,4 @@
+import 'package:filmin/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:filmin/cadastro.dart';
 import 'package:filmin/redefinir_senha.dart';
@@ -12,6 +13,9 @@ class LoginScreen extends StatefulWidget {
 
 class LoginScreenState extends State<LoginScreen> {
   bool _isPasswordHidden = true;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  AuthService autoService = AuthService();
 
   void _togglePasswordVisibility() {
     setState(() {
@@ -57,6 +61,7 @@ class LoginScreenState extends State<LoginScreen> {
             SizedBox(height: screenHeight * 0.02),
             _buildTextField(
               'E-mail',
+              controller: _emailController,
               fillColor: const Color(0xFF1E2936),
               textColor: const Color(0xFF788EA5),
               focusedTextColor: const Color(0xFF208BFE),
@@ -65,6 +70,7 @@ class LoginScreenState extends State<LoginScreen> {
             SizedBox(height: screenHeight * 0.010),
             _buildTextField(
               'Senha',
+              controller: _passwordController,
               obscureText: _isPasswordHidden,
               fillColor: const Color(0xFF1E2936),
               textColor: const Color(0xFF788EA5),
@@ -84,10 +90,29 @@ class LoginScreenState extends State<LoginScreen> {
               backgroundColor: const Color(0xFF208BFE),
               textColor: const Color(0xFFF1F3F5),
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const HomeScreen()),
-                );
+                AuthService autoService = AuthService();
+                autoService
+                    .signInWithEmailAndPassword(
+                        email: _emailController.text,
+                        senha: _passwordController.text)
+                    .then((String? erro) {
+                  if (erro != null) {
+                    final snackBar = SnackBar(
+                      content: Text(
+                        erro,
+                        style: const TextStyle(color: Color(0xFFF1F3F5)),
+                      ),
+                      backgroundColor: const Color(0xFFF52958),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const HomeScreen()),
+                    );
+                  }
+                });
               },
             ),
             SizedBox(height: screenHeight * 0.006),
@@ -98,7 +123,8 @@ class LoginScreenState extends State<LoginScreen> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const CadastroScreen()),
+                  MaterialPageRoute(
+                      builder: (context) => const CadastroScreen()),
                 );
               },
             ),
@@ -110,7 +136,8 @@ class LoginScreenState extends State<LoginScreen> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const RedefinirSenhaScreen()),
+                  MaterialPageRoute(
+                      builder: (context) => const RedefinirSenhaScreen()),
                 );
               },
             ),
@@ -120,19 +147,27 @@ class LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildTextField(String label, {bool obscureText = false, Color fillColor = Colors.transparent, Color textColor = Colors.black, Color focusedTextColor = Colors.black, Color inputTextColor = Colors.black, Widget? suffixIcon}) {
+  Widget _buildTextField(String label,
+      {required TextEditingController controller,
+      bool obscureText = false,
+      Color fillColor = Colors.transparent,
+      Color textColor = Colors.black,
+      Color focusedTextColor = Colors.black,
+      Color inputTextColor = Colors.black,
+      Widget? suffixIcon}) {
     return Focus(
       onFocusChange: (hasFocus) {
-        if (hasFocus) {
-        }
+        if (hasFocus) {}
       },
       child: Builder(
         builder: (context) {
           final isFocused = Focus.of(context).hasFocus;
           return TextFormField(
+            controller: controller,
             decoration: InputDecoration(
               labelText: label,
-              labelStyle: TextStyle(color: isFocused ? focusedTextColor : textColor),
+              labelStyle:
+                  TextStyle(color: isFocused ? focusedTextColor : textColor),
               border: const OutlineInputBorder(),
               filled: true,
               fillColor: fillColor,
@@ -152,7 +187,10 @@ class LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildButton(String text, {required Color backgroundColor, required Color textColor, required VoidCallback onPressed}) {
+  Widget _buildButton(String text,
+      {required Color backgroundColor,
+      required Color textColor,
+      required VoidCallback onPressed}) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     return SizedBox(

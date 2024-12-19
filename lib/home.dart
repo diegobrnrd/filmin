@@ -1,10 +1,12 @@
+import 'package:filmin/busca.dart';
 import 'package:filmin/configuracoes.dart';
 import 'package:filmin/perfil.dart';
 import 'package:filmin/criticas.dart';
-import 'package:filmin/login.dart';
 import 'package:flutter/material.dart';
+import 'auth_service.dart';
 import 'filmes_grid.dart';
 import 'filme.dart';
+import 'login.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,6 +17,7 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
+  AuthService autoService = AuthService();
 
   void _onItemTapped(int index) {
     setState(() {
@@ -43,7 +46,12 @@ class HomeScreenState extends State<HomeScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.search),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const BuscaScreen()),
+              );
+            },
           ),
         ],
       ),
@@ -108,7 +116,10 @@ class HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               onTap: () {
-                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const BuscaScreen()),
+                );
               },
             ),
             ListTile(
@@ -157,7 +168,8 @@ class HomeScreenState extends State<HomeScreen> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const CriticasScreen()),
+                  MaterialPageRoute(
+                      builder: (context) => const CriticasScreen()),
                 );
               },
             ),
@@ -172,7 +184,8 @@ class HomeScreenState extends State<HomeScreen> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const ConfiguracoesScreen()),
+                  MaterialPageRoute(
+                      builder: (context) => const ConfiguracoesScreen()),
                 );
               },
             ),
@@ -185,7 +198,8 @@ class HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               onTap: () {
-                Navigator.push(
+                autoService.signOut();
+                Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => const LoginScreen()),
                 );
@@ -205,14 +219,18 @@ class HomeScreenState extends State<HomeScreen> {
                 TextButton(
                   onPressed: () => _onItemTapped(0),
                   style: TextButton.styleFrom(
-                    foregroundColor: _selectedIndex == 0 ? const Color(0xFF208BFE) : const Color(0xFFAEBBC9),
+                    foregroundColor: _selectedIndex == 0
+                        ? const Color(0xFF208BFE)
+                        : const Color(0xFFAEBBC9),
                   ),
                   child: const Text("Filmes"),
                 ),
                 TextButton(
                   onPressed: () => _onItemTapped(1),
                   style: TextButton.styleFrom(
-                    foregroundColor: _selectedIndex == 1 ? const Color(0xFF208BFE) : const Color(0xFFAEBBC9),
+                    foregroundColor: _selectedIndex == 1
+                        ? const Color(0xFF208BFE)
+                        : const Color(0xFFAEBBC9),
                   ),
                   child: const Text('Cinemas'),
                 ),
@@ -248,7 +266,10 @@ class HomeScreenState extends State<HomeScreen> {
             padding: EdgeInsets.only(left: 8.0),
             child: Text(
               'Em Cartaz',
-              style: TextStyle(color: Color(0xFFAEBBC9), fontSize: 16, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  color: Color(0xFFAEBBC9),
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold),
             ),
           ),
         ),
@@ -258,10 +279,10 @@ class HomeScreenState extends State<HomeScreen> {
             scrollDirection: Axis.horizontal,
             itemCount: 20,
             itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
+              return const Padding(
+                padding: EdgeInsets.all(8.0),
                 child: FilmeWidget(
-                  titulo: 'Filme ${index + 1}',
+                  posterPath: '',
                 ),
               );
             },
@@ -272,7 +293,11 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   List<FilmeWidget> _mockFilmes() {
-    return List.generate(40, (index) => FilmeWidget(titulo: 'Filme ${index + 1}'));
+    return List.generate(
+        40,
+        (index) => const FilmeWidget(
+              posterPath: '',
+            ));
   }
 }
 

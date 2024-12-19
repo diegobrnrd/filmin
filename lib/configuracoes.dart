@@ -27,8 +27,7 @@ class ConfiguracoesScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.check),
-            onPressed: () {
-            },
+            onPressed: () {},
           ),
         ],
       ),
@@ -37,7 +36,7 @@ class ConfiguracoesScreen extends StatelessWidget {
           const Divider(
             color: Color(0xFF1E2936),
             height: 1,
-            thickness: 1,
+            thickness: 2,
           ),
           Expanded(
             child: Padding(
@@ -72,7 +71,8 @@ class ConfiguracoesScreen extends StatelessWidget {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const AlterarEmailScreen()),
+                          MaterialPageRoute(
+                              builder: (context) => const AlterarEmailScreen()),
                         );
                       },
                     ),
@@ -88,7 +88,8 @@ class ConfiguracoesScreen extends StatelessWidget {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const AlterarSenhaScreen()),
+                          MaterialPageRoute(
+                              builder: (context) => const AlterarSenhaScreen()),
                         );
                       },
                     ),
@@ -102,11 +103,16 @@ class ConfiguracoesScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTextField(String label, {bool obscureText = false, Color fillColor = Colors.transparent, Color textColor = Colors.black, Color focusedTextColor = Colors.black, Color inputTextColor = Colors.black, Widget? suffixIcon}) {
+  Widget _buildTextField(String label,
+      {bool obscureText = false,
+      Color fillColor = Colors.transparent,
+      Color textColor = Colors.black,
+      Color focusedTextColor = Colors.black,
+      Color inputTextColor = Colors.black,
+      Widget? suffixIcon}) {
     return Focus(
       onFocusChange: (hasFocus) {
-        if (hasFocus) {
-        }
+        if (hasFocus) {}
       },
       child: Builder(
         builder: (context) {
@@ -114,7 +120,8 @@ class ConfiguracoesScreen extends StatelessWidget {
           return TextFormField(
             decoration: InputDecoration(
               labelText: label,
-              labelStyle: TextStyle(color: isFocused ? focusedTextColor : textColor),
+              labelStyle:
+                  TextStyle(color: isFocused ? focusedTextColor : textColor),
               border: const OutlineInputBorder(),
               filled: true,
               fillColor: fillColor,
@@ -134,7 +141,10 @@ class ConfiguracoesScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildButton(BuildContext context, String text, {required Color backgroundColor, required Color textColor, required VoidCallback onPressed}) {
+  Widget _buildButton(BuildContext context, String text,
+      {required Color backgroundColor,
+      required Color textColor,
+      required VoidCallback onPressed}) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     return SizedBox(
