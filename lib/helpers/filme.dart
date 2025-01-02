@@ -7,23 +7,26 @@ class FilmeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
     return Container(
-      width: 100,
-      height: 150,
+      width: screenWidth * 0.25,
+      height: screenHeight * 0.2,
       decoration: BoxDecoration(
-        border: Border.all(color: const Color(0xFF1E2936), width: 1),
+        border: Border.all(
+            color: const Color(0xFF1E2936), width: screenWidth * 0.002),
       ),
       child: posterPath.isNotEmpty
           ? Image.network(
               'https://image.tmdb.org/t/p/w154$posterPath',
               fit: BoxFit.cover,
-              width: 100,
-              height: 150,
+              width: screenWidth * 0.25,
+              height: screenHeight * 0.2,
             )
           : Container(
-              width: 100,
-              height: 150,
-              color: Colors.grey,
+              width: screenWidth * 0.25,
+              height: screenHeight * 0.2,
+              color: const Color(0xFF1E2936),
               child: const Icon(Icons.image_not_supported),
             ),
     );

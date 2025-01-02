@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'filme.dart';
+import 'package:filmin/helpers/filme.dart';
 
 class FilmeGrid extends StatelessWidget {
   final List<FilmeWidget> filmes;
@@ -13,11 +13,14 @@ class FilmeGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         title: Text(
           tituloAppBar,
-          style: const TextStyle(color: Color(0xFFAEBBC9)),
+          style: TextStyle(
+              color: const Color(0xFFAEBBC9), fontSize: screenHeight * 0.025),
         ),
         backgroundColor: const Color(0xFF161E27),
         iconTheme: const IconThemeData(
@@ -26,11 +29,11 @@ class FilmeGrid extends StatelessWidget {
       ),
       body: Expanded(
         child: GridView.builder(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 4,
             childAspectRatio: 0.7,
-            crossAxisSpacing: 5,
-            mainAxisSpacing: 5,
+            crossAxisSpacing: screenWidth * 0.01,
+            mainAxisSpacing: screenHeight * 0.01,
           ),
           itemCount: filmes.length,
           itemBuilder: (context, index) {

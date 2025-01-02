@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:filmin/cadastro.dart';
+import 'package:filmin/screens/login_screen.dart';
 
-class Cadastro2Screen extends StatelessWidget {
-  const Cadastro2Screen({super.key});
+class RedefinirSenhaScreen extends StatelessWidget {
+  const RedefinirSenhaScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Padding(
@@ -13,9 +14,24 @@ class Cadastro2Screen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(height: screenHeight * 0.04),
+            CircleAvatar(
+              radius: screenWidth * 0.18,
+              backgroundImage: const AssetImage('assets/redefinir_senha.png'),
+              child: Container(
+                width: screenWidth * 0.4,
+                height: screenWidth * 0.4,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: const Color(0xFF208BFE),
+                    width: screenWidth * 0.0025,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: screenHeight * 0.03),
             Text(
-              'Complete seu cadastro',
+              'Esqueci a Senha',
               style: TextStyle(
                 color: const Color(0xFF208BFE),
                 fontSize: screenHeight * 0.040,
@@ -24,47 +40,30 @@ class Cadastro2Screen extends StatelessWidget {
             ),
             SizedBox(height: screenHeight * 0.01),
             _buildTextField(
-              'Nome',
+              'E-mail',
               fillColor: const Color(0xFF1E2936),
               textColor: const Color(0xFF788EA5),
               focusedTextColor: const Color(0xFF208BFE),
               inputTextColor: const Color(0xFFF1F3F5),
             ),
-            SizedBox(height: screenHeight * 0.01),
-            _buildTextField(
-              'Sobrenome',
-              fillColor: const Color(0xFF1E2936),
-              textColor: const Color(0xFF788EA5),
-              focusedTextColor: const Color(0xFF208BFE),
-              inputTextColor: const Color(0xFFF1F3F5),
-            ),
-            SizedBox(height: screenHeight * 0.01),
-            _buildTextField(
-              'Nome de usuário',
-              fillColor: const Color(0xFF1E2936),
-              textColor: const Color(0xFF788EA5),
-              focusedTextColor: const Color(0xFF208BFE),
-              inputTextColor: const Color(0xFFF1F3F5),
-            ),
-            SizedBox(height: screenHeight * 0.04),
+            SizedBox(height: screenHeight * 0.03),
             _buildButton(
               context,
-              'Criar conta',
+              'Redefinir',
               backgroundColor: const Color(0xFF208BFE),
               textColor: const Color(0xFFF1F3F5),
               onPressed: () {},
             ),
-            SizedBox(height: screenHeight * 0.006),
+            SizedBox(height: screenHeight * 0.007),
             _buildButton(
               context,
-              'Voltar',
+              'Fazer login',
               backgroundColor: const Color(0xFF1E2936),
               textColor: const Color(0xFFAEBBC9),
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => const CadastroScreen()),
+                  MaterialPageRoute(builder: (context) => const LoginScreen()),
                 );
               },
             ),
@@ -119,8 +118,8 @@ class Cadastro2Screen extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     return SizedBox(
-      width: screenWidth * 0.45,
-      height: screenHeight * 0.045,
+      width: screenWidth * 0.60,
+      height: screenHeight * 0.050,
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(

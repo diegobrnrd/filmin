@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:filmin/login.dart';
+import 'package:filmin/screens/cadastro_screen.dart';
 
-class RedefinirSenhaScreen extends StatelessWidget {
-  const RedefinirSenhaScreen({super.key});
+class Cadastro2Screen extends StatelessWidget {
+  const Cadastro2Screen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Padding(
@@ -14,34 +13,34 @@ class RedefinirSenhaScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CircleAvatar(
-              radius: screenWidth * 0.18,
-              backgroundImage: const AssetImage('assets/redefinir_senha.png'),
-              backgroundColor: Colors.transparent,
-              child: Container(
-                width: screenWidth * 0.4,
-                height: screenWidth * 0.4,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: const Color(0xFF208BFE),
-                    width: screenWidth * 0.0025,
-                  ),
-                ),
-              ),
-            ),
             SizedBox(height: screenHeight * 0.04),
             Text(
-              'Esqueci a Senha',
+              'Complete seu cadastro',
               style: TextStyle(
                 color: const Color(0xFF208BFE),
                 fontSize: screenHeight * 0.040,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: screenHeight * 0.02),
+            SizedBox(height: screenHeight * 0.01),
             _buildTextField(
-              'E-mail',
+              'Nome',
+              fillColor: const Color(0xFF1E2936),
+              textColor: const Color(0xFF788EA5),
+              focusedTextColor: const Color(0xFF208BFE),
+              inputTextColor: const Color(0xFFF1F3F5),
+            ),
+            SizedBox(height: screenHeight * 0.01),
+            _buildTextField(
+              'Sobrenome',
+              fillColor: const Color(0xFF1E2936),
+              textColor: const Color(0xFF788EA5),
+              focusedTextColor: const Color(0xFF208BFE),
+              inputTextColor: const Color(0xFFF1F3F5),
+            ),
+            SizedBox(height: screenHeight * 0.01),
+            _buildTextField(
+              'Nome de usuário',
               fillColor: const Color(0xFF1E2936),
               textColor: const Color(0xFF788EA5),
               focusedTextColor: const Color(0xFF208BFE),
@@ -50,7 +49,7 @@ class RedefinirSenhaScreen extends StatelessWidget {
             SizedBox(height: screenHeight * 0.04),
             _buildButton(
               context,
-              'Redefinir',
+              'Criar conta',
               backgroundColor: const Color(0xFF208BFE),
               textColor: const Color(0xFFF1F3F5),
               onPressed: () {},
@@ -58,13 +57,14 @@ class RedefinirSenhaScreen extends StatelessWidget {
             SizedBox(height: screenHeight * 0.006),
             _buildButton(
               context,
-              'Fazer login',
+              'Voltar',
               backgroundColor: const Color(0xFF1E2936),
               textColor: const Color(0xFFAEBBC9),
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const LoginScreen()),
+                  MaterialPageRoute(
+                      builder: (context) => const CadastroScreen()),
                 );
               },
             ),

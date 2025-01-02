@@ -1,21 +1,19 @@
-import 'package:filmin/auth_service.dart';
 import 'package:flutter/material.dart';
-import 'package:filmin/cadastro.dart';
-import 'package:filmin/redefinir_senha.dart';
-import 'package:filmin/home.dart';
+import 'package:filmin/screens/login_screen.dart';
+import 'package:filmin/screens/home_screen.dart';
+import 'package:filmin/services/auth_service.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class CadastroScreen extends StatefulWidget {
+  const CadastroScreen({super.key});
 
   @override
-  LoginScreenState createState() => LoginScreenState();
+  CadastroScreenState createState() => CadastroScreenState();
 }
 
-class LoginScreenState extends State<LoginScreen> {
+class CadastroScreenState extends State<CadastroScreen> {
   bool _isPasswordHidden = true;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  AuthService autoService = AuthService();
 
   void _togglePasswordVisibility() {
     setState(() {
@@ -35,8 +33,7 @@ class LoginScreenState extends State<LoginScreen> {
           children: [
             CircleAvatar(
               radius: screenWidth * 0.18,
-              backgroundImage: const AssetImage('assets/login.png'),
-              backgroundColor: Colors.transparent,
+              backgroundImage: const AssetImage('assets/cadastro.png'),
               child: Container(
                 width: screenWidth * 0.4,
                 height: screenWidth * 0.4,
@@ -49,25 +46,25 @@ class LoginScreenState extends State<LoginScreen> {
                 ),
               ),
             ),
-            SizedBox(height: screenHeight * 0.04),
+            SizedBox(height: screenHeight * 0.03),
             Text(
-              'Fazer login',
+              'Cadastro',
               style: TextStyle(
                 color: const Color(0xFF208BFE),
                 fontSize: screenHeight * 0.040,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: screenHeight * 0.02),
+            SizedBox(height: screenHeight * 0.01),
             _buildTextField(
-              'E-mail',
+              'Email',
               controller: _emailController,
               fillColor: const Color(0xFF1E2936),
               textColor: const Color(0xFF788EA5),
               focusedTextColor: const Color(0xFF208BFE),
               inputTextColor: const Color(0xFFF1F3F5),
             ),
-            SizedBox(height: screenHeight * 0.010),
+            SizedBox(height: screenHeight * 0.011),
             _buildTextField(
               'Senha',
               controller: _passwordController,
@@ -84,15 +81,15 @@ class LoginScreenState extends State<LoginScreen> {
                 onPressed: _togglePasswordVisibility,
               ),
             ),
-            SizedBox(height: screenHeight * 0.04),
+            SizedBox(height: screenHeight * 0.03),
             _buildButton(
-              'Entrar',
+              'Criar conta',
               backgroundColor: const Color(0xFF208BFE),
               textColor: const Color(0xFFF1F3F5),
               onPressed: () {
                 AuthService autoService = AuthService();
                 autoService
-                    .signInWithEmailAndPassword(
+                    .signUpWithEmailAndPassword(
                         email: _emailController.text,
                         senha: _passwordController.text)
                     .then((String? erro) {
@@ -115,29 +112,15 @@ class LoginScreenState extends State<LoginScreen> {
                 });
               },
             ),
-            SizedBox(height: screenHeight * 0.006),
+            SizedBox(height: screenHeight * 0.007),
             _buildButton(
-              'Criar conta',
+              'Fazer login',
               backgroundColor: const Color(0xFF1E2936),
               textColor: const Color(0xFFAEBBC9),
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => const CadastroScreen()),
-                );
-              },
-            ),
-            SizedBox(height: screenHeight * 0.006),
-            _buildButton(
-              'Esqueci a senha',
-              backgroundColor: const Color(0xFF1E2936),
-              textColor: const Color(0xFFAEBBC9),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const RedefinirSenhaScreen()),
+                  MaterialPageRoute(builder: (context) => const LoginScreen()),
                 );
               },
             ),
@@ -194,8 +177,8 @@ class LoginScreenState extends State<LoginScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     return SizedBox(
-      width: screenWidth * 0.45,
-      height: screenHeight * 0.045,
+      width: screenWidth * 0.60,
+      height: screenHeight * 0.050,
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(

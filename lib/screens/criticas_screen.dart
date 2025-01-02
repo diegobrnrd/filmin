@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'filme.dart';
+import 'package:filmin/helpers/filme.dart';
 
 class CriticasScreen extends StatelessWidget {
   const CriticasScreen({super.key});

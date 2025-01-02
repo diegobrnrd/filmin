@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 
-class AlterarEmailScreen extends StatelessWidget {
-  const AlterarEmailScreen({super.key});
+class AlterarSenhaScreen extends StatelessWidget {
+  const AlterarSenhaScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Alterar E-mail',
-          style: TextStyle(color: Color(0xFFAEBBC9)),
+        title: Text(
+          'Alterar senha',
+          style: TextStyle(
+              color: const Color(0xFFAEBBC9), fontSize: screenHeight * 0.025),
         ),
         backgroundColor: const Color(0xFF161E27),
         iconTheme: const IconThemeData(
@@ -19,26 +21,17 @@ class AlterarEmailScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          const Divider(
-            color: Color(0xFF1E2936),
-            height: 1,
-            thickness: 2,
+          Divider(
+            color: const Color(0xFF1E2936),
+            height: screenHeight * 0.001,
+            thickness: screenHeight * 0.002,
           ),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: EdgeInsets.all(screenWidth * 0.04),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(height: screenHeight * 0.01),
-                  _buildTextField(
-                    'Email',
-                    fillColor: const Color(0xFF1E2936),
-                    textColor: const Color(0xFF788EA5),
-                    focusedTextColor: const Color(0xFF208BFE),
-                    inputTextColor: const Color(0xFFF1F3F5),
-                  ),
-                  SizedBox(height: screenHeight * 0.01),
                   _buildTextField(
                     'Senha atual',
                     fillColor: const Color(0xFF1E2936),
@@ -46,7 +39,23 @@ class AlterarEmailScreen extends StatelessWidget {
                     focusedTextColor: const Color(0xFF208BFE),
                     inputTextColor: const Color(0xFFF1F3F5),
                   ),
-                  SizedBox(height: screenHeight * 0.04),
+                  SizedBox(height: screenHeight * 0.01),
+                  _buildTextField(
+                    'Nova senha',
+                    fillColor: const Color(0xFF1E2936),
+                    textColor: const Color(0xFF788EA5),
+                    focusedTextColor: const Color(0xFF208BFE),
+                    inputTextColor: const Color(0xFFF1F3F5),
+                  ),
+                  SizedBox(height: screenHeight * 0.01),
+                  _buildTextField(
+                    'Confirmar nova senha',
+                    fillColor: const Color(0xFF1E2936),
+                    textColor: const Color(0xFF788EA5),
+                    focusedTextColor: const Color(0xFF208BFE),
+                    inputTextColor: const Color(0xFFF1F3F5),
+                  ),
+                  SizedBox(height: screenHeight * 0.03),
                   _buildButton(
                     context,
                     'Salvar Alterações',
@@ -108,8 +117,8 @@ class AlterarEmailScreen extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     return SizedBox(
-      width: screenWidth * 0.45,
-      height: screenHeight * 0.045,
+      width: screenWidth * 0.60,
+      height: screenHeight * 0.050,
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(

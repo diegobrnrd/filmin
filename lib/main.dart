@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:filmin/login.dart';
+import 'package:filmin/screens/login_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
+import 'package:filmin/firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,7 +20,7 @@ class FilmIn extends StatelessWidget {
       theme: ThemeData(
         scaffoldBackgroundColor: const Color(0xFF161E27),
         textSelectionTheme: const TextSelectionThemeData(
-          cursorColor: Color(0xFFF1F3F5),
+          cursorColor: Color(0xFF208BFE),
           selectionColor: Color(0xFF208BFE),
           selectionHandleColor: Color(0xFF208BFE),
         ),

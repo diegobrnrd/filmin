@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
-import 'filmes_grid.dart';
-import 'filme.dart';
-import 'criticas.dart';
-import 'package:filmin/controlador/favorite_movie_service.dart';
+import 'package:filmin/helpers/filme.dart';
+import 'package:filmin/helpers/filmes_grid.dart';
+import 'package:filmin/screens/criticas_screen.dart';
+import 'package:filmin/services/favorite_movie_service.dart';
 
 class Perfil extends StatelessWidget {
   const Perfil({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Perfil',
-          style: TextStyle(color: Color(0xFFAEBBC9)),
+          style: TextStyle(
+              color: const Color(0xFFAEBBC9), fontSize: screenHeight * 0.025),
         ),
         backgroundColor: const Color(0xFF161E27),
         iconTheme: const IconThemeData(
@@ -22,36 +25,38 @@ class Perfil extends StatelessWidget {
       ),
       body: Column(
         children: [
-          const Divider(
-            color: Color(0xFF1E2936),
-            height: 1,
-            thickness: 2,
+          Divider(
+            color: const Color(0xFF1E2936),
+            height: screenHeight * 0.001,
+            thickness: screenHeight * 0.002,
           ),
-          const SizedBox(height: 20),
-          const CircleAvatar(
-            radius: 50,
-            backgroundImage: NetworkImage('URL_DA_FOTO_DO_USUARIO'),
+          SizedBox(height: screenHeight * 0.05),
+          CircleAvatar(
+            radius: screenWidth * 0.13,
+            backgroundImage: const NetworkImage('URL_DA_FOTO_DO_USUARIO'),
           ),
-          const SizedBox(height: 20),
-          const Divider(
-            color: Color(0xFF1E2936),
-            height: 1,
-            thickness: 2,
+          SizedBox(height: screenHeight * 0.05),
+          Divider(
+            color: const Color(0xFF1E2936),
+            height: screenHeight * 0.001,
+            thickness: screenHeight * 0.002,
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: screenHeight * 0.02),
           Expanded(
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  _criarBotao(context, 'Filmes', 'Filmes', 0),
-                  const SizedBox(height: 20),
-                  _criarBotao(context, 'Críticas', 'Crítica', 0),
-                  const SizedBox(height: 20),
-                  _criarBotao(context, 'Quero Assistir', 'Quero Assistir', 0),
-                  const SizedBox(height: 20),
-                  _criarBotao(context, 'Favoritos', 'Favoritos', 0),
-                  const SizedBox(height: 20),
+                  _criarBotao(context, 'Filmes', 'Filmes', 0, screenHeight),
+                  SizedBox(height: screenHeight * 0.01),
+                  _criarBotao(context, 'Críticas', 'Crítica', 0, screenHeight),
+                  SizedBox(height: screenHeight * 0.01),
+                  _criarBotao(context, 'Quero Assistir', 'Quero Assistir', 0,
+                      screenHeight),
+                  SizedBox(height: screenHeight * 0.01),
+                  _criarBotao(
+                      context, 'Favoritos', 'Favoritos', 0, screenHeight),
+                  SizedBox(height: screenHeight * 0.01),
                 ],
               ),
             ),
@@ -62,10 +67,10 @@ class Perfil extends StatelessWidget {
   }
 
   Widget _criarBotao(BuildContext context, String tituloBotao,
-      String tituloAppBar, int quantidade) {
+      String tituloAppBar, int quantidade, double screenHeight) {
     return TextButton(
       onPressed: () async {
-        if (tituloBotao == 'Crítica') {
+        if (tituloBotao == 'Críticas') {
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -101,7 +106,8 @@ class Perfil extends StatelessWidget {
         }
       },
       style: TextButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+        padding: EdgeInsets.symmetric(
+            vertical: screenHeight * 0.01, horizontal: screenHeight * 0.02),
         backgroundColor: Colors.transparent,
       ),
       child: Row(
@@ -109,11 +115,13 @@ class Perfil extends StatelessWidget {
         children: [
           Text(
             tituloBotao,
-            style: const TextStyle(color: Color(0xFFAEBBC9), fontSize: 16),
+            style: TextStyle(
+                color: const Color(0xFFAEBBC9), fontSize: screenHeight * 0.02),
           ),
           Text(
             quantidade.toString(),
-            style: const TextStyle(color: Color(0xFFAEBBC9), fontSize: 16),
+            style: TextStyle(
+                color: const Color(0xFFAEBBC9), fontSize: screenHeight * 0.02),
           ),
         ],
       ),

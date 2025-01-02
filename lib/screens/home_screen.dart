@@ -1,12 +1,12 @@
-import 'package:filmin/busca.dart';
-import 'package:filmin/configuracoes.dart';
-import 'package:filmin/perfil.dart';
-import 'package:filmin/criticas.dart';
 import 'package:flutter/material.dart';
-import 'auth_service.dart';
-import 'filmes_grid.dart';
-import 'filme.dart';
-import 'login.dart';
+import 'package:filmin/screens/busca_screen.dart';
+import 'package:filmin/screens/configuracoes_screen.dart';
+import 'package:filmin/screens/perfil_screen.dart';
+import 'package:filmin/screens/criticas_screen.dart';
+import 'package:filmin/services/auth_service.dart';
+import 'package:filmin/helpers/filmes_grid.dart';
+import 'package:filmin/helpers/filme.dart';
+import 'package:filmin/screens/login_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -27,11 +27,13 @@ class HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           "Popular",
-          style: TextStyle(color: Color(0xFFAEBBC9)),
+          style: TextStyle(
+              color: const Color(0xFFAEBBC9), fontSize: screenHeight * 0.025),
         ),
         backgroundColor: const Color(0xFF161E27),
         iconTheme: const IconThemeData(
@@ -59,17 +61,18 @@ class HomeScreenState extends State<HomeScreen> {
         backgroundColor: const Color(0xFF161E27),
         child: ListView(
           children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(
+            DrawerHeader(
+              decoration: const BoxDecoration(
                 color: Color(0xFF161E27),
               ),
               child: Row(
                 children: [
                   CircleAvatar(
-                    radius: 40,
-                    backgroundImage: NetworkImage('URL_DA_FOTO_DO_USUARIO'),
+                    radius: screenHeight * 0.05,
+                    backgroundImage:
+                        const NetworkImage('URL_DA_FOTO_DO_USUARIO'),
                   ),
-                  SizedBox(width: 16),
+                  const SizedBox(width: 16),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -77,16 +80,16 @@ class HomeScreenState extends State<HomeScreen> {
                       Text(
                         'Nome Sobrenome',
                         style: TextStyle(
-                          color: Color(0xFFAEBBC9),
-                          fontSize: 18,
+                          color: const Color(0xFFAEBBC9),
+                          fontSize: screenHeight * 0.022,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       Text(
                         '@nomeusuario',
                         style: TextStyle(
-                          color: Color(0xFFAEBBC9),
-                          fontSize: 16,
+                          color: const Color(0xFFAEBBC9),
+                          fontSize: screenHeight * 0.02,
                         ),
                       ),
                     ],
@@ -96,11 +99,12 @@ class HomeScreenState extends State<HomeScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.star, color: Color(0xFFAEBBC9)),
-              title: const Text(
+              title: Text(
                 "Popular",
                 style: TextStyle(
-                  color: Color(0xFFAEBBC9),
+                  color: const Color(0xFFAEBBC9),
                   fontWeight: FontWeight.bold,
+                  fontSize: screenHeight * 0.02,
                 ),
               ),
               onTap: () {
@@ -109,10 +113,11 @@ class HomeScreenState extends State<HomeScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.search, color: Color(0xFFAEBBC9)),
-              title: const Text(
+              title: Text(
                 "Busca",
                 style: TextStyle(
-                  color: Color(0xFFAEBBC9),
+                  color: const Color(0xFFAEBBC9),
+                  fontSize: screenHeight * 0.02,
                 ),
               ),
               onTap: () {
@@ -124,10 +129,11 @@ class HomeScreenState extends State<HomeScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.person, color: Color(0xFFAEBBC9)),
-              title: const Text(
+              title: Text(
                 "Perfil",
                 style: TextStyle(
-                  color: Color(0xFFAEBBC9),
+                  color: const Color(0xFFAEBBC9),
+                  fontSize: screenHeight * 0.02,
                 ),
               ),
               onTap: () {
@@ -139,10 +145,11 @@ class HomeScreenState extends State<HomeScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.access_time, color: Color(0xFFAEBBC9)),
-              title: const Text(
+              title: Text(
                 "Quero Assistir",
                 style: TextStyle(
-                  color: Color(0xFFAEBBC9),
+                  color: const Color(0xFFAEBBC9),
+                  fontSize: screenHeight * 0.02,
                 ),
               ),
               onTap: () {
@@ -159,10 +166,11 @@ class HomeScreenState extends State<HomeScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.rate_review, color: Color(0xFFAEBBC9)),
-              title: const Text(
+              title: Text(
                 "Críticas",
                 style: TextStyle(
-                  color: Color(0xFFAEBBC9),
+                  color: const Color(0xFFAEBBC9),
+                  fontSize: screenHeight * 0.02,
                 ),
               ),
               onTap: () {
@@ -175,10 +183,11 @@ class HomeScreenState extends State<HomeScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.settings, color: Color(0xFFAEBBC9)),
-              title: const Text(
+              title: Text(
                 "Configurações",
                 style: TextStyle(
-                  color: Color(0xFFAEBBC9),
+                  color: const Color(0xFFAEBBC9),
+                  fontSize: screenHeight * 0.02,
                 ),
               ),
               onTap: () {
@@ -191,10 +200,11 @@ class HomeScreenState extends State<HomeScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.logout, color: Color(0xFFAEBBC9)),
-              title: const Text(
+              title: Text(
                 "Sair",
                 style: TextStyle(
-                  color: Color(0xFFAEBBC9),
+                  color: const Color(0xFFAEBBC9),
+                  fontSize: screenHeight * 0.02,
                 ),
               ),
               onTap: () {
@@ -212,7 +222,7 @@ class HomeScreenState extends State<HomeScreen> {
         children: [
           Container(
             color: const Color(0xFF161E27),
-            padding: const EdgeInsets.symmetric(vertical: 1.0),
+            padding: EdgeInsets.symmetric(vertical: screenHeight * 0.001),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -237,10 +247,10 @@ class HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),
-          const Divider(
-            color: Color(0xFF1E2936),
-            height: 1,
-            thickness: 2,
+          Divider(
+            color: const Color(0xFF1E2936),
+            height: screenHeight * 0.001,
+            thickness: screenHeight * 0.002,
           ),
           Expanded(
             child: IndexedStack(
@@ -257,47 +267,54 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildFilmesContent() {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
     return Column(
       children: [
-        const SizedBox(height: 20.0),
-        const Align(
+        SizedBox(height: screenHeight * 0.025),
+        Align(
           alignment: Alignment.centerLeft,
           child: Padding(
-            padding: EdgeInsets.only(left: 8.0),
+            padding: EdgeInsets.only(left: screenWidth * 0.03),
             child: Text(
               'Em Cartaz',
               style: TextStyle(
-                  color: Color(0xFFAEBBC9),
-                  fontSize: 16,
+                  color: const Color(0xFFAEBBC9),
+                  fontSize: screenHeight * 0.02,
                   fontWeight: FontWeight.bold),
             ),
           ),
         ),
-        SizedBox(
-          height: 150,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: 20,
-            itemBuilder: (context, index) {
-              return const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: FilmeWidget(
-                  posterPath: '',
-                ),
-              );
-            },
+        SizedBox(height: screenHeight * 0.01),
+        Padding(
+          padding: EdgeInsets.only(left: screenWidth * 0.018),
+          child: SizedBox(
+            height: screenHeight * 0.2,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: 20,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: EdgeInsets.symmetric(horizontal: screenHeight * 0.005),
+                  child: const FilmeWidget(
+                    posterPath: '',
+                  ),
+                );
+              },
+            ),
           ),
-        ),
+        )
       ],
     );
   }
 
   List<FilmeWidget> _mockFilmes() {
     return List.generate(
-        40,
-        (index) => const FilmeWidget(
-              posterPath: '',
-            ));
+      0,
+      (index) => FilmeWidget(
+        posterPath: '/path/to/poster${index + 1}.jpg',
+      ),
+    );
   }
 }
 

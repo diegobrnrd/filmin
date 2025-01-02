@@ -1,7 +1,7 @@
-import 'package:filmin/detalhes_filme.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:filmin/controlador/controlador.dart';
+import 'package:flutter/foundation.dart';
+import 'package:filmin/screens/detalhes_filme_screen.dart';
 
 class BuscaScreen extends StatefulWidget {
   const BuscaScreen({super.key});
@@ -39,27 +39,22 @@ class BuscaScreenState extends State<BuscaScreen> {
   }
 
   void _buscarPerfil() {
-    // Implement profile search logic
+    // TODO: Implement profile search logic
   }
 
-  void _navegarParaDetalhesFilme(int movieId) async {
-    try {
-      final movieDetails = await Controlador().buscarDetalhesFilme(movieId);
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => DetalhesFilmeScreen(movieDetails: movieDetails),
-        ),
-      );
-    } catch (e) {
-      if (kDebugMode) {
-        print('Error: $e');
-      }
-    }
+  void _navegarParaDetalhesFilme(int movieId) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DetalhesFilmeScreen(movieId: movieId),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF161E27),
@@ -68,9 +63,10 @@ class BuscaScreenState extends State<BuscaScreen> {
         ),
         title: TextField(
           controller: _controller,
-          decoration: const InputDecoration(
-            hintText: 'Buscar...',
-            hintStyle: TextStyle(color: Color(0xFFAEBBC9)),
+          decoration: InputDecoration(
+            hintText: 'Buscar filme...',
+            hintStyle: TextStyle(
+                color: const Color(0xFFAEBBC9), fontSize: screenHeight * 0.02),
             border: InputBorder.none,
           ),
           style: const TextStyle(color: Color(0xFFAEBBC9)),
@@ -87,6 +83,9 @@ class BuscaScreenState extends State<BuscaScreen> {
             icon: const Icon(Icons.clear, color: Color(0xFFAEBBC9)),
             onPressed: () {
               _controller.clear();
+              setState(() {
+                _searchResults.clear();
+              });
             },
           ),
         ],
@@ -95,7 +94,7 @@ class BuscaScreenState extends State<BuscaScreen> {
         children: [
           Container(
             color: const Color(0xFF161E27),
-            padding: const EdgeInsets.symmetric(vertical: 1.0),
+            padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -120,10 +119,10 @@ class BuscaScreenState extends State<BuscaScreen> {
               ],
             ),
           ),
-          const Divider(
-            color: Color(0xFF1E2936),
-            height: 1,
-            thickness: 2,
+          Divider(
+            color: const Color(0xFF1E2936),
+            height: screenHeight * 0.001,
+            thickness: screenHeight * 0.002,
           ),
           Expanded(
             child: ListView.builder(
@@ -134,33 +133,46 @@ class BuscaScreenState extends State<BuscaScreen> {
                 return InkWell(
                   onTap: () => _navegarParaDetalhesFilme(movie['id']),
                   child: Container(
-                    padding: const EdgeInsets.all(8.0),
-                    margin: const EdgeInsets.symmetric(vertical: 4.0),
+                    padding: EdgeInsets.all(screenWidth * 0.02),
+                    margin:
+                        EdgeInsets.symmetric(vertical: screenHeight * 0.005),
                     child: Row(
                       children: [
                         if (posterPath != null && posterPath.isNotEmpty)
                           Image.network(
                             'https://image.tmdb.org/t/p/w154$posterPath',
                             fit: BoxFit.cover,
-                            width: 100,
-                            height: 150,
+                            width: screenWidth * 0.25,
+                            height: screenHeight * 0.2,
                           )
                         else
-                          const Icon(Icons.movie,
-                              color: Color(0xFFAEBBC9), size: 100),
-                        const SizedBox(width: 16.0),
+                          Container(
+                            width: screenWidth * 0.25,
+                            height: screenHeight * 0.2,
+                            color: const Color(0xFF1E2936),
+                            child: const Icon(Icons.image_not_supported),
+                          ),
+                        SizedBox(width: screenWidth * 0.04),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(movie['title'],
-                                  style: const TextStyle(
-                                      color: Color(0xFFAEBBC9), fontSize: 18)),
-                              const SizedBox(height: 8.0),
                               Text(
-                                  '${movie['release_date'] != null ? movie['release_date'].split('-')[0] : 'N/A'}',
-                                  style: const TextStyle(
-                                      color: Color(0xFFAEBBC9))),
+                                movie['title'],
+                                style: TextStyle(
+                                  color: const Color(0xFFAEBBC9),
+                                  fontSize: screenHeight * 0.02,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(height: screenHeight * 0.01),
+                              Text(
+                                '${movie['release_date'] != null ? movie['release_date'].split('-')[0] : 'N/A'}',
+                                style: TextStyle(
+                                  color: const Color(0xFFAEBBC9),
+                                  fontSize: screenHeight * 0.02,
+                                ),
+                              ),
                             ],
                           ),
                         ),

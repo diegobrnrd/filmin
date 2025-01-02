@@ -20,20 +20,22 @@ class FavoriteMovieService {
         'id': movie['id'],
         'release_date': movie['release_date'],
         'poster_path': movie['poster_path'],
-        'genres': movie['genres'].map((genre) => {
-          'id': genre['id'],
-          'name': genre['name'],
-        }).toList(),
+        'genres': movie['genres']
+            .map((genre) => {
+                  'id': genre['id'],
+                  'name': genre['name'],
+                })
+            .toList(),
         'runtime': movie['runtime'],
         'dateAdded': Timestamp.now(),
       });
 
-      // Atualiza o documento para incluir o próprio document ID
       await docRef.update({'documentId': docRef.id});
     }
   }
 
-  Future<void> updateFavoriteMovie(String movieId, Map<String, dynamic> updatedData) async {
+  Future<void> updateFavoriteMovie(
+      String movieId, Map<String, dynamic> updatedData) async {
     final User? user = _auth.currentUser;
     if (user != null) {
       await _firestore
@@ -44,10 +46,12 @@ class FavoriteMovieService {
           .update({
         'release_date': updatedData['release_date'],
         'poster_path': updatedData['poster_path'],
-        'genres': updatedData['genres'].map((genre) => {
-          'id': genre['id'],
-          'name': genre['name'],
-        }).toList(),
+        'genres': updatedData['genres']
+            .map((genre) => {
+                  'id': genre['id'],
+                  'name': genre['name'],
+                })
+            .toList(),
         'runtime': updatedData['runtime'],
         'dateAdded': updatedData['dateAdded'],
       });
