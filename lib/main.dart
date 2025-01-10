@@ -25,7 +25,7 @@ class FilmIn extends StatelessWidget {
           selectionHandleColor: Color(0xFF208BFE),
         ),
       ),
-      home: const LoginScreen(),
+      home: const LoginScreen()
     );
   }
 }
