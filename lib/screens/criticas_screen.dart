@@ -37,7 +37,7 @@ class CriticasScreen extends StatefulWidget {
               Navigator.pop(context); // Retorna à tela anterior
             },
           ),
-          actions: [IconButton(onPressed: () {Navigator.push(
+          actions: [IconButton(color:  const Color(0xFFAEBBC9),onPressed: () {Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => TelaEscreverCritica()),
               );}, icon: const Icon(Icons.add))],
