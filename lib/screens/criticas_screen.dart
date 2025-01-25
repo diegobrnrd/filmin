@@ -1,10 +1,16 @@
+import 'package:filmin/screens/escrever_critica_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:filmin/helpers/filme.dart';
 
-class CriticasScreen extends StatelessWidget {
+class CriticasScreen extends StatefulWidget {
   const CriticasScreen({super.key});
 
-  List<Widget> get _criticas {
+  
+  _CriticasScreenState createState() => _CriticasScreenState();
+
+  }
+  class _CriticasScreenState extends State<CriticasScreen> {
+    List<Widget> get _criticas {
     return List.generate(
       5,
       (index) => _buildCritica(
@@ -12,8 +18,8 @@ class CriticasScreen extends StatelessWidget {
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque hendrerit lacinia consequat. Ut eu ex in magna porttitor feugiat. Cras eu nisi nec tortor bibendum blandit eu a mauris. Vivamus egestas felis felis, id convallis metus eleifend malesuada. Nulla laoreet sit amet ligula sit amet fermentum. Fusce pretium iaculis tincidunt.',
       ),
     );
+    
   }
-
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -31,6 +37,10 @@ class CriticasScreen extends StatelessWidget {
               Navigator.pop(context); // Retorna à tela anterior
             },
           ),
+          actions: [IconButton(onPressed: () {Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => TelaEscreverCritica()),
+              );}, icon: const Icon(Icons.add))],
         ),
         body: SingleChildScrollView(
             child: Padding(
@@ -67,7 +77,7 @@ class CriticasScreen extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                     fontSize: 12,
                     color: Colors.grey),
-              )
+              ),
             ]),
             const SizedBox(
               height: 15,
@@ -91,6 +101,7 @@ class CriticasScreen extends StatelessWidget {
               ],
             )
           ],
-        ));
+       )
+    );
   }
 }
