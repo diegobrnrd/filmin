@@ -97,7 +97,7 @@ class CriticasScreen extends StatefulWidget {
                       fontWeight: FontWeight.normal,
                       fontSize: 13,
                       color: Colors.white),
-                ))
+                )), IconButton(color: const Color(0xFFAEBBC9), onPressed: () {}, icon: const Icon(Icons.edit))
               ],
             )
           ],
