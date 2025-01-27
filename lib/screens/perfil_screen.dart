@@ -3,6 +3,7 @@ import 'package:filmin/helpers/filme.dart';
 import 'package:filmin/helpers/filmes_grid.dart';
 import 'package:filmin/screens/criticas_screen.dart';
 import 'package:filmin/services/favorite_movie_service.dart';
+import 'package:filmin/services/watchlist_service.dart';
 
 class Perfil extends StatelessWidget {
   const Perfil({super.key});
@@ -86,6 +87,21 @@ class Perfil extends StatelessWidget {
               builder: (context) => FilmeGrid(
                 tituloAppBar: tituloAppBar,
                 filmes: favoriteMovies
+                    .map((movie) => FilmeWidget(
+                          posterPath: movie['poster_path'] ?? '',
+                        ))
+                    .toList(),
+              ),
+            ),
+          );
+        } else if (tituloBotao == 'Quero Assistir') {
+          final watchlist = await WatchListService().getWatchlist();
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => FilmeGrid(
+                tituloAppBar: tituloAppBar,
+                filmes: watchlist
                     .map((movie) => FilmeWidget(
                           posterPath: movie['poster_path'] ?? '',
                         ))

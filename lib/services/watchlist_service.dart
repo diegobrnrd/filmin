@@ -30,7 +30,7 @@ class WatchListService {
       });
 
       await docRef.update({'documentId': docRef.id});
-      }
+      }}
 
 	Future<void> deleteFromWatchlist(String documentId) async {
     final User? user = _auth.currentUser;
@@ -68,5 +68,5 @@ Future<List<Map<String, dynamic>>> getWatchlist() async {
       }
     }
   }
-}
+
 

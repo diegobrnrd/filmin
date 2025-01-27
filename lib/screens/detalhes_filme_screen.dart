@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:filmin/services/favorite_movie_service.dart';
+import 'package:filmin/services/watchlist_service.dart';
 import 'package:filmin/controlador/controlador.dart';
 
 class DetalhesFilmeScreen extends StatefulWidget {
@@ -56,6 +57,7 @@ class DetalhesFilmeScreenState extends State<DetalhesFilmeScreen> {
   bool isFavorite = false;
   bool isWatchLater = false;
   final FavoriteMovieService _favoriteMovieService = FavoriteMovieService();
+  final WatchListService _watchListService = WatchListService();
 
   @override
   void initState() {
@@ -72,6 +74,18 @@ class DetalhesFilmeScreenState extends State<DetalhesFilmeScreen> {
       setState(() {
         isFavorite =
             favoriteMovies.any((movie) => movie['id'] == widget.movieId);
+      });
+    }
+  }
+
+  void _checkIfInWatchlist() async {
+    final user = _watchListService.getCurrentUser();
+    if (user != null) {
+      final watchlist =
+          await _watchListService.getWatchlist();
+      setState(() {
+        isWatchLater =
+            watchlist.any((movie) => movie['id'] == widget.movieId);
       });
     }
   }
@@ -103,17 +117,39 @@ class DetalhesFilmeScreenState extends State<DetalhesFilmeScreen> {
     }
   }
 
+  void _toggleWatchLater() async {
+    setState(() {
+      isWatchLater = !isWatchLater;
+    });
+
+    final user = _watchListService.getCurrentUser();
+    if (user != null) {
+      if (isWatchLater) {
+        final movieDetails =
+            await Controlador().buscarDetalhesFilme(widget.movieId);
+        await _watchListService.addToWatchList(movieDetails);
+      } else {
+        final watchlist =
+            await _watchListService.getWatchlist();
+        final movieToDelete = watchlist.firstWhere(
+          (movie) => movie['id'] == widget.movieId,
+          orElse: () => {},
+        );
+
+        if (movieToDelete.isNotEmpty) {
+          await _watchListService
+              .deleteFromWatchlist(movieToDelete['documentId']);
+        }
+      }
+    }
+  }
+
   void _toggleWatched() {
     setState(() {
       isWatched = !isWatched;
     });
   }
 
-  void _toggleWatchLater() {
-    setState(() {
-      isWatchLater = !isWatchLater;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
