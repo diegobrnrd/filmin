@@ -64,6 +64,7 @@ class DetalhesFilmeScreenState extends State<DetalhesFilmeScreen> {
     super.initState();
     _filmeFuture = Filme.buscarDetalhesFilme(widget.movieId);
     _checkIfFavorite();
+    _checkIfInWatchlist();
   }
 
   void _checkIfFavorite() async {
@@ -81,11 +82,9 @@ class DetalhesFilmeScreenState extends State<DetalhesFilmeScreen> {
   void _checkIfInWatchlist() async {
     final user = _watchListService.getCurrentUser();
     if (user != null) {
-      final watchlist =
-          await _watchListService.getWatchlist();
+      final watchlist = await _watchListService.getWatchlist();
       setState(() {
-        isWatchLater =
-            watchlist.any((movie) => movie['id'] == widget.movieId);
+        isWatchLater = watchlist.any((movie) => movie['id'] == widget.movieId);
       });
     }
   }
@@ -129,8 +128,7 @@ class DetalhesFilmeScreenState extends State<DetalhesFilmeScreen> {
             await Controlador().buscarDetalhesFilme(widget.movieId);
         await _watchListService.addToWatchList(movieDetails);
       } else {
-        final watchlist =
-            await _watchListService.getWatchlist();
+        final watchlist = await _watchListService.getWatchlist();
         final movieToDelete = watchlist.firstWhere(
           (movie) => movie['id'] == widget.movieId,
           orElse: () => {},
@@ -149,7 +147,6 @@ class DetalhesFilmeScreenState extends State<DetalhesFilmeScreen> {
       isWatched = !isWatched;
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
