@@ -7,6 +7,7 @@ import 'package:filmin/services/auth_service.dart';
 import 'package:filmin/helpers/filmes_grid.dart';
 import 'package:filmin/helpers/filme.dart';
 import 'package:filmin/screens/login_screen.dart';
+import 'package:filmin/services/watchlist_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -152,13 +153,17 @@ class HomeScreenState extends State<HomeScreen> {
                   fontSize: screenHeight * 0.02,
                 ),
               ),
-              onTap: () {
+              onTap: () async {
+                final watchlist = await WatchListService().getWatchlist();
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => FilmeGrid(
                       tituloAppBar: "Quero Assistir",
-                      filmes: _mockFilmes(),
+                      filmes: watchlist.map((movie) => FilmeWidget(
+                          posterPath: movie['poster_path'] ?? '',
+                        ))
+                    .toList(),
                     ),
                   ),
                 );
@@ -295,7 +300,8 @@ class HomeScreenState extends State<HomeScreen> {
               itemCount: 20,
               itemBuilder: (context, index) {
                 return Padding(
-                  padding: EdgeInsets.symmetric(horizontal: screenHeight * 0.005),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: screenHeight * 0.005),
                   child: const FilmeWidget(
                     posterPath: '',
                   ),
