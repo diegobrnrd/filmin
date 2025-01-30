@@ -1,4 +1,3 @@
-import 'package:filmin/screens/escrever_critica_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:filmin/helpers/filme.dart';
 
