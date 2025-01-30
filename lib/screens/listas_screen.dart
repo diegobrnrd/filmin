@@ -11,6 +11,7 @@ class ListasScreen extends StatelessWidget {
         title: const Text('Listas', 
           style: TextStyle(color: Color(0xFFAEBBC9)),),
         backgroundColor: const Color(0xFF161E27),
+        centerTitle: true,
         leading: IconButton(
           color: const Color(0xFFAEBBC9),
           icon: const Icon(Icons.arrow_back),
@@ -20,7 +21,7 @@ class ListasScreen extends StatelessWidget {
         ),
       ),
       body: const Placeholder(),
-      floatingActionButton: FloatingActionButton(onPressed: () {Navigator.push(
+      floatingActionButton: FloatingActionButton(backgroundColor: const Color(0xFFAEBBC9),foregroundColor: const Color(0xFF161E27), child: const Icon(Icons.add), onPressed: () {Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => const CriarListaScreen()),
