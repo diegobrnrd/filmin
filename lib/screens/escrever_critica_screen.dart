@@ -1,88 +1,86 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 class TelaEscreverCritica extends StatefulWidget {
+  final String movieTitle;
+  final String posterUrl;
+
+  const TelaEscreverCritica({
+    required this.movieTitle,
+    required this.posterUrl,
+    super.key,
+  });
+
   @override
   _TelaEscreverCriticaState createState() => _TelaEscreverCriticaState();
 }
 
 class _TelaEscreverCriticaState extends State<TelaEscreverCritica> {
-  String? _selectedMovie;
+  final TextEditingController _controller = TextEditingController();
   bool _isBold = false;
   bool _isItalic = false;
   bool _isUnderlined = false;
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  TextStyle _getTextStyle() {
+    return TextStyle(
+      fontWeight: _isBold ? FontWeight.bold : FontWeight.normal,
+      fontStyle: _isItalic ? FontStyle.italic : FontStyle.normal,
+      decoration:
+          _isUnderlined ? TextDecoration.underline : TextDecoration.none,
+      color: Colors.white,
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Escrever Crítica'),
+        title: const Text('Escrever Crítica'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Título do Filme',
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white),
+            MovieSection(
+              movieTitle: widget.movieTitle,
+              posterUrl: widget.posterUrl,
             ),
-            SizedBox(height: 8),
-            DropdownButton<String>(
-              value: _selectedMovie,
-              hint: Text('Selecione o título do filme',
-                  style: TextStyle(color: Colors.white)),
-              items:
-                  <String>['Filme 1', 'Filme 2', 'Filme 3'].map((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-              onChanged: (String? newValue) {
-                setState(() {
-                  _selectedMovie = newValue;
-                });
-              },
-            ),
-            SizedBox(height: 16),
-            Text(
-              'Sua Crítica',
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white),
-            ),
-            SizedBox(height: 8),
+            const SizedBox(height: 16),
             Expanded(
-              child: TextField(
-                maxLines: null,
-                expands: true,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: _isBold ? FontWeight.bold : FontWeight.normal,
-                  fontStyle: _isItalic ? FontStyle.italic : FontStyle.normal,
-                  decoration: _isUnderlined
-                      ? TextDecoration.underline
-                      : TextDecoration.none,
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(4),
                 ),
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Escreva sua crítica aqui',
-                  hintStyle: TextStyle(color: Colors.white),
+                padding: const EdgeInsets.all(10),
+                child: TextField(
+                  controller: _controller,
+                  maxLines: null,
+                  style: _getTextStyle(),
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    hintText: 'Escreva sua crítica aqui...',
+                    hintStyle: TextStyle(color: Colors.grey),
+                  ),
                 ),
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IconButton(
-                  icon: Icon(Icons.format_bold,
-                      color: _isBold
-                          ? const Color.fromARGB(255, 1, 4, 156)
-                          : Colors.white),
+                  icon: Icon(
+                    Icons.format_bold,
+                    color: _isBold ? Colors.blue : Colors.white,
+                  ),
                   onPressed: () {
                     setState(() {
                       _isBold = !_isBold;
@@ -90,10 +88,10 @@ class _TelaEscreverCriticaState extends State<TelaEscreverCritica> {
                   },
                 ),
                 IconButton(
-                  icon: Icon(Icons.format_italic,
-                      color: _isItalic
-                          ? const Color.fromARGB(255, 1, 4, 251)
-                          : Colors.white),
+                  icon: Icon(
+                    Icons.format_italic,
+                    color: _isItalic ? Colors.blue : Colors.white,
+                  ),
                   onPressed: () {
                     setState(() {
                       _isItalic = !_isItalic;
@@ -101,10 +99,10 @@ class _TelaEscreverCriticaState extends State<TelaEscreverCritica> {
                   },
                 ),
                 IconButton(
-                  icon: Icon(Icons.format_underline,
-                      color: _isUnderlined
-                          ? const Color.fromARGB(255, 1, 4, 251)
-                          : Colors.white),
+                  icon: Icon(
+                    Icons.format_underline,
+                    color: _isUnderlined ? Colors.blue : Colors.white,
+                  ),
                   onPressed: () {
                     setState(() {
                       _isUnderlined = !_isUnderlined;
@@ -113,18 +111,62 @@ class _TelaEscreverCriticaState extends State<TelaEscreverCritica> {
                 ),
               ],
             ),
+            const SizedBox(height: 16),
             Center(
               child: ElevatedButton(
-                onPressed: () {
-                  // Lógica para salvar a crítica
-                },
-                child: Text('Salvar Crítica'),
+                onPressed: _saveCritica,
+                child: const Text('Salvar Crítica'),
               ),
             ),
           ],
         ),
       ),
       backgroundColor: const Color.fromARGB(255, 32, 32, 35),
+    );
+  }
+
+  void _saveCritica() {
+    final plainText = _controller.text;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          'Crítica salva: ${plainText.substring(0, min(30, plainText.length))}...',
+        ),
+      ),
+    );
+  }
+}
+
+class MovieSection extends StatelessWidget {
+  final String movieTitle;
+  final String posterUrl;
+
+  const MovieSection({
+    required this.movieTitle,
+    required this.posterUrl,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Image.network(
+          posterUrl,
+          width: 100,
+          height: 150,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) => const Icon(Icons.error),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            movieTitle,
+            style: const TextStyle(fontSize: 18, color: Colors.white),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
     );
   }
 }

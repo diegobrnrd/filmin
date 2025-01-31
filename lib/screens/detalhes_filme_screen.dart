@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:filmin/services/favorite_movie_service.dart';
 import 'package:filmin/services/watchlist_service.dart';
 import 'package:filmin/controlador/controlador.dart';
+import 'package:filmin/screens/escrever_critica_screen.dart'; // Ajuste o caminho
 
 class DetalhesFilmeScreen extends StatefulWidget {
   final int movieId;
@@ -146,6 +147,18 @@ class DetalhesFilmeScreenState extends State<DetalhesFilmeScreen> {
     setState(() {
       isWatched = !isWatched;
     });
+  }
+
+  void navegarParaTelaCritica(Filme filme) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TelaEscreverCritica(
+          movieTitle: filme.titulo,
+          posterUrl: 'https://image.tmdb.org/t/p/w154${filme.posterPath}',
+        ),
+      ),
+    );
   }
 
   @override
@@ -309,11 +322,9 @@ class DetalhesFilmeScreenState extends State<DetalhesFilmeScreen> {
                       },
                     ),
                     IconButton(
-                      icon: const Icon(Icons.share, color: Color(0xFFAEBBC9)),
-                      iconSize: screenWidth * 0.08,
-                      onPressed: () {
-                        // Adicionar lógica para "compartilhar"
-                      },
+                      icon: const Icon(Icons.rate_review,
+                          color: Color(0xFFAEBBC9)),
+                      onPressed: () => navegarParaTelaCritica(filme),
                     ),
                   ],
                 ),
