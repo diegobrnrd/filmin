@@ -316,15 +316,14 @@ class DetalhesFilmeScreenState extends State<DetalhesFilmeScreen> {
                     IconButton(
                       icon: const Icon(Icons.rate_review,
                           color: Color(0xFFAEBBC9)),
-                      iconSize: screenWidth * 0.08,
-                      onPressed: () {
-                        // Adicionar lógica para "crítica"
-                      },
+                      onPressed: () => navegarParaTelaCritica(filme),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.rate_review,
-                          color: Color(0xFFAEBBC9)),
-                      onPressed: () => navegarParaTelaCritica(filme),
+                      icon: const Icon(Icons.share, color: Color(0xFFAEBBC9)),
+                      iconSize: screenWidth * 0.08,
+                      onPressed: () {
+                        // Adicionar lógica para "compartilhar"
+                      },
                     ),
                   ],
                 ),
