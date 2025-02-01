@@ -8,6 +8,7 @@ import 'package:filmin/helpers/filmes_grid.dart';
 import 'package:filmin/helpers/filme.dart';
 import 'package:filmin/screens/login_screen.dart';
 import 'package:filmin/services/watchlist_service.dart';
+import 'package:filmin/screens/mapa_cinemas.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -262,7 +263,7 @@ class HomeScreenState extends State<HomeScreen> {
               index: _selectedIndex,
               children: [
                 _buildFilmesContent(),
-                const CinemasScreen(),
+                const TelaMapa(),
               ],
             ),
           ),
