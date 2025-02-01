@@ -11,6 +11,8 @@ class _EditarDescricaoScreenState extends State<EditarDescricaoScreen> {
   bool isBoldSelected = false;
   bool isItalicSelected = false;
 
+  final TextEditingController _controller = TextEditingController();
+
   void _toggleBold() {
     setState(() {
       isBoldSelected = !isBoldSelected;
@@ -38,16 +40,17 @@ class _EditarDescricaoScreenState extends State<EditarDescricaoScreen> {
                 color: const Color(0xFFAEBBC9),
                 icon: const Icon(Icons.arrow_back),
                 onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.pop(context, _controller.text);
                 })),
         body: Column(children: [
-          const Expanded(
+          Expanded(
               child: Padding(
-                  padding: EdgeInsets.all(15.0),
+                  padding: const EdgeInsets.all(15.0),
                   child: TextField(
-                      style: TextStyle(color: Color(0xFFAEBBC9)),
-                      cursorColor: Color(0xFFAEBBC9),
-                      decoration: InputDecoration(
+                      controller: _controller,
+                      style: const TextStyle(color: Color(0xFFAEBBC9)),
+                      cursorColor: const Color(0xFFAEBBC9),
+                      decoration: const InputDecoration(
                           hintText: 'Adicionar Descrição...',
                           hintStyle: TextStyle(color: Color(0xFFAEBBC9)),
                           border: InputBorder.none)))),
