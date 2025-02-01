@@ -1,4 +1,6 @@
+import 'package:filmin/screens/busca_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:filmin/screens/editar_descricao_screen.dart';
 
 
 class CriarListaScreen extends StatefulWidget {
@@ -61,7 +63,11 @@ class _CriarListaScreenState extends State<CriarListaScreen> {
                     borderRadius: BorderRadius.zero,  // Sem arredondamento
                   ),
                 ),
-                onPressed:(){}, 
+                onPressed:(){Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const EditarDescricaoScreen()),
+                );}, 
                 child: const Align(
                   alignment: Alignment.topLeft, 
                   child: Padding(
@@ -85,7 +91,11 @@ class _CriarListaScreenState extends State<CriarListaScreen> {
                     borderRadius: BorderRadius.zero,  // Sem arredondamento
                   ),
                 ),
-                onPressed:(){}, 
+                onPressed:(){Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const BuscaScreen()),
+                );}, 
                 child: const Align(
                   alignment: Alignment.topLeft, 
                   child: Padding(

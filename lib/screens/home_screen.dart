@@ -8,6 +8,7 @@ import 'package:filmin/helpers/filmes_grid.dart';
 import 'package:filmin/helpers/filme.dart';
 import 'package:filmin/screens/login_screen.dart';
 import 'package:filmin/services/watchlist_service.dart';
+import 'package:filmin/screens/listas_screen.dart';
 import 'package:filmin/screens/mapa_cinemas.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -161,12 +162,29 @@ class HomeScreenState extends State<HomeScreen> {
                   MaterialPageRoute(
                     builder: (context) => FilmeGrid(
                       tituloAppBar: "Quero Assistir",
-                      filmes: watchlist.map((movie) => FilmeWidget(
-                          posterPath: movie['poster_path'] ?? '',
-                        ))
-                    .toList(),
+                      filmes: watchlist
+                          .map((movie) => FilmeWidget(
+                                posterPath: movie['poster_path'] ?? '',
+                              ))
+                          .toList(),
                     ),
                   ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.grid_on, color: Color(0xFFAEBBC9)),
+              title: Text(
+                "Listas",
+                style: TextStyle(
+                  color: const Color(0xFFAEBBC9),
+                  fontSize: screenHeight * 0.02,
+                ),
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ListasScreen()),
                 );
               },
             ),
