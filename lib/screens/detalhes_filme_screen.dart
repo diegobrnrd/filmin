@@ -316,6 +316,7 @@ class DetalhesFilmeScreenState extends State<DetalhesFilmeScreen> {
                     IconButton(
                       icon: const Icon(Icons.rate_review,
                           color: Color(0xFFAEBBC9)),
+                      iconSize: screenWidth * 0.08,
                       onPressed: () => navegarParaTelaCritica(filme),
                     ),
                     IconButton(
