@@ -127,5 +127,26 @@ class ListsService {
         });
       }
     }
+
+    Future<List<Map<String, dynamic>>> getUserLists() async {
+      final User? user = _auth.currentUser;
+      if (user != null) {
+        final snapshot = await _firestore
+            .collection('users')
+            .doc(user.uid)
+            .collection('lists')
+            .get();
+
+        return snapshot.docs.map((doc) {
+          return {
+            'documentId': doc.id, // ID único da lista
+            'name': doc['name'], // Nome da lista
+            'description': doc['description'], // Descrição da lista
+          };
+        }).toList();
+      } else {
+        return []; // Retorna uma lista vazia se o usuário não estiver autenticado
+      }
+    }
   }
 }

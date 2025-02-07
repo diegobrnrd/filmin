@@ -326,6 +326,12 @@ class DetalhesFilmeScreenState extends State<DetalhesFilmeScreen> {
                         // Adicionar lógica para "compartilhar"
                       },
                     ),
+                    IconButton(
+                      icon: const Icon(Icons.library_add,
+                          color: Color(0xFFAEBBC9)),
+                      iconSize: screenWidth * 0.08,
+                      onPressed: () => (),
+                    )
                   ],
                 ),
                 Divider(

@@ -1,6 +1,4 @@
-import 'package:filmin/screens/busca_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:filmin/screens/editar_descricao_screen.dart';
 
 class CriarListaScreen extends StatefulWidget {
   const CriarListaScreen({super.key});
@@ -10,13 +8,13 @@ class CriarListaScreen extends StatefulWidget {
 }
 
 class _CriarListaScreenState extends State<CriarListaScreen> {
+  final _formKey = GlobalKey<FormState>(); // Chave do formulário
+  final TextEditingController _nomeController = TextEditingController();
+  final TextEditingController _descricaoController = TextEditingController();
   String desc = 'Adicionar descrição...';
 
   @override
   Widget build(BuildContext context) {
-    double alturaTela = MediaQuery.of(context).size.height;
-    double larguraTela = MediaQuery.of(context).size.width;
-
     return Scaffold(
         appBar: AppBar(
             title: const Text(
@@ -40,11 +38,12 @@ class _CriarListaScreenState extends State<CriarListaScreen> {
                 },
               )
             ]),
-        body: Column(children: [
-          const Padding(
-              padding: EdgeInsets.all(15),
-              child: TextField(
-                  decoration: InputDecoration(
+        body: 
+          Padding(
+              padding: const EdgeInsets.all(15),
+              child: Form(key: _formKey,
+          child: Column(children: [TextFormField(controller: _nomeController,
+                  decoration: const InputDecoration(
                 labelText: 'Nome da Lista',
                 labelStyle: TextStyle(color: Color(0xFFAEBBC9)),
                 focusedBorder: UnderlineInputBorder(
@@ -52,67 +51,24 @@ class _CriarListaScreenState extends State<CriarListaScreen> {
                         BorderSide(width: 2.0, color: Color(0xFFAEBBC9))),
                 enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: Color(0xFFAEBBC9), width: 2)),
-              ))),
-          SizedBox(
-              height: alturaTela * 0.11,
-              width: larguraTela,
-              child: TextButton(
-                  style: TextButton.styleFrom(
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.zero, // Sem arredondamento
-                    ),
-                  ),
-                  onPressed: () async {
-                    final novadesc = await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const EditarDescricaoScreen()),
-                    );
-
-                    if (novadesc != null && novadesc.isNotEmpty) {
-                      setState(() {
-                        desc = novadesc;
-                      });
+              )), TextFormField(
+                      controller: _descricaoController,
+                      maxLines: 20, 
+                      keyboardType: TextInputType.multiline, 
+                      style: const TextStyle(color: Color(0xFFAEBBC9)),
+                      cursorColor: const Color(0xFFAEBBC9),
+                      decoration: const InputDecoration(
+                          hintText: 'Adicionar Descrição...',
+                          hintStyle: TextStyle(color: Color(0xFFAEBBC9)),
+                          border: InputBorder.none))
+                          ])
+                        )
+                      )
+                      );
                     }
-                  },
-                  child: Align(
-                      alignment: Alignment.topLeft,
-                      child: Padding(
-                          padding: const EdgeInsets.all(15),
-                          child: Text(desc,
-                              style: const TextStyle(color: Color(0xFFAEBBC9))))))),
-          Expanded(
-              child: Container(
-                  decoration: const BoxDecoration(
-                    border: Border(
-                      top: BorderSide(
-                          width: 0.7,
-                          color: Color(0xFFAEBBC9)), // Borda superior
-                      bottom: BorderSide(
-                          width: 0.7,
-                          color: Color(0xFFAEBBC9)), // Borda inferior
-                    ),
-                  ),
-                  child: TextButton(
-                      style: TextButton.styleFrom(
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.zero, // Sem arredondamento
-                        ),
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const BuscaScreen()),
-                        );
-                      },
-                      child: const Align(
-                          alignment: Alignment.topLeft,
-                          child: Padding(
-                              padding: EdgeInsets.all(15),
-                              child: Text('Adicionar Filmes...',
-                                  style:
-                                      TextStyle(color: Color(0xFFAEBBC9))))))))
-        ]));
-  }
-}
+                  }
+  
+
+
+                    
+                  
