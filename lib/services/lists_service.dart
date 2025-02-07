@@ -50,7 +50,7 @@ class ListsService {
     }
     }
 
-    Future<void> deleteList(String documentId, String nomeLista) async {
+    Future<void> deleteList(String documentId) async {
       final User? user = _auth.currentUser;
       if (user != null) {
         await _firestore

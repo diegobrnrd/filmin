@@ -27,7 +27,6 @@ class _ListasScreenState extends State<ListasScreen> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,18 +52,54 @@ class _ListasScreenState extends State<ListasScreen> {
               : ListView.builder(
                   itemCount: userLists.length,
                   itemBuilder: (context, index) {
-                    return ListTile(
-                      title: Text(userLists[index]['name'], style: const TextStyle(color: Color(0xFFAEBBC9))),
-                      subtitle: Text(userLists[index]['description'], style:  const TextStyle(color: Color.fromARGB(255, 152, 163, 175)),),
-                      leading: IconButton(
-                        color: const Color(0xFFAEBBC9),
-                        icon: const Icon(Icons.edit),
-                        onPressed: () {
-                          Navigator.pop(context); // Retorna à tela anterior
+                    return Dismissible(
+                        key: Key(userLists[index]
+                            ['name']), // Chave única para identificar o item
+                        direction: DismissDirection
+                            .endToStart, // Define a direção do swipe (direita para esquerda)
+                        background: Container(
+                          alignment: Alignment.centerRight,
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          color: const Color.fromARGB(
+                              255, 173, 14, 3), // Cor de fundo ao deslizar
+                          child: const Icon(Icons.delete, color: Colors.white),
+                        ),
+                        onDismissed: (direction) {
+                          setState(() async {
+                            await _listsService
+                                .deleteList(userLists[index]['documentId']);
+                            userLists.removeAt(index); // Remove o item da lista
+                          });
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: const Text('Lista removida'),
+                              action: SnackBarAction(
+                                label: 'Desfazer',
+                                onPressed: () {
+                                  // Implementação para desfazer a remoção
+                                },
+                              ),
+                            ),
+                          );
                         },
-                      ),
-                      onTap: () {},
-                    );
+                        child: ListTile(
+                          title: Text(userLists[index]['name'],
+                              style: const TextStyle(color: Color(0xFFAEBBC9))),
+                          subtitle: Text(
+                            userLists[index]['description'],
+                            style: const TextStyle(
+                                color: Color.fromARGB(255, 152, 163, 175)),
+                          ),
+                          leading: IconButton(
+                            color: const Color(0xFFAEBBC9),
+                            icon: const Icon(Icons.edit),
+                            onPressed: () {
+                              Navigator.pop(context); // Retorna à tela anterior
+                            },
+                          ),
+                          onTap: () {},
+                        ));
                   },
                 ),
       floatingActionButton: FloatingActionButton(
