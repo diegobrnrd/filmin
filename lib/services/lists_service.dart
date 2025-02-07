@@ -48,6 +48,7 @@ class ListsService {
         });
       }
     }
+    }
 
     Future<void> deleteList(String documentId, String nomeLista) async {
       final User? user = _auth.currentUser;
@@ -61,7 +62,7 @@ class ListsService {
       }
     }
 
-    Future<void> deleteFromList(String movieId, String) async {
+    Future<void> deleteFromList(String movieId, String nomeLista) async {
       final User? user = _auth.currentUser;
       if (user != null) {
         final listaQuery = await _firestore
@@ -137,6 +138,7 @@ class ListsService {
             .collection('lists')
             .get();
 
+
         return snapshot.docs.map((doc) {
           return {
             'documentId': doc.id, // ID único da lista
@@ -149,4 +151,4 @@ class ListsService {
       }
     }
   }
-}
+
