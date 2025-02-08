@@ -1,33 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:filmin/services/lists_service.dart';
 
-class CriarListaScreen extends StatefulWidget {
-  const CriarListaScreen({super.key});
+class EditarListaScreen extends StatefulWidget {
+  final String nomeAtual;
+  final String descAtual;
+  const EditarListaScreen({super.key, required this.nomeAtual, required this.descAtual});
 
   @override
-  State<CriarListaScreen> createState() => _CriarListaScreenState();
+  State<EditarListaScreen> createState() => _EditarListaScreenState();
 }
 
-class _CriarListaScreenState extends State<CriarListaScreen> {
+class _EditarListaScreenState extends State<EditarListaScreen> {
   final _formKey = GlobalKey<FormState>(); // Chave do formulário
   final TextEditingController _nomeController = TextEditingController();
   final TextEditingController _descricaoController = TextEditingController();
 
   final ListsService _listsService = ListsService();
-  String desc = 'Adicionar descrição...';
 
-  Future<void> _salvarLista() async {
+   @override
+     void initState() {
+    super.initState();
+    _nomeController.text = widget.nomeAtual; 
+    _descricaoController.text = widget.descAtual;
+  }
+
+  Future<void> _salvarAlteracao() async {
     if (_formKey.currentState!.validate()) {
       String nomeLista = _nomeController.text;
       String descricao = _descricaoController.text;
 
       // Aqui você pode processar os dados (salvar no banco, API, etc.)
-      await _listsService.createList(nomeLista, descricao);
+      await _listsService.updateList(widget.nomeAtual, nomeLista, descricao);
 
       if (!mounted) return;
       // Exemplo de feedback ao usuário
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Lista salva com sucesso!')),
+        const SnackBar(content: Text('Alterações salvas com sucesso!')),
       );
     }
   }
@@ -37,7 +45,7 @@ class _CriarListaScreenState extends State<CriarListaScreen> {
     return Scaffold(
         appBar: AppBar(
             title: const Text(
-              'Nova Lista',
+              'Edição de lista',
               style: TextStyle(color: Color(0xFFAEBBC9)),
             ),
             backgroundColor: const Color(0xFF161E27),
@@ -53,7 +61,7 @@ class _CriarListaScreenState extends State<CriarListaScreen> {
                 icon: const Icon(Icons.check,
                     color: Color(0xFFAEBBC9)), // Ícone de confirmar
                 onPressed: () async {
-                  await _salvarLista();
+                  await _salvarAlteracao();
                   // ignore: use_build_context_synchronously
                   Navigator.pop(context);
                 },
@@ -90,13 +98,13 @@ class _CriarListaScreenState extends State<CriarListaScreen> {
                       style: const TextStyle(color: Color(0xFFAEBBC9)),
                       cursorColor: const Color(0xFFAEBBC9),
                       decoration: const InputDecoration(
-                          hintText: 'Adicionar Descrição...',
+                          hintText: 'Nova Descrição...',
                           hintStyle: TextStyle(color: Color(0xFFAEBBC9)),
                           border: InputBorder.none))
                         ]
+                      )
+                    )
                   )
-                )
-              )
-            );
-          }
-        }
+                );
+              }
+            }

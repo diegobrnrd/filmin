@@ -1,6 +1,7 @@
 import 'package:filmin/helpers/filme.dart';
 import 'package:filmin/helpers/filmes_grid.dart';
 import 'package:filmin/screens/criar_lista_screen.dart';
+import 'package:filmin/screens/editar_lista_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:filmin/services/lists_service.dart';
 
@@ -97,7 +98,10 @@ class _ListasScreenState extends State<ListasScreen> {
                             color: const Color(0xFFAEBBC9),
                             icon: const Icon(Icons.edit),
                             onPressed: () {
-                              Navigator.pop(context); // Retorna à tela anterior
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => EditarListaScreen(nomeAtual: userLists[index]['name'], descAtual: userLists[index]['description'],)),
+                              ); // Retorna à tela anterior
                             },
                           ),
                           onTap: () async {
