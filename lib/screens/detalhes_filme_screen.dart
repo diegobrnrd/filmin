@@ -1,10 +1,10 @@
 import 'package:filmin/screens/escolher_lista.dart';
-import 'package:filmin/services/lists_service.dart';
 import 'package:flutter/material.dart';
 import 'package:filmin/services/favorite_movie_service.dart';
 import 'package:filmin/services/watchlist_service.dart';
 import 'package:filmin/controlador/controlador.dart';
-import 'package:filmin/screens/escrever_critica_screen.dart'; // Ajuste o caminho
+import 'package:filmin/screens/escrever_critica_screen.dart';
+import 'package:filmin/services/watched_service.dart';
 
 class DetalhesFilmeScreen extends StatefulWidget {
   final int movieId;
@@ -59,16 +59,27 @@ class DetalhesFilmeScreenState extends State<DetalhesFilmeScreen> {
   bool isWatched = false;
   bool isFavorite = false;
   bool isWatchLater = false;
+  final WatchedService _watchedService = WatchedService();
   final FavoriteMovieService _favoriteMovieService = FavoriteMovieService();
   final WatchListService _watchListService = WatchListService();
-  final ListsService _listsService = ListsService();
 
   @override
   void initState() {
     super.initState();
     _filmeFuture = Filme.buscarDetalhesFilme(widget.movieId);
+    _checkIfWatched();
     _checkIfFavorite();
     _checkIfInWatchlist();
+  }
+
+  void _checkIfWatched() async {
+    final user = _watchedService.getCurrentUser();
+    if (user != null) {
+      final watchedMovies = await _watchedService.getWatched();
+      setState(() {
+        isWatched = watchedMovies.any((movie) => movie['id'] == widget.movieId);
+      });
+    }
   }
 
   void _checkIfFavorite() async {
@@ -146,10 +157,29 @@ class DetalhesFilmeScreenState extends State<DetalhesFilmeScreen> {
     }
   }
 
-  void _toggleWatched() {
+  void _toggleWatched() async {
     setState(() {
       isWatched = !isWatched;
     });
+
+    final user = _watchedService.getCurrentUser();
+    if (user != null) {
+      if (isWatched) {
+        final movieDetails =
+            await Controlador().buscarDetalhesFilme(widget.movieId);
+        await _watchedService.addToWatched(movieDetails);
+      } else {
+        final watchedMovies = await _watchedService.getWatched();
+        final movieToDelete = watchedMovies.firstWhere(
+          (movie) => movie['id'] == widget.movieId,
+          orElse: () => {},
+        );
+
+        if (movieToDelete.isNotEmpty) {
+          await _watchedService.deleteFromWatched(movieToDelete['documentId']);
+        }
+      }
+    }
   }
 
   void navegarParaTelaCritica(Filme filme) {
@@ -333,13 +363,14 @@ class DetalhesFilmeScreenState extends State<DetalhesFilmeScreen> {
                       icon: const Icon(Icons.library_add,
                           color: Color(0xFFAEBBC9)),
                       iconSize: screenWidth * 0.08,
-                      onPressed: () async{
-                        final movieDetails = await Controlador().buscarDetalhesFilme(widget.movieId);
+                      onPressed: () async {
+                        final movieDetails = await Controlador()
+                            .buscarDetalhesFilme(widget.movieId);
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => EscolherListaScreen(
-                                   movie: movieDetails,
+                                    movie: movieDetails,
                                   )),
                         );
                       },
