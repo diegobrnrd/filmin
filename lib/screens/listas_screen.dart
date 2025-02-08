@@ -1,3 +1,5 @@
+import 'package:filmin/helpers/filme.dart';
+import 'package:filmin/helpers/filmes_grid.dart';
 import 'package:filmin/screens/criar_lista_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:filmin/services/lists_service.dart';
@@ -98,7 +100,23 @@ class _ListasScreenState extends State<ListasScreen> {
                               Navigator.pop(context); // Retorna à tela anterior
                             },
                           ),
-                          onTap: () {},
+                          onTap: () async {
+                            final listMovies =
+                            await ListsService().getList(userLists[index]['name']);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => FilmeGrid(
+                                    tituloAppBar: userLists[index]['name'],
+                                    filmes: listMovies
+                                        .map((movie) => FilmeWidget(
+                                              posterPath: movie['poster_path'] ?? '',
+                                            ))
+                                        .toList(),
+                                  ),
+                                ),
+                              );
+                          },
                         ));
                   },
                 ),
