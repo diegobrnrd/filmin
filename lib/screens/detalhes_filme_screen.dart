@@ -1,3 +1,5 @@
+import 'package:filmin/screens/escolher_lista.dart';
+import 'package:filmin/services/lists_service.dart';
 import 'package:flutter/material.dart';
 import 'package:filmin/services/favorite_movie_service.dart';
 import 'package:filmin/services/watchlist_service.dart';
@@ -59,6 +61,7 @@ class DetalhesFilmeScreenState extends State<DetalhesFilmeScreen> {
   bool isWatchLater = false;
   final FavoriteMovieService _favoriteMovieService = FavoriteMovieService();
   final WatchListService _watchListService = WatchListService();
+  final ListsService _listsService = ListsService();
 
   @override
   void initState() {
@@ -330,7 +333,16 @@ class DetalhesFilmeScreenState extends State<DetalhesFilmeScreen> {
                       icon: const Icon(Icons.library_add,
                           color: Color(0xFFAEBBC9)),
                       iconSize: screenWidth * 0.08,
-                      onPressed: () => (),
+                      onPressed: () async{
+                        final movieDetails = await Controlador().buscarDetalhesFilme(widget.movieId);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => EscolherListaScreen(
+                                   movie: movieDetails,
+                                  )),
+                        );
+                      },
                     )
                   ],
                 ),
