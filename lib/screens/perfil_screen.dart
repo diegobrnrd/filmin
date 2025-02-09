@@ -5,66 +5,101 @@ import 'package:filmin/screens/criticas_screen.dart';
 import 'package:filmin/services/watched_service.dart';
 import 'package:filmin/services/favorite_movie_service.dart';
 import 'package:filmin/services/watchlist_service.dart';
+import 'package:filmin/services/auth_service.dart';
 
-class Perfil extends StatelessWidget {
+class Perfil extends StatefulWidget {
   const Perfil({super.key});
+
+  @override
+  PerfilState createState() => PerfilState();
+}
+
+class PerfilState extends State<Perfil> {
+  AuthService autoService = AuthService();
+
+  String? _nome;
+  String? _sobrenome;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Future<void> _fetchUserData() async {
+    _nome = await autoService.getUserName();
+    _sobrenome = await autoService.getUserSurname();
+  }
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Perfil',
-          style: TextStyle(
-              color: const Color(0xFFAEBBC9), fontSize: screenHeight * 0.025),
-        ),
-        backgroundColor: const Color(0xFF161E27),
-        iconTheme: const IconThemeData(
-          color: Color(0xFFAEBBC9),
-        ),
-      ),
-      body: Column(
-        children: [
-          Divider(
-            color: const Color(0xFF1E2936),
-            height: screenHeight * 0.001,
-            thickness: screenHeight * 0.002,
-          ),
-          SizedBox(height: screenHeight * 0.05),
-          CircleAvatar(
-            radius: screenWidth * 0.13,
-            backgroundImage: const NetworkImage('URL_DA_FOTO_DO_USUARIO'),
-          ),
-          SizedBox(height: screenHeight * 0.05),
-          Divider(
-            color: const Color(0xFF1E2936),
-            height: screenHeight * 0.001,
-            thickness: screenHeight * 0.002,
-          ),
-          SizedBox(height: screenHeight * 0.02),
-          Expanded(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  _criarBotao(context, 'Filmes', 'Filmes', 0, screenHeight),
-                  SizedBox(height: screenHeight * 0.01),
-                  _criarBotao(context, 'Críticas', 'Crítica', 0, screenHeight),
-                  SizedBox(height: screenHeight * 0.01),
-                  _criarBotao(context, 'Quero Assistir', 'Quero Assistir', 0,
-                      screenHeight),
-                  SizedBox(height: screenHeight * 0.01),
-                  _criarBotao(
-                      context, 'Favoritos', 'Favoritos', 0, screenHeight),
-                  SizedBox(height: screenHeight * 0.01),
-                ],
+    return FutureBuilder(
+      future: _fetchUserData(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(
+                '$_nome $_sobrenome',
+                style: TextStyle(
+                    color: const Color(0xFFAEBBC9),
+                    fontSize: screenHeight * 0.025),
+              ),
+              backgroundColor: const Color(0xFF161E27),
+              iconTheme: const IconThemeData(
+                color: Color(0xFFAEBBC9),
               ),
             ),
-          ),
-        ],
-      ),
+            body: Column(
+              children: [
+                Divider(
+                  color: const Color(0xFF1E2936),
+                  height: screenHeight * 0.001,
+                  thickness: screenHeight * 0.002,
+                ),
+                SizedBox(height: screenHeight * 0.05),
+                CircleAvatar(
+                  radius: screenWidth * 0.13,
+                  backgroundImage: const NetworkImage('URL_DA_FOTO_DO_USUARIO'),
+                ),
+                SizedBox(height: screenHeight * 0.05),
+                Divider(
+                  color: const Color(0xFF1E2936),
+                  height: screenHeight * 0.001,
+                  thickness: screenHeight * 0.002,
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                Expanded(
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        _criarBotao(
+                            context, 'Filmes', 'Filmes', 0, screenHeight),
+                        SizedBox(height: screenHeight * 0.01),
+                        _criarBotao(
+                            context, 'Críticas', 'Crítica', 0, screenHeight),
+                        SizedBox(height: screenHeight * 0.01),
+                        _criarBotao(context, 'Quero Assistir', 'Quero Assistir',
+                            0, screenHeight),
+                        SizedBox(height: screenHeight * 0.01),
+                        _criarBotao(
+                            context, 'Favoritos', 'Favoritos', 0, screenHeight),
+                        SizedBox(height: screenHeight * 0.01),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+      },
     );
   }
 

@@ -3,7 +3,6 @@ import 'package:filmin/screens/alterar_email_screen.dart';
 import 'package:filmin/screens/alterar_senha_screen.dart';
 import 'package:filmin/screens/alterar_nome_sobrenome_screen.dart';
 import 'package:filmin/screens/deletar_conta_screen.dart';
-import 'package:filmin/screens/atualizar_foto_de_perfil_screen.dart';
 
 class ConfiguracoesScreen extends StatelessWidget {
   const ConfiguracoesScreen({super.key});
@@ -84,23 +83,6 @@ class ConfiguracoesScreen extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                               builder: (context) => const AlterarSenhaScreen()),
-                        );
-                      },
-                    ),
-                  ),
-                  SizedBox(height: screenHeight * 0.007),
-                  Align(
-                    alignment: Alignment.center,
-                    child: _buildButton(
-                      context,
-                      'Atualizar foto de perfil',
-                      backgroundColor: const Color(0xFF1E2936),
-                      textColor: const Color(0xFF788EA5),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const AtualizarFotoDePerfilScreen()),
                         );
                       },
                     ),

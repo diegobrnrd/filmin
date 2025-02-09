@@ -32,12 +32,10 @@ class AuthService {
     required String username,
   }) async {
     try {
-      bool usernameExists = await _checkUsernameExists(username);
-      if (usernameExists) {
-        return 'Nome de usuário já em uso';
-      }
+      String normalizedUsername = username.toLowerCase();
 
-      UserCredential userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
+      UserCredential userCredential =
+          await _firebaseAuth.createUserWithEmailAndPassword(
         email: email,
         password: senha,
       );
@@ -48,7 +46,7 @@ class AuthService {
         'uid': uid,
         'nome': nome,
         'sobrenome': sobrenome,
-        'username': username,
+        'username': normalizedUsername,
         'email': email,
         'createdAt': FieldValue.serverTimestamp(),
       });
@@ -62,19 +60,18 @@ class AuthService {
           return 'E-mail inválido';
         case 'missing-password':
           return 'Senha não informada';
-        case 'weak-password':
-          return 'Senha fraca';
+        default:
+          return 'Erro ao criar conta: ${e.message}';
       }
-      return e.code;
     } catch (e) {
       return 'Erro inesperado: $e';
     }
   }
 
-  Future<bool> _checkUsernameExists(String username) async {
+  Future<bool> checkUsernameExists(String username) async {
     QuerySnapshot query = await _firestore
         .collection('users')
-        .where('username', isEqualTo: username)
+        .where('username', isEqualTo: username.toLowerCase())
         .get();
     return query.docs.isNotEmpty;
   }
@@ -97,5 +94,41 @@ class AuthService {
       return e.code;
     }
     return null;
+  }
+
+  Future<String?> getUserName() async {
+    try {
+      DocumentSnapshot userDoc = await _firestore
+          .collection('users')
+          .doc(_firebaseAuth.currentUser!.uid)
+          .get();
+      return userDoc['nome'];
+    } catch (e) {
+      return 'Erro ao obter o nome do usuário: $e';
+    }
+  }
+
+  Future<String?> getUserSurname() async {
+    try {
+      DocumentSnapshot userDoc = await _firestore
+          .collection('users')
+          .doc(_firebaseAuth.currentUser!.uid)
+          .get();
+      return userDoc['sobrenome'];
+    } catch (e) {
+      return 'Erro ao obter o sobrenome do usuário: $e';
+    }
+  }
+
+  Future<String?> getUserUsername() async {
+    try {
+      DocumentSnapshot userDoc = await _firestore
+          .collection('users')
+          .doc(_firebaseAuth.currentUser!.uid)
+          .get();
+      return userDoc['username'];
+    } catch (e) {
+      return 'Erro ao obter o nome de usuário: $e';
+    }
   }
 }

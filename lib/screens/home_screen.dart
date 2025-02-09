@@ -22,6 +22,23 @@ class HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
   AuthService autoService = AuthService();
 
+  String? _nome;
+  String? _sobrenome;
+  String? _nomeUsuario;
+
+  Future<void> _fetchUserData() async {
+    _nome = await autoService.getUserName();
+    _sobrenome = await autoService.getUserSurname();
+    _nomeUsuario = await autoService.getUserUsername();
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserData();
+  }
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -81,7 +98,7 @@ class HomeScreenState extends State<HomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Nome Sobrenome',
+                        '$_nome $_sobrenome',
                         style: TextStyle(
                           color: const Color(0xFFAEBBC9),
                           fontSize: screenHeight * 0.022,
@@ -89,7 +106,7 @@ class HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       Text(
-                        '@nomeusuario',
+                        '@$_nomeUsuario',
                         style: TextStyle(
                           color: const Color(0xFFAEBBC9),
                           fontSize: screenHeight * 0.02,
@@ -142,7 +159,25 @@ class HomeScreenState extends State<HomeScreen> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const Perfil()),
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation, secondaryAnimation) =>
+                        Perfil(),
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                      const begin = Offset(0.0, 1.0);
+                      const end = Offset.zero;
+                      const curve = Curves.easeInOut;
+
+                      var tween = Tween(begin: begin, end: end)
+                          .chain(CurveTween(curve: curve));
+                      var offsetAnimation = animation.drive(tween);
+
+                      return SlideTransition(
+                        position: offsetAnimation,
+                        child: child,
+                      );
+                    },
+                  ),
                 );
               },
             ),
@@ -330,29 +365,6 @@ class HomeScreenState extends State<HomeScreen> {
           ),
         )
       ],
-    );
-  }
-
-  List<FilmeWidget> _mockFilmes() {
-    return List.generate(
-      0,
-      (index) => FilmeWidget(
-        posterPath: '/path/to/poster${index + 1}.jpg',
-      ),
-    );
-  }
-}
-
-class CinemasScreen extends StatelessWidget {
-  const CinemasScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Text(
-        'Cinemas',
-        style: TextStyle(color: Color(0xFFAEBBC9)),
-      ),
     );
   }
 }

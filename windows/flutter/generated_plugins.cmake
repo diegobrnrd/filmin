@@ -4,9 +4,10 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   cloud_firestore
+  file_selector_windows
   firebase_auth
   firebase_core
-  pasteboard
+  firebase_storage
   url_launcher_windows
 )
 

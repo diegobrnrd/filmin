@@ -1,7 +1,28 @@
+/*
 import 'package:flutter/material.dart';
+import 'package:filmin/services/auth_service.dart';
 
-class AtualizarFotoDePerfilScreen extends StatelessWidget {
+class AtualizarFotoDePerfilScreen extends StatefulWidget {
   const AtualizarFotoDePerfilScreen({super.key});
+
+  @override
+  AtualizarFotoDePerfilScreenState createState() => AtualizarFotoDePerfilScreenState();
+}
+
+class AtualizarFotoDePerfilScreenState extends State<AtualizarFotoDePerfilScreen> {
+  final AuthService authService = AuthService();
+
+  void uploadImage() async {
+    String? imageUrl = await authService.uploadProfileImage();
+    if (imageUrl != null) {
+      print("Imagem enviada com sucesso: $imageUrl");
+    }
+  }
+
+  void deleteImage() async {
+    await authService.deleteProfileImage();
+    print("Imagem deletada com sucesso");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +63,7 @@ class AtualizarFotoDePerfilScreen extends StatelessWidget {
                     'Atualizar foto',
                     backgroundColor: const Color(0xFF1E2936),
                     textColor: const Color(0xFF788EA5),
-                    onPressed: () {},
+                    onPressed: uploadImage,
                   ),
                   SizedBox(height: screenHeight * 0.01),
                   _buildButton(
@@ -50,7 +71,7 @@ class AtualizarFotoDePerfilScreen extends StatelessWidget {
                     'Deletar foto',
                     backgroundColor: const Color(0xFF1E2936),
                     textColor: const Color(0xFF788EA5),
-                    onPressed: () {},
+                    onPressed: deleteImage,
                   ),
                 ],
               ),
@@ -81,3 +102,4 @@ class AtualizarFotoDePerfilScreen extends StatelessWidget {
     );
   }
 }
+*/
