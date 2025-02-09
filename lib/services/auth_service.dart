@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<String?> signInWithEmailAndPassword(
       {required String email, required String senha}) async {
@@ -22,25 +24,59 @@ class AuthService {
     return null;
   }
 
-  Future<String?> signUpWithEmailAndPassword(
-      {required String email, required String senha}) async {
+  Future<String?> signUpWithEmailAndPassword({
+    required String email,
+    required String senha,
+    required String nome,
+    required String sobrenome,
+    required String username,
+  }) async {
     try {
-      await _firebaseAuth.createUserWithEmailAndPassword(
-          email: email, password: senha);
+      bool usernameExists = await _checkUsernameExists(username);
+      if (usernameExists) {
+        return 'Nome de usuário já em uso';
+      }
+
+      UserCredential userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
+        email: email,
+        password: senha,
+      );
+
+      String uid = userCredential.user!.uid;
+
+      await _firestore.collection('users').doc(uid).set({
+        'uid': uid,
+        'nome': nome,
+        'sobrenome': sobrenome,
+        'username': username,
+        'email': email,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+
+      return null;
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'email-already-in-use':
-          return 'e-mail já cadastrado';
+          return 'E-mail já cadastrado';
         case 'invalid-email':
-          return 'e-mail inválido';
+          return 'E-mail inválido';
         case 'missing-password':
-          return 'senha não informada';
+          return 'Senha não informada';
         case 'weak-password':
-          return 'senha fraca';
+          return 'Senha fraca';
       }
       return e.code;
+    } catch (e) {
+      return 'Erro inesperado: $e';
     }
-    return null;
+  }
+
+  Future<bool> _checkUsernameExists(String username) async {
+    QuerySnapshot query = await _firestore
+        .collection('users')
+        .where('username', isEqualTo: username)
+        .get();
+    return query.docs.isNotEmpty;
   }
 
   Future<String?> signOut() async {

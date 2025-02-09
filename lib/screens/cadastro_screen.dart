@@ -14,6 +14,9 @@ class CadastroScreenState extends State<CadastroScreen> {
   bool _isPasswordHidden = true;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _nomeController = TextEditingController();
+  final TextEditingController _sobrenomeController = TextEditingController();
+  final TextEditingController _nomeDeUsuarioController = TextEditingController();
 
   void _togglePasswordVisibility() {
     setState(() {
@@ -66,6 +69,33 @@ class CadastroScreenState extends State<CadastroScreen> {
             ),
             SizedBox(height: screenHeight * 0.011),
             _buildTextField(
+              'Nome',
+              controller: _nomeController,
+              fillColor: const Color(0xFF1E2936),
+              textColor: const Color(0xFF788EA5),
+              focusedTextColor: const Color(0xFF208BFE),
+              inputTextColor: const Color(0xFFF1F3F5),
+            ),
+            SizedBox(height: screenHeight * 0.011),
+            _buildTextField(
+              'Sobrenome',
+              controller: _sobrenomeController,
+              fillColor: const Color(0xFF1E2936),
+              textColor: const Color(0xFF788EA5),
+              focusedTextColor: const Color(0xFF208BFE),
+              inputTextColor: const Color(0xFFF1F3F5),
+            ),
+            SizedBox(height: screenHeight * 0.011),
+            _buildTextField(
+              '@nome de usuário',
+              controller: _nomeDeUsuarioController,
+              fillColor: const Color(0xFF1E2936),
+              textColor: const Color(0xFF788EA5),
+              focusedTextColor: const Color(0xFF208BFE),
+              inputTextColor: const Color(0xFFF1F3F5),
+            ),
+            SizedBox(height: screenHeight * 0.011),
+            _buildTextField(
               'Senha',
               controller: _passwordController,
               obscureText: _isPasswordHidden,
@@ -91,7 +121,10 @@ class CadastroScreenState extends State<CadastroScreen> {
                 autoService
                     .signUpWithEmailAndPassword(
                         email: _emailController.text,
-                        senha: _passwordController.text)
+                        senha: _passwordController.text,
+                        nome: _nomeController.text,
+                        sobrenome: _sobrenomeController.text,
+                        username: _nomeDeUsuarioController.text)
                     .then((String? erro) {
                   if (erro != null) {
                     final snackBar = SnackBar(

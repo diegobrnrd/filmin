@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:filmin/screens/alterar_email_screen.dart';
 import 'package:filmin/screens/alterar_senha_screen.dart';
+import 'package:filmin/screens/alterar_nome_sobrenome_screen.dart';
+import 'package:filmin/screens/deletar_conta_screen.dart';
+import 'package:filmin/screens/atualizar_foto_de_perfil_screen.dart';
 
 class ConfiguracoesScreen extends StatelessWidget {
   const ConfiguracoesScreen({super.key});
@@ -20,18 +23,6 @@ class ConfiguracoesScreen extends StatelessWidget {
         iconTheme: const IconThemeData(
           color: Color(0xFFAEBBC9),
         ),
-        leading: IconButton(
-          icon: const Icon(Icons.close),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.check),
-            onPressed: () {},
-          ),
-        ],
       ),
       body: Column(
         children: [
@@ -46,27 +37,29 @@ class ConfiguracoesScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _buildTextField(
-                    'Nome',
-                    fillColor: const Color(0xFF1E2936),
-                    textColor: const Color(0xFF788EA5),
-                    focusedTextColor: const Color(0xFF208BFE),
-                    inputTextColor: const Color(0xFFF1F3F5),
-                  ),
-                  SizedBox(height: screenHeight * 0.01),
-                  _buildTextField(
-                    'Sobrenome',
-                    fillColor: const Color(0xFF1E2936),
-                    textColor: const Color(0xFF788EA5),
-                    focusedTextColor: const Color(0xFF208BFE),
-                    inputTextColor: const Color(0xFFF1F3F5),
-                  ),
                   SizedBox(height: screenHeight * 0.03),
                   Align(
                     alignment: Alignment.center,
                     child: _buildButton(
                       context,
-                      'Alterar Email',
+                      'Alterar nome e sobrenome',
+                      backgroundColor: const Color(0xFF1E2936),
+                      textColor: const Color(0xFF788EA5),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const AlterarNomeSobrenomeScreen()),
+                        );
+                      },
+                    ),
+                  ),
+                  SizedBox(height: screenHeight * 0.007),
+                  Align(
+                    alignment: Alignment.center,
+                    child: _buildButton(
+                      context,
+                      'Alterar email',
                       backgroundColor: const Color(0xFF1E2936),
                       textColor: const Color(0xFF788EA5),
                       onPressed: () {
@@ -83,7 +76,7 @@ class ConfiguracoesScreen extends StatelessWidget {
                     alignment: Alignment.center,
                     child: _buildButton(
                       context,
-                      'Alterar Senha',
+                      'Alterar senha',
                       backgroundColor: const Color(0xFF1E2936),
                       textColor: const Color(0xFF788EA5),
                       onPressed: () {
@@ -95,49 +88,45 @@ class ConfiguracoesScreen extends StatelessWidget {
                       },
                     ),
                   ),
+                  SizedBox(height: screenHeight * 0.007),
+                  Align(
+                    alignment: Alignment.center,
+                    child: _buildButton(
+                      context,
+                      'Atualizar foto de perfil',
+                      backgroundColor: const Color(0xFF1E2936),
+                      textColor: const Color(0xFF788EA5),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const AtualizarFotoDePerfilScreen()),
+                        );
+                      },
+                    ),
+                  ),
+                  SizedBox(height: screenHeight * 0.007),
+                  Align(
+                    alignment: Alignment.center,
+                    child: _buildButton(
+                      context,
+                      'Deletar conta',
+                      backgroundColor: const Color(0xFF1E2936),
+                      textColor: const Color(0xFF788EA5),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const DeletarContaScreen()),
+                        );
+                      },
+                    ),
+                  ),
                 ],
               ),
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildTextField(String label,
-      {bool obscureText = false,
-      Color fillColor = Colors.transparent,
-      Color textColor = Colors.black,
-      Color focusedTextColor = Colors.black,
-      Color inputTextColor = Colors.black,
-      Widget? suffixIcon}) {
-    return Focus(
-      onFocusChange: (hasFocus) {
-        if (hasFocus) {}
-      },
-      child: Builder(
-        builder: (context) {
-          final isFocused = Focus.of(context).hasFocus;
-          return TextFormField(
-            decoration: InputDecoration(
-              labelText: label,
-              labelStyle:
-                  TextStyle(color: isFocused ? focusedTextColor : textColor),
-              border: const OutlineInputBorder(),
-              filled: true,
-              fillColor: fillColor,
-              enabledBorder: const OutlineInputBorder(
-                borderSide: BorderSide(color: Color(0xFF2E4052)),
-              ),
-              focusedBorder: const OutlineInputBorder(
-                borderSide: BorderSide(color: Color(0xFF208BFE)),
-              ),
-              suffixIcon: suffixIcon,
-            ),
-            obscureText: obscureText,
-            style: TextStyle(color: inputTextColor),
-          );
-        },
       ),
     );
   }
