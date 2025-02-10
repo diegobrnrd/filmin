@@ -131,4 +131,26 @@ class AuthService {
       return 'Erro ao obter o nome de usuário: $e';
     }
   }
+
+  Future<String?> updateUserNameAndSurname(
+      {String? nome, String? sobrenome}) async {
+    try {
+      Map<String, dynamic> updateData = {};
+      if (nome != '') {
+        updateData['nome'] = nome;
+      }
+      if (sobrenome != '') {
+        updateData['sobrenome'] = sobrenome;
+      }
+
+      await _firestore
+          .collection('users')
+          .doc(_firebaseAuth.currentUser!.uid)
+          .update(updateData);
+
+      return null;
+    } catch (e) {
+      return 'Erro ao atualizar nome e/ou sobrenome: $e';
+    }
+  }
 }

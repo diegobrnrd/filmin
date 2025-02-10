@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:filmin/services/auth_service.dart';
 
 class AlterarNomeSobrenomeScreen extends StatelessWidget {
   const AlterarNomeSobrenomeScreen({super.key});
@@ -7,6 +8,10 @@ class AlterarNomeSobrenomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+    final TextEditingController nomeController = TextEditingController();
+    final TextEditingController sobrenomeController = TextEditingController();
+    final AuthService authService = AuthService();
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -34,6 +39,7 @@ class AlterarNomeSobrenomeScreen extends StatelessWidget {
                 children: [
                   _buildTextField(
                     'Nome',
+                    controller: nomeController,
                     fillColor: const Color(0xFF1E2936),
                     textColor: const Color(0xFF788EA5),
                     focusedTextColor: const Color(0xFF208BFE),
@@ -42,6 +48,7 @@ class AlterarNomeSobrenomeScreen extends StatelessWidget {
                   SizedBox(height: screenHeight * 0.01),
                   _buildTextField(
                     'Sobrenome',
+                    controller: sobrenomeController,
                     fillColor: const Color(0xFF1E2936),
                     textColor: const Color(0xFF788EA5),
                     focusedTextColor: const Color(0xFF208BFE),
@@ -53,7 +60,50 @@ class AlterarNomeSobrenomeScreen extends StatelessWidget {
                     'Salvar Alterações',
                     backgroundColor: const Color(0xFF208BFE),
                     textColor: const Color(0xFFF1F3F5),
-                    onPressed: () {},
+                    onPressed: () async {
+                      String? nome = nomeController.text;
+                      String? sobrenome = sobrenomeController.text;
+                      if (nome.isEmpty && sobrenome.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Nome e sobrenome vazios.',
+                              style: const TextStyle(
+                                  color: Color(0xFFF1F3F5)),
+                            ),
+                            backgroundColor:
+                                const Color(0xFFF52958),
+                          ),
+                        );
+                        return;
+                      }
+                      String? result =
+                          await authService.updateUserNameAndSurname(
+                        nome: nome,
+                        sobrenome: sobrenome,
+                      );
+                      if (result == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Alterações salvas.',
+                              style: const TextStyle(color: Color(0xFFF1F3F5)),
+                            ),
+                            backgroundColor: const Color(0xFF208BFE),
+                          ),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              result,
+                              style: const TextStyle(color: Color(0xFFF1F3F5)),
+                            ),
+                            backgroundColor: const Color(0xFFF52958),
+                          ),
+                        );
+                      }
+                    },
                   ),
                 ],
               ),
@@ -65,12 +115,13 @@ class AlterarNomeSobrenomeScreen extends StatelessWidget {
   }
 
   Widget _buildTextField(String label,
-      {bool obscureText = false,
-        Color fillColor = Colors.transparent,
-        Color textColor = Colors.black,
-        Color focusedTextColor = Colors.black,
-        Color inputTextColor = Colors.black,
-        Widget? suffixIcon}) {
+      {required TextEditingController controller,
+      bool obscureText = false,
+      Color fillColor = Colors.transparent,
+      Color textColor = Colors.black,
+      Color focusedTextColor = Colors.black,
+      Color inputTextColor = Colors.black,
+      Widget? suffixIcon}) {
     return Focus(
       onFocusChange: (hasFocus) {
         if (hasFocus) {}
@@ -79,10 +130,11 @@ class AlterarNomeSobrenomeScreen extends StatelessWidget {
         builder: (context) {
           final isFocused = Focus.of(context).hasFocus;
           return TextFormField(
+            controller: controller,
             decoration: InputDecoration(
               labelText: label,
               labelStyle:
-              TextStyle(color: isFocused ? focusedTextColor : textColor),
+                  TextStyle(color: isFocused ? focusedTextColor : textColor),
               border: const OutlineInputBorder(),
               filled: true,
               fillColor: fillColor,
@@ -104,8 +156,8 @@ class AlterarNomeSobrenomeScreen extends StatelessWidget {
 
   Widget _buildButton(BuildContext context, String text,
       {required Color backgroundColor,
-        required Color textColor,
-        required VoidCallback onPressed}) {
+      required Color textColor,
+      required VoidCallback onPressed}) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     return SizedBox(

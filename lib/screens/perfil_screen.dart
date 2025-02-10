@@ -38,9 +38,15 @@ class PerfilState extends State<Perfil> {
       future: _fetchUserData(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return Scaffold(
+            backgroundColor: const Color(0xFF161E27), // Fundo escuro
+            body: Center(child: CircularProgressIndicator()),
+          );
         } else if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
+          return Scaffold(
+            backgroundColor: const Color(0xFF161E27), // Fundo escuro
+            body: Center(child: Text('Error: ${snapshot.error}')),
+          );
         } else {
           return Scaffold(
             appBar: AppBar(
@@ -160,16 +166,6 @@ class PerfilState extends State<Perfil> {
               ),
             ),
           );
-        } else {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => FilmeGrid(
-                tituloAppBar: tituloAppBar,
-                filmes: _mockFilmes(),
-              ),
-            ),
-          );
         }
       },
       style: TextButton.styleFrom(
@@ -195,12 +191,4 @@ class PerfilState extends State<Perfil> {
     );
   }
 
-  List<FilmeWidget> _mockFilmes() {
-    return List.generate(
-      0,
-      (index) => FilmeWidget(
-        posterPath: '/path/to/poster${index + 1}.jpg',
-      ),
-    );
-  }
 }
