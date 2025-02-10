@@ -1,4 +1,4 @@
-import 'package:filmin/screens/cadastro_2_screen.dart';
+import 'package:filmin/screens/cadastro_1_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:filmin/screens/redefinir_senha_screen.dart';
 import 'package:filmin/screens/home_screen.dart';
@@ -121,7 +121,7 @@ class LoginScreenState extends State<LoginScreen> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Cadastro2Screen()),
+                  MaterialPageRoute(builder: (context) => Cadastro1Screen()),
                 );
               },
             ),

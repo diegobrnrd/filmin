@@ -253,7 +253,16 @@ class AuthService {
       await user.updatePassword(newPassword);
       return null;
     } on FirebaseAuthException catch (e) {
-      return 'erro ao atualizar senha: ${e.message}';
+      switch (e.code) {
+        case 'invalid-credential':
+          return 'senha inválida';
+        case 'missing-password':
+          return 'senha não informada';
+        default:
+          return 'erro ao atualizar o email: ${e.message}';
+      }
+    } catch (e) {
+      return 'erro inesperado: $e';
     }
   }
 }
