@@ -25,7 +25,7 @@ class ConfiguracoesScreen extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            'Configurações de Perfil',
+            'Configurações de perfil',
             style: TextStyle(
                 color: const Color(0xFFAEBBC9), fontSize: screenHeight * 0.025),
           ),
