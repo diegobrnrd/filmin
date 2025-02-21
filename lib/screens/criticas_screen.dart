@@ -82,6 +82,9 @@ class CriticasScreen extends StatefulWidget {
                 const FilmeWidget(
                   posterPath: '',
                   movieId: 0, // TODO: 0 por enquanto
+                  runtime: 0, // TODO: 0 por enquanto
+                  releaseDate: '', // TODO: '' por enquanto
+                  dateAdded: null, // TODO: '' por enquanto
                 ),
                 const SizedBox(
                   width: 20,

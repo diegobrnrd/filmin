@@ -116,6 +116,9 @@ class _ListasScreenState extends State<ListasScreen> {
                                         .map((movie) => FilmeWidget(
                                               posterPath: movie['poster_path'] ?? '',
                                               movieId: movie['id'],
+                                              runtime: movie['runtime'],
+                                              releaseDate: movie['release_date'],
+                                              dateAdded: movie['dateAdded'],
                                             ))
                                         .toList(),
                                   ),

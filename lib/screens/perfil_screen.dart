@@ -132,6 +132,9 @@ class PerfilState extends State<Perfil> {
                     .map((movie) => FilmeWidget(
                           posterPath: movie['poster_path'] ?? '',
                           movieId: movie['id'],
+                          runtime: movie['runtime'],
+                          releaseDate: movie['release_date'],
+                          dateAdded: movie['dateAdded'],
                         ))
                     .toList(),
               ),
@@ -148,6 +151,9 @@ class PerfilState extends State<Perfil> {
                     .map((movie) => FilmeWidget(
                           posterPath: movie['poster_path'] ?? '',
                           movieId: movie['id'],
+                          runtime: movie['runtime'],
+                          releaseDate: movie['release_date'],
+                          dateAdded: movie['dateAdded'],
                         ))
                     .toList(),
               ),
@@ -164,6 +170,9 @@ class PerfilState extends State<Perfil> {
                     .map((movie) => FilmeWidget(
                           posterPath: movie['poster_path'] ?? '',
                           movieId: movie['id'],
+                          runtime: movie['runtime'],
+                          releaseDate: movie['release_date'],
+                          dateAdded: movie['dateAdded'],
                         ))
                     .toList(),
               ),

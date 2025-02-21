@@ -1,11 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:filmin/screens/detalhes_filme_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FilmeWidget extends StatelessWidget {
   final String posterPath;
   final int movieId;
+  final int runtime;
+  final String releaseDate;
+  final Timestamp? dateAdded; // Change to Timestamp
 
-  const FilmeWidget({super.key, required this.posterPath, required this.movieId});
+  const FilmeWidget({
+    super.key,
+    required this.posterPath,
+    required this.movieId,
+    required this.runtime,
+    required this.releaseDate,
+    required this.dateAdded, // Change to Timestamp
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -183,6 +183,9 @@ class HomeScreenState extends State<HomeScreen> {
                           .map((movie) => FilmeWidget(
                                 posterPath: movie['poster_path'] ?? '',
                                 movieId: movie['id'],
+                                runtime: movie['runtime'],
+                                releaseDate: movie['release_date'],
+                                dateAdded: movie['dateAdded'],
                               ))
                           .toList(),
                     ),
@@ -342,6 +345,9 @@ class HomeScreenState extends State<HomeScreen> {
                   child: const FilmeWidget(
                     posterPath: '',
                     movieId: 0, // TODO: 0 enquanto não se tem a busca na API
+                    runtime: 0, // TODO: 0 enquanto não se tem a busca na API
+                    releaseDate: '', // TODO: '' enquanto não se tem a busca na API
+                    dateAdded: null, // TODO: null enquanto não se tem a busca na API
                   ),
                 );
               },
