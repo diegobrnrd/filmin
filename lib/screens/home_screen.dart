@@ -182,6 +182,7 @@ class HomeScreenState extends State<HomeScreen> {
                       filmes: watchlist
                           .map((movie) => FilmeWidget(
                                 posterPath: movie['poster_path'] ?? '',
+                                movieId: movie['id'],
                               ))
                           .toList(),
                     ),
@@ -340,6 +341,7 @@ class HomeScreenState extends State<HomeScreen> {
                       EdgeInsets.symmetric(horizontal: screenHeight * 0.005),
                   child: const FilmeWidget(
                     posterPath: '',
+                    movieId: 0, // TODO: 0 enquanto não se tem a busca na API
                   ),
                 );
               },

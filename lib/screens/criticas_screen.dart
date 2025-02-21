@@ -81,6 +81,7 @@ class CriticasScreen extends StatefulWidget {
               children: [
                 const FilmeWidget(
                   posterPath: '',
+                  movieId: 0, // TODO: 0 por enquanto
                 ),
                 const SizedBox(
                   width: 20,

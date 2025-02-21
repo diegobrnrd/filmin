@@ -131,6 +131,7 @@ class PerfilState extends State<Perfil> {
                 filmes: favoriteMovies
                     .map((movie) => FilmeWidget(
                           posterPath: movie['poster_path'] ?? '',
+                          movieId: movie['id'],
                         ))
                     .toList(),
               ),
@@ -146,6 +147,7 @@ class PerfilState extends State<Perfil> {
                 filmes: watchlist
                     .map((movie) => FilmeWidget(
                           posterPath: movie['poster_path'] ?? '',
+                          movieId: movie['id'],
                         ))
                     .toList(),
               ),
@@ -161,6 +163,7 @@ class PerfilState extends State<Perfil> {
                 filmes: watched
                     .map((movie) => FilmeWidget(
                           posterPath: movie['poster_path'] ?? '',
+                          movieId: movie['id'],
                         ))
                     .toList(),
               ),
