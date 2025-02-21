@@ -17,7 +17,8 @@ class TelaMapaState extends State<TelaMapa> {
   final TextEditingController _cityController = TextEditingController();
   bool _isLoading = false;
   final Map<String, List<Marker>> _cache = {};
-  final MapController _mapController = MapController(); // Adicionando o MapController
+  final MapController _mapController = MapController();
+  bool _isDarkMode = false; // Variável para controlar o modo noturno do mapa
 
   @override
   void dispose() {
@@ -32,10 +33,8 @@ class TelaMapaState extends State<TelaMapa> {
     });
 
     try {
-      // Primeiro, busca a cidade no Brasil
       Map<String, double>? cityLocation = await compute(_fetchCityLocation, {'cityName': cityName, 'countryCode': 'BR'});
 
-      // Se não encontrar no Brasil, busca globalmente
       if (cityLocation == null) {
         cityLocation = await compute(_fetchCityLocation, {'cityName': cityName, 'countryCode': null});
         if (cityLocation == null) {
@@ -44,10 +43,8 @@ class TelaMapaState extends State<TelaMapa> {
         }
       }
 
-      // Movendo o mapa para a localização da cidade e ajustando o zoom
       _mapController.move(LatLng(cityLocation['lat']!, cityLocation['lon']!), 13.0);
 
-      // Verifica se os cinemas já estão em cache
       if (_cache.containsKey(cityName)) {
         setState(() {
           _cinemaMarkers.addAll(_cache[cityName]!);
@@ -87,7 +84,7 @@ class TelaMapaState extends State<TelaMapa> {
 
   static Future<List<Marker>> _fetchCinemasInArea(Map<String, double> cityLocation) async {
     const overpassUrl = 'https://overpass-api.de/api/interpreter';
-    const radius = 0.1; // Raio de busca em graus (~10 km)
+    const radius = 0.1;
     final query = '''
     [out:json];
     node["amenity"="cinema"](${cityLocation['lat']! - radius},${cityLocation['lon']! - radius},${cityLocation['lat']! + radius},${cityLocation['lon']! + radius});
@@ -105,7 +102,7 @@ class TelaMapaState extends State<TelaMapa> {
           height: 40,
           child: const Icon(
             Icons.movie,
-            color:  Color(0xFF208BFE),
+            color: Color(0xFF208BFE),
             size: 30,
           ),
         );
@@ -116,16 +113,16 @@ class TelaMapaState extends State<TelaMapa> {
 
   void _showError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            message,
-            style: const TextStyle(color: Colors.white),
-          ),
-          backgroundColor: Colors.red,
-        )
+      SnackBar(content: Text(message)),
     );
     setState(() {
       _isLoading = false;
+    });
+  }
+
+  void _toggleDarkMode() {
+    setState(() {
+      _isDarkMode = !_isDarkMode;
     });
   }
 
@@ -139,13 +136,14 @@ class TelaMapaState extends State<TelaMapa> {
             child: Row(
               children: [
                 Expanded(
-                  child: _buildTextField(
-                    'Digite a cidade',
+                  child: TextField(
                     controller: _cityController,
-                    fillColor: const Color(0xFF1E2936),
-                    textColor: const Color(0xFF788EA5),
-                    focusedTextColor: const Color(0xFF208BFE),
-                    inputTextColor: const Color(0xFFF1F3F5),
+                    style: const TextStyle(color: Colors.white),
+                    decoration: const InputDecoration(
+                      labelText: 'Digite a cidade',
+                      labelStyle: TextStyle(color: Colors.white70),
+                      border: OutlineInputBorder(),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -154,14 +152,17 @@ class TelaMapaState extends State<TelaMapa> {
                     if (_cityController.text.isNotEmpty) {
                       _fetchCinemas(_cityController.text.trim());
                     } else {
-                      _showError('Digite o nome de uma cidade.');
+                      _showError('Por favor, digite o nome de uma cidade!');
                     }
                   },
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Color(0xFFF1F3F5),
-                    backgroundColor: Color(0xFF208BFE),
-                  ),
                   child: const Text('Buscar'),
+                ),
+                IconButton(
+                  icon: Icon(
+                    _isDarkMode ? Icons.light_mode : Icons.dark_mode,
+                    color: Colors.white,
+                  ),
+                  onPressed: _toggleDarkMode,
                 ),
               ],
             ),
@@ -177,8 +178,11 @@ class TelaMapaState extends State<TelaMapa> {
                   ),
                   children: [
                     TileLayer(
-                      urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                      urlTemplate: _isDarkMode
+                          ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png' // Modo noturno
+                          : 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', // Modo claro
                       userAgentPackageName: 'dev.fleaflet.flutter_map.example',
+                      subdomains: const ['a', 'b', 'c'], // Necessário para o CartoDB
                     ),
                     MarkerLayer(
                       markers: _cinemaMarkers,
@@ -196,45 +200,4 @@ class TelaMapaState extends State<TelaMapa> {
       ),
     );
   }
-
-  Widget _buildTextField(String label,
-      {required TextEditingController controller,
-        bool obscureText = false,
-        Color fillColor = Colors.transparent,
-        Color textColor = Colors.black,
-        Color focusedTextColor = Colors.black,
-        Color inputTextColor = Colors.black,
-        Widget? suffixIcon}) {
-    return Focus(
-      onFocusChange: (hasFocus) {
-        if (hasFocus) {}
-      },
-      child: Builder(
-        builder: (context) {
-          final isFocused = Focus.of(context).hasFocus;
-          return TextFormField(
-            controller: controller,
-            decoration: InputDecoration(
-              labelText: label,
-              labelStyle:
-              TextStyle(color: isFocused ? focusedTextColor : textColor),
-              border: const OutlineInputBorder(),
-              filled: true,
-              fillColor: fillColor,
-              enabledBorder: const OutlineInputBorder(
-                borderSide: BorderSide(color: Color(0xFF2E4052)),
-              ),
-              focusedBorder: const OutlineInputBorder(
-                borderSide: BorderSide(color: Color(0xFF208BFE)),
-              ),
-              suffixIcon: suffixIcon,
-            ),
-            obscureText: obscureText,
-            style: TextStyle(color: inputTextColor),
-          );
-        },
-      ),
-    );
-  }
-
 }
