@@ -49,6 +49,7 @@ class AuthService {
         'username': normalizedUsername,
         'email': email,
         'createdAt': FieldValue.serverTimestamp(),
+        'profilePictureUrl': '',
       });
 
       return null;
