@@ -46,6 +46,7 @@ dependencies:
   firebase_storage: ^12.4.2
   file: ^7.0.1
   image_picker: ^1.1.2
+  supabase_flutter: ^2.8.3
 
 dev_dependencies:
   flutter_test:
@@ -73,6 +74,7 @@ flutter:
     - assets/login.png
     - assets/cadastro.png
     - assets/redefinir_senha.png
+    - assets/default_avatar.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

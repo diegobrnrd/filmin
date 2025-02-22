@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:filmin/services/auth_service.dart';
+import 'package:filmin/screens/configuracoes_screen.dart';
 
 class AlterarNomeSobrenomeScreen extends StatelessWidget {
   const AlterarNomeSobrenomeScreen({super.key});
@@ -63,20 +64,6 @@ class AlterarNomeSobrenomeScreen extends StatelessWidget {
                     onPressed: () async {
                       String? nome = nomeController.text;
                       String? sobrenome = sobrenomeController.text;
-                      if (nome.isEmpty && sobrenome.isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              'Nome e sobrenome vazios.',
-                              style: const TextStyle(
-                                  color: Color(0xFFF1F3F5)),
-                            ),
-                            backgroundColor:
-                                const Color(0xFFF52958),
-                          ),
-                        );
-                        return;
-                      }
                       String? result =
                           await authService.updateUserNameAndSurname(
                         nome: nome,
@@ -86,11 +73,17 @@ class AlterarNomeSobrenomeScreen extends StatelessWidget {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(
-                              'Alterações salvas.',
+                              'alterações salvas',
                               style: const TextStyle(color: Color(0xFFF1F3F5)),
                             ),
                             backgroundColor: const Color(0xFF208BFE),
                           ),
+                        );
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const ConfiguracoesScreen()),
                         );
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(

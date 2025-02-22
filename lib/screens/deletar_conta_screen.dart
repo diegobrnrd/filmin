@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:filmin/services/auth_service.dart';
+import 'package:filmin/screens/login_screen.dart';
 
 class DeletarContaScreen extends StatelessWidget {
   const DeletarContaScreen({super.key});
@@ -7,6 +9,9 @@ class DeletarContaScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+    final TextEditingController senhaController = TextEditingController();
+    final AuthService authService = AuthService();
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -34,15 +39,19 @@ class DeletarContaScreen extends StatelessWidget {
                 children: [
                   _buildTextField(
                     'Senha',
+                    controller: senhaController,
                     fillColor: const Color(0xFF1E2936),
                     textColor: const Color(0xFF788EA5),
                     focusedTextColor: const Color(0xFF208BFE),
                     inputTextColor: const Color(0xFFF1F3F5),
+                    obscureText: true,
                   ),
                   SizedBox(height: screenHeight * 0.01),
                   Text(
                     'Uma vez que a conta for apagada, não será possível recuperá-la. Esta ação é definitiva.',
-                    style: TextStyle(color: const Color(0xFF208BFE), fontSize: screenHeight * 0.02),
+                    style: TextStyle(
+                        color: const Color(0xFF208BFE),
+                        fontSize: screenHeight * 0.02),
                   ),
                   SizedBox(height: screenHeight * 0.03),
                   _buildButton(
@@ -50,7 +59,34 @@ class DeletarContaScreen extends StatelessWidget {
                     'Deletar conta',
                     backgroundColor: const Color(0xFFF52958),
                     textColor: const Color(0xFFF1F3F5),
-                    onPressed: () {},
+                    onPressed: () async {
+                      String senha = senhaController.text;
+                      String? result = await authService.deleteAccount(senha: senha);
+                      if (result == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'conta deletada com sucesso',
+                              style: const TextStyle(color: Color(0xFFF1F3F5)),
+                            ),
+                            backgroundColor: const Color(0xFF208BFE),
+                          ),
+                        );
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(builder: (context) => LoginScreen()),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              result,
+                              style: const TextStyle(color: Color(0xFFF1F3F5)),
+                            ),
+                            backgroundColor: const Color(0xFFF52958),
+                          ),
+                        );
+                      }
+                    },
                   ),
                 ],
               ),
@@ -62,7 +98,8 @@ class DeletarContaScreen extends StatelessWidget {
   }
 
   Widget _buildTextField(String label,
-      {bool obscureText = false,
+      {required TextEditingController controller,
+        bool obscureText = false,
         Color fillColor = Colors.transparent,
         Color textColor = Colors.black,
         Color focusedTextColor = Colors.black,
@@ -76,6 +113,7 @@ class DeletarContaScreen extends StatelessWidget {
         builder: (context) {
           final isFocused = Focus.of(context).hasFocus;
           return TextFormField(
+            controller: controller,
             decoration: InputDecoration(
               labelText: label,
               labelStyle:

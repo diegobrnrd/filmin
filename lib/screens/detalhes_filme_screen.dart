@@ -322,13 +322,17 @@ class DetalhesFilmeScreenState extends State<DetalhesFilmeScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     IconButton(
-                      icon: Icon(Icons.remove_red_eye,
-                          color: isWatched
-                              ? Colors.green
-                              : const Color(0xFFAEBBC9)),
-                      iconSize: screenWidth * 0.08,
-                      onPressed: _toggleWatched,
-                    ),
+                        icon: Icon(Icons.remove_red_eye,
+                            color: isWatched
+                                ? Colors.green
+                                : const Color(0xFFAEBBC9)),
+                        iconSize: screenWidth * 0.08,
+                        onPressed: () {
+                          _toggleWatched();
+                          if (isWatchLater) {
+                            _toggleWatchLater();
+                          }
+                        }),
                     IconButton(
                       icon: Icon(
                           isFavorite ? Icons.favorite : Icons.favorite_border,

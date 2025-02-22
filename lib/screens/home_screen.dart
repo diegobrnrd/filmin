@@ -26,11 +26,13 @@ class HomeScreenState extends State<HomeScreen> {
   String? _nome;
   String? _sobrenome;
   String? _nomeUsuario;
+  String? _profilePictureUrl;
 
   Future<void> _fetchUserData() async {
     _nome = await autoService.getUserName();
     _sobrenome = await autoService.getUserSurname();
     _nomeUsuario = await autoService.getUserUsername();
+    _profilePictureUrl = await autoService.getProfilePictureUrl();
     setState(() {});
   }
 
@@ -93,14 +95,14 @@ class HomeScreenState extends State<HomeScreen> {
           children: [
             DrawerHeader(
               decoration: const BoxDecoration(
-                color: Color(0xFF161E27),
               ),
               child: Row(
                 children: [
                   CircleAvatar(
                     radius: screenHeight * 0.05,
-                    backgroundImage:
-                        const NetworkImage('URL_DA_FOTO_DO_USUARIO'),
+                    backgroundImage: _profilePictureUrl != null && _profilePictureUrl!.isNotEmpty
+                        ? NetworkImage(_profilePictureUrl!)
+                        : const AssetImage('assets/default_avatar.png'),
                   ),
                   const SizedBox(width: 16),
                   Column(
@@ -207,8 +209,12 @@ class HomeScreenState extends State<HomeScreen> {
                       tituloAppBar: "Quero Assistir",
                       filmes: watchlist
                           .map((movie) => FilmeWidget(
-                                posterPath: movie['poster_path'] ?? '',
-                              ))
+                        posterPath: movie['poster_path'] ?? '',
+                        movieId: movie['id'],
+                        runtime: movie['runtime'],
+                        releaseDate: movie['release_date'],
+                        dateAdded: movie['dateAdded'],
+                      ))
                           .toList(),
                     ),
                   ),
@@ -363,9 +369,13 @@ class HomeScreenState extends State<HomeScreen> {
               itemBuilder: (context, index) {
                 return Padding(
                   padding:
-                      EdgeInsets.symmetric(horizontal: screenHeight * 0.005),
+                  EdgeInsets.symmetric(horizontal: screenHeight * 0.005),
                   child: const FilmeWidget(
                     posterPath: '',
+                    movieId: 0, // TODO: 0 enquanto não se tem a busca na API
+                    runtime: 0, // TODO: 0 enquanto não se tem a busca na API
+                    releaseDate: '', // TODO: '' enquanto não se tem a busca na API
+                    dateAdded: null, // TODO: null enquanto não se tem a busca na API
                   ),
                 );
               },

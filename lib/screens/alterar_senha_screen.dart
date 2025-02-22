@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:filmin/services/auth_service.dart';
 
 class AlterarSenhaScreen extends StatelessWidget {
   const AlterarSenhaScreen({super.key});
@@ -7,6 +8,12 @@ class AlterarSenhaScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+    final TextEditingController senhaAtualController = TextEditingController();
+    final TextEditingController novaSenhaController = TextEditingController();
+    final TextEditingController confirmarNovaSenhaController =
+        TextEditingController();
+    final AuthService authService = AuthService();
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -34,26 +41,32 @@ class AlterarSenhaScreen extends StatelessWidget {
                 children: [
                   _buildTextField(
                     'Senha atual',
+                    controller: senhaAtualController,
                     fillColor: const Color(0xFF1E2936),
                     textColor: const Color(0xFF788EA5),
                     focusedTextColor: const Color(0xFF208BFE),
                     inputTextColor: const Color(0xFFF1F3F5),
+                    obscureText: true,
                   ),
                   SizedBox(height: screenHeight * 0.01),
                   _buildTextField(
                     'Nova senha',
+                    controller: novaSenhaController,
                     fillColor: const Color(0xFF1E2936),
                     textColor: const Color(0xFF788EA5),
                     focusedTextColor: const Color(0xFF208BFE),
                     inputTextColor: const Color(0xFFF1F3F5),
+                    obscureText: true,
                   ),
                   SizedBox(height: screenHeight * 0.01),
                   _buildTextField(
                     'Confirmar nova senha',
+                    controller: confirmarNovaSenhaController,
                     fillColor: const Color(0xFF1E2936),
                     textColor: const Color(0xFF788EA5),
                     focusedTextColor: const Color(0xFF208BFE),
                     inputTextColor: const Color(0xFFF1F3F5),
+                    obscureText: true,
                   ),
                   SizedBox(height: screenHeight * 0.03),
                   _buildButton(
@@ -61,7 +74,55 @@ class AlterarSenhaScreen extends StatelessWidget {
                     'Salvar Alterações',
                     backgroundColor: const Color(0xFF208BFE),
                     textColor: const Color(0xFFF1F3F5),
-                    onPressed: () {},
+                    onPressed: () async {
+                      String senhaAtual = senhaAtualController.text;
+                      String novaSenha = novaSenhaController.text;
+                      String confirmarNovaSenha =
+                          confirmarNovaSenhaController.text;
+
+                      if (novaSenha != confirmarNovaSenha ||
+                          novaSenha.isEmpty ||
+                          confirmarNovaSenha.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'as novas senhas não coincidem',
+                              style: const TextStyle(color: Color(0xFFF1F3F5)),
+                            ),
+                            backgroundColor: const Color(0xFFF52958),
+                          ),
+                        );
+                      } else if (novaSenha == confirmarNovaSenha) {
+                        String? result = await authService.updatePassword(
+                          currentPassword: senhaAtual,
+                          newPassword: novaSenha,
+                        );
+                        if (result == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'senha atualizada com sucesso',
+                                style:
+                                    const TextStyle(color: Color(0xFFF1F3F5)),
+                              ),
+                              backgroundColor: const Color(0xFF208BFE),
+                            ),
+                          );
+                          Navigator.of(context).pop();
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                result,
+                                style:
+                                    const TextStyle(color: Color(0xFFF1F3F5)),
+                              ),
+                              backgroundColor: const Color(0xFFF52958),
+                            ),
+                          );
+                        }
+                      }
+                    },
                   ),
                 ],
               ),
@@ -73,7 +134,8 @@ class AlterarSenhaScreen extends StatelessWidget {
   }
 
   Widget _buildTextField(String label,
-      {bool obscureText = false,
+      {required TextEditingController controller,
+      bool obscureText = false,
       Color fillColor = Colors.transparent,
       Color textColor = Colors.black,
       Color focusedTextColor = Colors.black,
@@ -87,6 +149,7 @@ class AlterarSenhaScreen extends StatelessWidget {
         builder: (context) {
           final isFocused = Focus.of(context).hasFocus;
           return TextFormField(
+            controller: controller,
             decoration: InputDecoration(
               labelText: label,
               labelStyle:

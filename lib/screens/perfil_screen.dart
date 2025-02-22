@@ -19,6 +19,7 @@ class PerfilState extends State<Perfil> {
 
   String? _nome;
   String? _sobrenome;
+  String? _profilePictureUrl;
 
   @override
   void initState() {
@@ -28,6 +29,7 @@ class PerfilState extends State<Perfil> {
   Future<void> _fetchUserData() async {
     _nome = await autoService.getUserName();
     _sobrenome = await autoService.getUserSurname();
+    _profilePictureUrl = await autoService.getProfilePictureUrl();
   }
 
   @override
@@ -71,7 +73,9 @@ class PerfilState extends State<Perfil> {
                 SizedBox(height: screenHeight * 0.05),
                 CircleAvatar(
                   radius: screenWidth * 0.13,
-                  backgroundImage: const NetworkImage('URL_DA_FOTO_DO_USUARIO'),
+                  backgroundImage: _profilePictureUrl != null && _profilePictureUrl!.isNotEmpty
+                      ? NetworkImage(_profilePictureUrl!)
+                      : const AssetImage('assets/default_avatar.png'),
                 ),
                 SizedBox(height: screenHeight * 0.05),
                 Divider(
@@ -122,7 +126,7 @@ class PerfilState extends State<Perfil> {
           );
         } else if (tituloBotao == 'Favoritos') {
           final favoriteMovies =
-              await FavoriteMovieService().getFavoriteMoviesOnce();
+          await FavoriteMovieService().getFavoriteMoviesOnce();
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -130,8 +134,12 @@ class PerfilState extends State<Perfil> {
                 tituloAppBar: tituloAppBar,
                 filmes: favoriteMovies
                     .map((movie) => FilmeWidget(
-                          posterPath: movie['poster_path'] ?? '',
-                        ))
+                  posterPath: movie['poster_path'] ?? '',
+                  movieId: movie['id'],
+                  runtime: movie['runtime'],
+                  releaseDate: movie['release_date'],
+                  dateAdded: movie['dateAdded'],
+                ))
                     .toList(),
               ),
             ),
@@ -145,8 +153,12 @@ class PerfilState extends State<Perfil> {
                 tituloAppBar: tituloAppBar,
                 filmes: watchlist
                     .map((movie) => FilmeWidget(
-                          posterPath: movie['poster_path'] ?? '',
-                        ))
+                  posterPath: movie['poster_path'] ?? '',
+                  movieId: movie['id'],
+                  runtime: movie['runtime'],
+                  releaseDate: movie['release_date'],
+                  dateAdded: movie['dateAdded'],
+                ))
                     .toList(),
               ),
             ),
@@ -160,8 +172,12 @@ class PerfilState extends State<Perfil> {
                 tituloAppBar: tituloAppBar,
                 filmes: watched
                     .map((movie) => FilmeWidget(
-                          posterPath: movie['poster_path'] ?? '',
-                        ))
+                  posterPath: movie['poster_path'] ?? '',
+                  movieId: movie['id'],
+                  runtime: movie['runtime'],
+                  releaseDate: movie['release_date'],
+                  dateAdded: movie['dateAdded'],
+                ))
                     .toList(),
               ),
             ),
@@ -190,5 +206,4 @@ class PerfilState extends State<Perfil> {
       ),
     );
   }
-
 }

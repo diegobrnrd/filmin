@@ -13,7 +13,7 @@ class AuthService {
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'invalid-email':
-          return 'e-mail inválido';
+          return 'email inválido';
         case 'missing-password':
           return 'senha não informada';
         case 'invalid-credential':
@@ -49,17 +49,18 @@ class AuthService {
         'username': normalizedUsername,
         'email': email,
         'createdAt': FieldValue.serverTimestamp(),
+        'profilePictureUrl': '',
       });
 
       return null;
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'email-already-in-use':
-          return 'E-mail já cadastrado';
+          return 'email já cadastrado';
         case 'invalid-email':
-          return 'E-mail inválido';
+          return 'email inválido';
         case 'missing-password':
-          return 'Senha não informada';
+          return 'senha não informada';
         default:
           return 'Erro ao criar conta: ${e.message}';
       }
@@ -87,13 +88,60 @@ class AuthService {
 
   Future<String?> deleteAccount({required String senha}) async {
     try {
-      await _firebaseAuth.signInWithEmailAndPassword(
-          email: _firebaseAuth.currentUser!.email!, password: senha);
-      await _firebaseAuth.currentUser!.delete();
+      User? user = _firebaseAuth.currentUser;
+      if (user == null) return 'usuário não autenticado';
+      if (senha == '') {
+        return 'senha não informada';
+      }
+
+      AuthCredential credential = EmailAuthProvider.credential(
+        email: user.email!,
+        password: senha,
+      );
+      await user.reauthenticateWithCredential(credential);
+
+      List<String> subCollections = [
+        'watchlist',
+        'watched',
+        'favorite_movies',
+        'lists'
+      ];
+
+      for (String collection in subCollections) {
+        QuerySnapshot querySnapshot = await _firestore
+            .collection('users')
+            .doc(user.uid)
+            .collection(collection)
+            .get();
+
+        for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+          // Deletar subcoleções dentro de cada documento
+          CollectionReference subCollectionRef = doc.reference.collection('subCollectionName');
+          QuerySnapshot subCollectionSnapshot = await subCollectionRef.get();
+          for (QueryDocumentSnapshot subDoc in subCollectionSnapshot.docs) {
+            await subDoc.reference.delete();
+          }
+          await doc.reference.delete();
+        }
+      }
+
+      await _firestore.collection('users').doc(user.uid).delete();
+
+      await user.delete();
+
+      await _firebaseAuth.signOut();
+
+      return null;
     } on FirebaseAuthException catch (e) {
-      return e.code;
+      switch (e.code) {
+        case 'invalid-credential':
+          return 'senha inválida';
+        default:
+          return 'erro ao excluir conta: ${e.message}';
+      }
+    } catch (e) {
+      return 'erro inesperado: $e';
     }
-    return null;
   }
 
   Future<String?> getUserName() async {
@@ -104,7 +152,7 @@ class AuthService {
           .get();
       return userDoc['nome'];
     } catch (e) {
-      return 'Erro ao obter o nome do usuário: $e';
+      return 'erro ao obter o nome do usuário: $e';
     }
   }
 
@@ -116,7 +164,7 @@ class AuthService {
           .get();
       return userDoc['sobrenome'];
     } catch (e) {
-      return 'Erro ao obter o sobrenome do usuário: $e';
+      return 'erro ao obter o sobrenome do usuário: $e';
     }
   }
 
@@ -128,12 +176,15 @@ class AuthService {
           .get();
       return userDoc['username'];
     } catch (e) {
-      return 'Erro ao obter o nome de usuário: $e';
+      return 'erro ao obter o nome de usuário: $e';
     }
   }
 
   Future<String?> updateUserNameAndSurname(
       {String? nome, String? sobrenome}) async {
+    if (nome == '' && sobrenome == '') {
+      return 'nome e sobrenome vazios';
+    }
     try {
       Map<String, dynamic> updateData = {};
       if (nome != '') {
@@ -150,7 +201,94 @@ class AuthService {
 
       return null;
     } catch (e) {
-      return 'Erro ao atualizar nome e/ou sobrenome: $e';
+      return 'erro ao atualizar nome e/ou sobrenome: $e';
     }
   }
+
+  Future<String?> updateEmail(
+      {required String newEmail, required String senha}) async {
+    try {
+      User? user = _firebaseAuth.currentUser;
+      if (user == null) return 'usuário não autenticado';
+      if (newEmail == '' && senha == '') {
+        return 'email e senha vazios';
+      }
+
+      AuthCredential credential = EmailAuthProvider.credential(
+        email: user.email!,
+        password: senha,
+      );
+      await user.reauthenticateWithCredential(credential);
+      await user.verifyBeforeUpdateEmail(newEmail);
+
+      await _firestore
+          .collection('users')
+          .doc(user.uid)
+          .update({'email': newEmail});
+      return null;
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case 'invalid-credential':
+          return 'credencial inválida';
+        case 'missing-password':
+          return 'senha não informada';
+        default:
+          return 'erro ao atualizar o email: ${e.message}';
+      }
+    } catch (e) {
+      return 'erro inesperado: $e';
+    }
+  }
+
+  Future<String?> updatePassword(
+      {required String currentPassword, required String newPassword}) async {
+    try {
+      User? user = _firebaseAuth.currentUser;
+      if (user == null) return 'usuário não autenticado';
+
+      AuthCredential credential = EmailAuthProvider.credential(
+        email: user.email!,
+        password: currentPassword,
+      );
+      await user.reauthenticateWithCredential(credential);
+      await user.updatePassword(newPassword);
+      return null;
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case 'invalid-credential':
+          return 'senha inválida';
+        case 'missing-password':
+          return 'senha não informada';
+        default:
+          return 'erro ao atualizar o email: ${e.message}';
+      }
+    } catch (e) {
+      return 'erro inesperado: $e';
+    }
+  }
+
+  Future<String?> updateProfilePictureUrl(String imageUrl) async {
+    try {
+      User? user = _firebaseAuth.currentUser;
+      if (user == null) return 'usuário não autenticado';
+
+      await _firestore.collection('users').doc(user.uid).update({'profilePictureUrl': imageUrl});
+      return null;
+    } catch (e) {
+      return 'erro ao atualizar a URL da foto de perfil: $e';
+    }
+  }
+
+  Future<String?> getProfilePictureUrl() async {
+    try {
+      User? user = _firebaseAuth.currentUser;
+      if (user == null) return 'usuário não autenticado';
+
+      DocumentSnapshot userDoc = await _firestore.collection('users').doc(user.uid).get();
+      return userDoc['profilePictureUrl'];
+    } catch (e) {
+      return 'erro ao obter a URL da foto de perfil: $e';
+    }
+  }
+
 }

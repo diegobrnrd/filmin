@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:filmin/services/auth_service.dart';
+import 'package:filmin/screens/configuracoes_screen.dart';
 
 class AlterarEmailScreen extends StatelessWidget {
   const AlterarEmailScreen({super.key});
@@ -7,10 +9,14 @@ class AlterarEmailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+    final TextEditingController emailController = TextEditingController();
+    final TextEditingController senhaController = TextEditingController();
+    final AuthService authService = AuthService();
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Alterar E-mail',
+          'Alterar email',
           style: TextStyle(
               color: const Color(0xFFAEBBC9), fontSize: screenHeight * 0.025),
         ),
@@ -33,7 +39,8 @@ class AlterarEmailScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   _buildTextField(
-                    'Email',
+                    'Novo email',
+                    controller: emailController,
                     fillColor: const Color(0xFF1E2936),
                     textColor: const Color(0xFF788EA5),
                     focusedTextColor: const Color(0xFF208BFE),
@@ -41,11 +48,20 @@ class AlterarEmailScreen extends StatelessWidget {
                   ),
                   SizedBox(height: screenHeight * 0.01),
                   _buildTextField(
-                    'Senha atual',
+                    'Senha',
+                    controller: senhaController,
                     fillColor: const Color(0xFF1E2936),
                     textColor: const Color(0xFF788EA5),
                     focusedTextColor: const Color(0xFF208BFE),
                     inputTextColor: const Color(0xFFF1F3F5),
+                    obscureText: true,
+                  ),
+                  SizedBox(height: screenHeight * 0.01),
+                  Text(
+                    'Será necessário confirmar a alteração do email através de um link enviado para o novo email.',
+                    style: TextStyle(
+                        color: const Color(0xFF208BFE),
+                        fontSize: screenHeight * 0.02),
                   ),
                   SizedBox(height: screenHeight * 0.03),
                   _buildButton(
@@ -53,7 +69,41 @@ class AlterarEmailScreen extends StatelessWidget {
                     'Salvar Alterações',
                     backgroundColor: const Color(0xFF208BFE),
                     textColor: const Color(0xFFF1F3F5),
-                    onPressed: () {},
+                    onPressed: () async {
+                      String email = emailController.text;
+                      String senha = senhaController.text;
+                      String? result = await authService.updateEmail(
+                        newEmail: email,
+                        senha: senha,
+                      );
+                      if (result == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'confirme a alteração em seu novo email',
+                              style: const TextStyle(color: Color(0xFFF1F3F5)),
+                            ),
+                            backgroundColor: const Color(0xFF208BFE),
+                          ),
+                        );
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                              const ConfiguracoesScreen()),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              result,
+                              style: const TextStyle(color: Color(0xFFF1F3F5)),
+                            ),
+                            backgroundColor: const Color(0xFFF52958),
+                          ),
+                        );
+                      }
+                    },
                   ),
                 ],
               ),
@@ -65,12 +115,13 @@ class AlterarEmailScreen extends StatelessWidget {
   }
 
   Widget _buildTextField(String label,
-      {bool obscureText = false,
-      Color fillColor = Colors.transparent,
-      Color textColor = Colors.black,
-      Color focusedTextColor = Colors.black,
-      Color inputTextColor = Colors.black,
-      Widget? suffixIcon}) {
+      {required TextEditingController controller,
+        bool obscureText = false,
+        Color fillColor = Colors.transparent,
+        Color textColor = Colors.black,
+        Color focusedTextColor = Colors.black,
+        Color inputTextColor = Colors.black,
+        Widget? suffixIcon}) {
     return Focus(
       onFocusChange: (hasFocus) {
         if (hasFocus) {}
@@ -79,10 +130,11 @@ class AlterarEmailScreen extends StatelessWidget {
         builder: (context) {
           final isFocused = Focus.of(context).hasFocus;
           return TextFormField(
+            controller: controller,
             decoration: InputDecoration(
               labelText: label,
               labelStyle:
-                  TextStyle(color: isFocused ? focusedTextColor : textColor),
+              TextStyle(color: isFocused ? focusedTextColor : textColor),
               border: const OutlineInputBorder(),
               filled: true,
               fillColor: fillColor,
@@ -104,8 +156,8 @@ class AlterarEmailScreen extends StatelessWidget {
 
   Widget _buildButton(BuildContext context, String text,
       {required Color backgroundColor,
-      required Color textColor,
-      required VoidCallback onPressed}) {
+        required Color textColor,
+        required VoidCallback onPressed}) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     return SizedBox(
