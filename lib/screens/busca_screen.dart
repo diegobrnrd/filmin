@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:filmin/controlador/controlador.dart';
 import 'package:flutter/foundation.dart';
 import 'package:filmin/screens/detalhes_filme_screen.dart';
+import 'package:filmin/services/user_service.dart';
 
 class BuscaScreen extends StatefulWidget {
   const BuscaScreen({super.key});
@@ -27,7 +28,7 @@ class BuscaScreenState extends State<BuscaScreen> {
     try {
       final results = await Controlador().buscarFilmes(query);
       final filteredResults =
-          results.where((movie) => movie['original_language'] == 'pt').toList();
+      results.where((movie) => movie['original_language'] == 'pt').toList();
       setState(() {
         _searchResults = filteredResults;
       });
@@ -38,8 +39,23 @@ class BuscaScreenState extends State<BuscaScreen> {
     }
   }
 
-  void _buscarPerfil() {
-    // TODO: Implement profile search logic
+  void _buscarPerfil(String query) async {
+    try {
+      final results = await UserService().getUserDataByUsername(query);
+      if (results != null) {
+        setState(() {
+          _searchResults = [results];
+        });
+      } else {
+        setState(() {
+          _searchResults.clear();
+        });
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error: $e');
+      }
+    }
   }
 
   void _navegarParaDetalhesFilme(int movieId) {
@@ -49,6 +65,10 @@ class BuscaScreenState extends State<BuscaScreen> {
         builder: (context) => DetalhesFilmeScreen(movieId: movieId),
       ),
     );
+  }
+
+  void _navegarParaPerfilUsuario(String userId) {
+    // Placeholder for navigating to the user's profile
   }
 
   @override
@@ -64,7 +84,7 @@ class BuscaScreenState extends State<BuscaScreen> {
         title: TextField(
           controller: _controller,
           decoration: InputDecoration(
-            hintText: 'Buscar filme...',
+            hintText: _selectedIndex == 0 ? 'Buscar filme...' : 'Buscar perfil...',
             hintStyle: TextStyle(
                 color: const Color(0xFFAEBBC9), fontSize: screenHeight * 0.02),
             border: InputBorder.none,
@@ -74,7 +94,7 @@ class BuscaScreenState extends State<BuscaScreen> {
             if (_selectedIndex == 0) {
               _buscarFilmes(query);
             } else if (_selectedIndex == 1) {
-              _buscarPerfil();
+              _buscarPerfil(query);
             }
           },
         ),
@@ -128,58 +148,96 @@ class BuscaScreenState extends State<BuscaScreen> {
             child: ListView.builder(
               itemCount: _searchResults.length,
               itemBuilder: (context, index) {
-                final movie = _searchResults[index];
-                final posterPath = movie['poster_path'];
-                return InkWell(
-                  onTap: () => _navegarParaDetalhesFilme(movie['id']),
-                  child: Container(
-                    padding: EdgeInsets.all(screenWidth * 0.02),
-                    margin:
-                        EdgeInsets.symmetric(vertical: screenHeight * 0.005),
-                    child: Row(
-                      children: [
-                        if (posterPath != null && posterPath.isNotEmpty)
-                          Image.network(
-                            'https://image.tmdb.org/t/p/w154$posterPath',
-                            fit: BoxFit.cover,
-                            width: screenWidth * 0.25,
-                            height: screenHeight * 0.2,
-                          )
-                        else
-                          Container(
-                            width: screenWidth * 0.25,
-                            height: screenHeight * 0.2,
-                            color: const Color(0xFF1E2936),
-                            child: const Icon(Icons.image_not_supported),
-                          ),
-                        SizedBox(width: screenWidth * 0.04),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                movie['title'],
-                                style: TextStyle(
-                                  color: const Color(0xFFAEBBC9),
-                                  fontSize: screenHeight * 0.02,
-                                  fontWeight: FontWeight.bold,
+                if (_selectedIndex == 0) {
+                  final movie = _searchResults[index];
+                  final posterPath = movie['poster_path'];
+                  return InkWell(
+                    onTap: () => _navegarParaDetalhesFilme(movie['id']),
+                    child: Container(
+                      padding: EdgeInsets.all(screenWidth * 0.02),
+                      margin: EdgeInsets.symmetric(vertical: screenHeight * 0.005),
+                      child: Row(
+                        children: [
+                          if (posterPath != null && posterPath.isNotEmpty)
+                            Image.network(
+                              'https://image.tmdb.org/t/p/w154$posterPath',
+                              fit: BoxFit.cover,
+                              width: screenWidth * 0.25,
+                              height: screenHeight * 0.2,
+                            )
+                          else
+                            Container(
+                              width: screenWidth * 0.25,
+                              height: screenHeight * 0.2,
+                              color: const Color(0xFF1E2936),
+                              child: const Icon(Icons.image_not_supported),
+                            ),
+                          SizedBox(width: screenWidth * 0.04),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  movie['title'],
+                                  style: TextStyle(
+                                    color: const Color(0xFFAEBBC9),
+                                    fontSize: screenHeight * 0.02,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              ),
-                              SizedBox(height: screenHeight * 0.01),
-                              Text(
-                                '${movie['release_date'] != null ? movie['release_date'].split('-')[0] : 'N/A'}',
-                                style: TextStyle(
-                                  color: const Color(0xFFAEBBC9),
-                                  fontSize: screenHeight * 0.02,
+                                SizedBox(height: screenHeight * 0.01),
+                                Text(
+                                  '${movie['release_date'] != null ? movie['release_date'].split('-')[0] : 'N/A'}',
+                                  style: TextStyle(
+                                    color: const Color(0xFFAEBBC9),
+                                    fontSize: screenHeight * 0.02,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                );
+                  );
+                } else if (_selectedIndex == 1) {
+                  final user = _searchResults[index];
+                  final username = user['username'] ?? 'Usuário Desconhecido';
+                  String imageUrl = user['profilePictureUrl'] ?? 'assets/default_avatar.png';
+                  if (imageUrl.isEmpty) {
+                    imageUrl = 'assets/default_avatar.png';
+                  }
+                  final userId = user['id'] ?? '';
+
+                  return Padding(
+                    padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01, horizontal: screenWidth * 0.04),
+                    child: GestureDetector(
+                      onTap: () {
+                        if (userId.isNotEmpty) {
+                          _navegarParaPerfilUsuario(userId);
+                        }
+                      },
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          CircleAvatar(
+                            backgroundImage: NetworkImage(imageUrl),
+                            onBackgroundImageError: (_, __) => const AssetImage('assets/default_avatar.png'),
+                            radius: screenHeight * 0.04,
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              username,
+                              style: TextStyle(color: const Color(0xFFAEBBC9), fontSize: screenHeight * 0.02),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+                return Container();
               },
             ),
           ),
