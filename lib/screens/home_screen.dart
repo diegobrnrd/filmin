@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:filmin/screens/busca_screen.dart';
+import 'package:filmin/screens/busca_usuario_screen.dart';
 import 'package:filmin/screens/configuracoes_screen.dart';
 import 'package:filmin/screens/perfil_screen.dart';
 import 'package:filmin/screens/criticas_screen.dart';
@@ -75,6 +76,15 @@ class HomeScreenState extends State<HomeScreen> {
               );
             },
           ),
+          IconButton(
+            icon: const Icon(Icons.person),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const BuscaUsuarioScreen()),
+              );
+            },
+          ),
         ],
       ),
       drawer: Drawer(
@@ -144,6 +154,22 @@ class HomeScreenState extends State<HomeScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const BuscaScreen()),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.person_search, color: Color(0xFFAEBBC9)),
+              title: Text(
+                "Busca Usuário",
+                style: TextStyle(
+                  color: const Color(0xFFAEBBC9),
+                  fontSize: screenHeight * 0.02,
+                ),
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const BuscaUsuarioScreen()),
                 );
               },
             ),

@@ -154,4 +154,41 @@ class ListsService {
       return []; // Retorna uma lista vazia se o usuário não estiver autenticado
     }
   }
+
+  // Novo método para obter todas as listas com seus conteúdos para um usuário específico
+  Future<List<Map<String, dynamic>>> getAllListsWithContentsForUser(String userId) async {
+    final listsSnapshot = await _firestore
+        .collection('users')
+        .doc(userId)
+        .collection('lists')
+        .get();
+
+    List<Map<String, dynamic>> allLists = [];
+
+    for (var listDoc in listsSnapshot.docs) {
+      final listData = listDoc.data();
+      final moviesSnapshot = await listDoc.reference.collection('movies').get();
+
+      List<Map<String, dynamic>> movies = moviesSnapshot.docs.map((doc) {
+        return {
+          'documentId': doc.id,
+          'id': doc['id'],
+          'release_date': doc['release_date'],
+          'poster_path': doc['poster_path'],
+          'genres': doc['genres'],
+          'runtime': doc['runtime'],
+          'dateAdded': doc['dateAdded'],
+        };
+      }).toList();
+
+      allLists.add({
+        'documentId': listDoc.id,
+        'name': listData['name'],
+        'description': listData['description'],
+        'movies': movies,
+      });
+    }
+
+    return allLists;
+  }
 }
