@@ -33,8 +33,10 @@ class TelaMapaState extends State<TelaMapa> {
     });
 
     try {
+      // Primeiro, busca a cidade no Brasil
       Map<String, double>? cityLocation = await compute(_fetchCityLocation, {'cityName': cityName, 'countryCode': 'BR'});
 
+      // Se não encontrar no Brasil, busca globalmente
       if (cityLocation == null) {
         cityLocation = await compute(_fetchCityLocation, {'cityName': cityName, 'countryCode': null});
         if (cityLocation == null) {
@@ -43,14 +45,16 @@ class TelaMapaState extends State<TelaMapa> {
         }
       }
 
+      // Movendo o mapa para a localização da cidade e ajustando o zoom
       _mapController.move(LatLng(cityLocation['lat']!, cityLocation['lon']!), 13.0);
 
+      // Verifica se os cinemas já estão em cache
       if (_cache.containsKey(cityName)) {
         setState(() {
           _cinemaMarkers.addAll(_cache[cityName]!);
         });
       } else {
-        final cinemas = await compute(_fetchCinemasInArea, cityLocation);
+        final cinemas = await compute(_fetchCinemasInArea, {'cityLocation': cityLocation, 'context': context});
         setState(() {
           _cinemaMarkers.addAll(cinemas);
           _cache[cityName] = List.from(cinemas);
@@ -82,28 +86,45 @@ class TelaMapaState extends State<TelaMapa> {
     return null;
   }
 
-  static Future<List<Marker>> _fetchCinemasInArea(Map<String, double> cityLocation) async {
+  static Future<List<Marker>> _fetchCinemasInArea(Map<String, dynamic> params) async {
+    final Map<String, double> cityLocation = params['cityLocation'];
+    final BuildContext context = params['context'];
+
     const overpassUrl = 'https://overpass-api.de/api/interpreter';
-    const radius = 0.1;
+    const radius = 0.1; // Raio de busca em graus (~10 km)
     final query = '''
     [out:json];
     node["amenity"="cinema"](${cityLocation['lat']! - radius},${cityLocation['lon']! - radius},${cityLocation['lat']! + radius},${cityLocation['lon']! + radius});
     out;
     ''';
 
-    final overpassResponse = await http.post(Uri.parse(overpassUrl), body: query);
+    final overpassResponse = await http.post(
+      Uri.parse(overpassUrl),
+      body: query,
+      headers: {'Content-Type': 'text/plain; charset=utf-8'}, // Garante que a requisição use UTF-8
+    );
+
     if (overpassResponse.statusCode == 200) {
-      final data = jsonDecode(overpassResponse.body);
+      // Decodifica a resposta como UTF-8
+      final data = jsonDecode(utf8.decode(overpassResponse.bodyBytes));
       final elements = data['elements'] as List;
       return elements.map((e) {
+        final cinemaName = e['tags']['name'] ?? 'Cinema Desconhecido';
         return Marker(
           point: LatLng(e['lat'], e['lon']),
           width: 40,
           height: 40,
-          child: const Icon(
-            Icons.movie,
-            color: Color(0xFF208BFE),
-            size: 30,
+          child: GestureDetector(
+            onTap: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(cinemaName.toLowerCase())),
+              );
+            },
+            child: const Icon(
+              Icons.movie,
+              color: Color(0xFF208BFE),
+              size: 30,
+            ),
           ),
         );
       }).toList();
@@ -113,7 +134,13 @@ class TelaMapaState extends State<TelaMapa> {
 
   void _showError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
+      SnackBar(
+        content: Text(
+          message,
+          style: const TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.red,
+      ),
     );
     setState(() {
       _isLoading = false;
@@ -136,14 +163,13 @@ class TelaMapaState extends State<TelaMapa> {
             child: Row(
               children: [
                 Expanded(
-                  child: TextField(
+                  child: _buildTextField(
+                    'Digite a cidade',
                     controller: _cityController,
-                    style: const TextStyle(color: Colors.white),
-                    decoration: const InputDecoration(
-                      labelText: 'Digite a cidade',
-                      labelStyle: TextStyle(color: Colors.white70),
-                      border: OutlineInputBorder(),
-                    ),
+                    fillColor: const Color(0xFF1E2936),
+                    textColor: const Color(0xFF788EA5),
+                    focusedTextColor: const Color(0xFF208BFE),
+                    inputTextColor: const Color(0xFFF1F3F5),
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -155,6 +181,10 @@ class TelaMapaState extends State<TelaMapa> {
                       _showError('Por favor, digite o nome de uma cidade!');
                     }
                   },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Color(0xFFF1F3F5),
+                    backgroundColor: Color(0xFF208BFE),
+                  ),
                   child: const Text('Buscar'),
                 ),
                 IconButton(
@@ -197,6 +227,46 @@ class TelaMapaState extends State<TelaMapa> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildTextField(String label,
+      {required TextEditingController controller,
+        bool obscureText = false,
+        Color fillColor = Colors.transparent,
+        Color textColor = Colors.black,
+        Color focusedTextColor = Colors.black,
+        Color inputTextColor = Colors.black,
+        Widget? suffixIcon}) {
+    return Focus(
+      onFocusChange: (hasFocus) {
+        if (hasFocus) {}
+      },
+      child: Builder(
+        builder: (context) {
+          final isFocused = Focus.of(context).hasFocus;
+          return TextFormField(
+            controller: controller,
+            decoration: InputDecoration(
+              labelText: label,
+              labelStyle:
+              TextStyle(color: isFocused ? focusedTextColor : textColor),
+              border: const OutlineInputBorder(),
+              filled: true,
+              fillColor: fillColor,
+              enabledBorder: const OutlineInputBorder(
+                borderSide: BorderSide(color: Color(0xFF2E4052)),
+              ),
+              focusedBorder: const OutlineInputBorder(
+                borderSide: BorderSide(color: Color(0xFF208BFE)),
+              ),
+              suffixIcon: suffixIcon,
+            ),
+            obscureText: obscureText,
+            style: TextStyle(color: inputTextColor),
+          );
+        },
       ),
     );
   }
