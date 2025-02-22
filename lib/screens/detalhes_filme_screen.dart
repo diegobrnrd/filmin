@@ -328,9 +328,9 @@ class DetalhesFilmeScreenState extends State<DetalhesFilmeScreen> {
                                 : const Color(0xFFAEBBC9)),
                         iconSize: screenWidth * 0.08,
                         onPressed: () {
-                          _toggleWatched;
+                          _toggleWatched();
                           if (isWatchLater) {
-                            _toggleWatchLater;
+                            _toggleWatchLater();
                           }
                         }),
                     IconButton(

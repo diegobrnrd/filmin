@@ -265,4 +265,29 @@ class AuthService {
       return 'erro inesperado: $e';
     }
   }
+
+  Future<String?> updateProfilePictureUrl(String imageUrl) async {
+    try {
+      User? user = _firebaseAuth.currentUser;
+      if (user == null) return 'usuário não autenticado';
+
+      await _firestore.collection('users').doc(user.uid).update({'profilePictureUrl': imageUrl});
+      return null;
+    } catch (e) {
+      return 'erro ao atualizar a URL da foto de perfil: $e';
+    }
+  }
+
+  Future<String?> getProfilePictureUrl() async {
+    try {
+      User? user = _firebaseAuth.currentUser;
+      if (user == null) return 'usuário não autenticado';
+
+      DocumentSnapshot userDoc = await _firestore.collection('users').doc(user.uid).get();
+      return userDoc['profilePictureUrl'];
+    } catch (e) {
+      return 'erro ao obter a URL da foto de perfil: $e';
+    }
+  }
+
 }
