@@ -16,10 +16,16 @@ class Perfil extends StatefulWidget {
 
 class PerfilState extends State<Perfil> {
   AuthService autoService = AuthService();
+  FavoriteMovieService favoriteService = FavoriteMovieService();
+  WatchedService watchedService = WatchedService();
+  WatchListService watchlistService = WatchListService();
 
   String? _nome;
   String? _sobrenome;
   String? _profilePictureUrl;
+  late List<Map<String, dynamic>> _favoriteMovies;
+  late List<Map<String, dynamic>> _watched;
+  late List<Map<String, dynamic>> _watchlist;
 
   @override
   void initState() {
@@ -30,6 +36,9 @@ class PerfilState extends State<Perfil> {
     _nome = await autoService.getUserName();
     _sobrenome = await autoService.getUserSurname();
     _profilePictureUrl = await autoService.getProfilePictureUrl();
+    _favoriteMovies = await favoriteService.getFavoriteMoviesOnce();
+    _watched = await watchedService.getWatched();
+    _watchlist = await watchlistService.getWatchlist();
   }
 
   @override
@@ -73,7 +82,8 @@ class PerfilState extends State<Perfil> {
                 SizedBox(height: screenHeight * 0.05),
                 CircleAvatar(
                   radius: screenWidth * 0.13,
-                  backgroundImage: _profilePictureUrl != null && _profilePictureUrl!.isNotEmpty
+                  backgroundImage: _profilePictureUrl != null &&
+                          _profilePictureUrl!.isNotEmpty
                       ? NetworkImage(_profilePictureUrl!)
                       : const AssetImage('assets/default_avatar.png'),
                 ),
@@ -89,17 +99,17 @@ class PerfilState extends State<Perfil> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        _criarBotao(
-                            context, 'Filmes', 'Filmes', 0, screenHeight),
+                        _criarBotao(context, 'Filmes', 'Filmes',
+                            _watched.length, screenHeight),
                         SizedBox(height: screenHeight * 0.01),
                         _criarBotao(
                             context, 'Críticas', 'Crítica', 0, screenHeight),
                         SizedBox(height: screenHeight * 0.01),
                         _criarBotao(context, 'Quero Assistir', 'Quero Assistir',
-                            0, screenHeight),
+                            _watchlist.length, screenHeight),
                         SizedBox(height: screenHeight * 0.01),
-                        _criarBotao(
-                            context, 'Favoritos', 'Favoritos', 0, screenHeight),
+                        _criarBotao(context, 'Favoritos', 'Favoritos',
+                            _favoriteMovies.length, screenHeight),
                         SizedBox(height: screenHeight * 0.01),
                       ],
                     ),
@@ -125,59 +135,55 @@ class PerfilState extends State<Perfil> {
             ),
           );
         } else if (tituloBotao == 'Favoritos') {
-          final favoriteMovies =
-          await FavoriteMovieService().getFavoriteMoviesOnce();
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => FilmeGrid(
                 tituloAppBar: tituloAppBar,
-                filmes: favoriteMovies
+                filmes: _favoriteMovies
                     .map((movie) => FilmeWidget(
-                  posterPath: movie['poster_path'] ?? '',
-                  movieId: movie['id'],
-                  runtime: movie['runtime'],
-                  releaseDate: movie['release_date'],
-                  dateAdded: movie['dateAdded'],
-                ))
+                          posterPath: movie['poster_path'] ?? '',
+                          movieId: movie['id'],
+                          runtime: movie['runtime'],
+                          releaseDate: movie['release_date'],
+                          dateAdded: movie['dateAdded'],
+                        ))
                     .toList(),
               ),
             ),
           );
         } else if (tituloBotao == 'Quero Assistir') {
-          final watchlist = await WatchListService().getWatchlist();
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => FilmeGrid(
                 tituloAppBar: tituloAppBar,
-                filmes: watchlist
+                filmes: _watchlist
                     .map((movie) => FilmeWidget(
-                  posterPath: movie['poster_path'] ?? '',
-                  movieId: movie['id'],
-                  runtime: movie['runtime'],
-                  releaseDate: movie['release_date'],
-                  dateAdded: movie['dateAdded'],
-                ))
+                          posterPath: movie['poster_path'] ?? '',
+                          movieId: movie['id'],
+                          runtime: movie['runtime'],
+                          releaseDate: movie['release_date'],
+                          dateAdded: movie['dateAdded'],
+                        ))
                     .toList(),
               ),
             ),
           );
         } else if (tituloBotao == 'Filmes') {
-          final watched = await WatchedService().getWatched();
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => FilmeGrid(
                 tituloAppBar: tituloAppBar,
-                filmes: watched
+                filmes: _watched
                     .map((movie) => FilmeWidget(
-                  posterPath: movie['poster_path'] ?? '',
-                  movieId: movie['id'],
-                  runtime: movie['runtime'],
-                  releaseDate: movie['release_date'],
-                  dateAdded: movie['dateAdded'],
-                ))
+                          posterPath: movie['poster_path'] ?? '',
+                          movieId: movie['id'],
+                          runtime: movie['runtime'],
+                          releaseDate: movie['release_date'],
+                          dateAdded: movie['dateAdded'],
+                        ))
                     .toList(),
               ),
             ),
