@@ -1,3 +1,4 @@
+import 'package:filmin/screens/perfil_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:filmin/controlador/controlador.dart';
 import 'package:flutter/foundation.dart';
@@ -68,7 +69,12 @@ class BuscaScreenState extends State<BuscaScreen> {
   }
 
   void _navegarParaPerfilUsuario(String userId) {
-    // Placeholder for navigating to the user's profile
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Perfil(anotherUserId: userId)
+      )
+    );
   }
 
   @override

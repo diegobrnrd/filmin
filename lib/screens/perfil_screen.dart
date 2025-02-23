@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:filmin/helpers/filme.dart';
 import 'package:filmin/helpers/filmes_grid.dart';
@@ -6,9 +7,12 @@ import 'package:filmin/services/watched_service.dart';
 import 'package:filmin/services/favorite_movie_service.dart';
 import 'package:filmin/services/watchlist_service.dart';
 import 'package:filmin/services/auth_service.dart';
+import 'package:filmin/services/user_service.dart';
 
 class Perfil extends StatefulWidget {
-  const Perfil({super.key});
+  final String? anotherUserId;
+
+  const Perfil({super.key, this.anotherUserId});
 
   @override
   PerfilState createState() => PerfilState();
@@ -19,6 +23,7 @@ class PerfilState extends State<Perfil> {
   FavoriteMovieService favoriteService = FavoriteMovieService();
   WatchedService watchedService = WatchedService();
   WatchListService watchlistService = WatchListService();
+  UserService userService = UserService();
 
   String? _nome;
   String? _sobrenome;
@@ -41,12 +46,73 @@ class PerfilState extends State<Perfil> {
     _watchlist = await watchlistService.getWatchlist();
   }
 
+  Future<void> _fetchAnotherUserData(String id) async {
+    DocumentSnapshot? userDoc = await userService.getUserDocById(id);
+
+    if (userDoc != null) {
+      Map<String, dynamic>? userData = userDoc.data() as Map<String, dynamic>?;
+
+      setState(() {
+        _nome = userData?['nome'];
+        _sobrenome = userData?['sobrenome'];
+        _profilePictureUrl = userData?['profile_picture'];
+      });
+
+      QuerySnapshot favoriteMoviesSnapshot =
+          await userDoc.reference.collection('favorite_movies').get();
+      QuerySnapshot watchedSnapshot =
+          await userDoc.reference.collection('watched').get();
+      QuerySnapshot watchlistSnapshot =
+          await userDoc.reference.collection('watchlist').get();
+
+      setState(() {
+        _favoriteMovies = favoriteMoviesSnapshot.docs
+            .map((doc) => {
+                  'documentId': doc.id,
+                  'id': doc['id'],
+                  'release_date': doc['release_date'],
+                  'poster_path': doc['poster_path'],
+                  'genres': doc['genres'],
+                  'runtime': doc['runtime'],
+                  'dateAdded': doc['dateAdded'],
+                })
+            .toList();
+
+        _watched = watchedSnapshot.docs
+            .map((doc) => {
+                  'documentId': doc.id,
+                  'id': doc['id'],
+                  'release_date': doc['release_date'],
+                  'poster_path': doc['poster_path'],
+                  'genres': doc['genres'],
+                  'runtime': doc['runtime'],
+                  'dateAdded': doc['dateAdded'],
+                })
+            .toList();
+
+        _watchlist = watchlistSnapshot.docs
+            .map((doc) => {
+                  'documentId': doc.id,
+                  'id': doc['id'],
+                  'release_date': doc['release_date'],
+                  'poster_path': doc['poster_path'],
+                  'genres': doc['genres'],
+                  'runtime': doc['runtime'],
+                  'dateAdded': doc['dateAdded'],
+                })
+            .toList();
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     return FutureBuilder(
-      future: _fetchUserData(),
+      future: widget.anotherUserId != null 
+      ? _fetchAnotherUserData(widget.anotherUserId!) 
+      : _fetchUserData(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(

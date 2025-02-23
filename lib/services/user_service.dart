@@ -24,5 +24,20 @@ class UserService {
       return {'error': 'Erro ao buscar dados do usuário: $e'};
     }
   }
+
+  Future<DocumentSnapshot?> getUserDocById(String userId) async {
+    try {
+      DocumentSnapshot userDoc = await _firestore.collection('users').doc(userId).get();
+
+      if (userDoc.exists) {
+        return userDoc; 
+      } else {
+        return null; 
+      }
+    } catch (e) {
+      return null; 
+    }
+  }
+
 }
 
