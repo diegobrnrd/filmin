@@ -1,3 +1,4 @@
+import 'package:filmin/screens/password_reset_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:filmin/screens/login_screen.dart';
 
@@ -52,7 +53,14 @@ class RedefinirSenhaScreen extends StatelessWidget {
               'Redefinir',
               backgroundColor: const Color(0xFF208BFE),
               textColor: const Color(0xFFF1F3F5),
-              onPressed: () {},
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return const PasswordResetModal();
+                  },
+                );
+              },
             ),
             SizedBox(height: screenHeight * 0.007),
             _buildButton(

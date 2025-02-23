@@ -41,7 +41,7 @@ class _TelaEscreverCriticaState extends State<TelaEscreverCritica> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Escrever Crítica'),
+        title: const Text('Escrever Crítica'),backgroundColor: const Color(0xFF161E27)
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -121,7 +121,7 @@ class _TelaEscreverCriticaState extends State<TelaEscreverCritica> {
           ],
         ),
       ),
-      backgroundColor: const Color.fromARGB(255, 32, 32, 35),
+      backgroundColor: const Color(0xFF161E27),
     );
   }
 

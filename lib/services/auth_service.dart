@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
 class AuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -116,7 +117,8 @@ class AuthService {
 
         for (QueryDocumentSnapshot doc in querySnapshot.docs) {
           // Deletar subcoleções dentro de cada documento
-          CollectionReference subCollectionRef = doc.reference.collection('subCollectionName');
+          CollectionReference subCollectionRef =
+              doc.reference.collection('subCollectionName');
           QuerySnapshot subCollectionSnapshot = await subCollectionRef.get();
           for (QueryDocumentSnapshot subDoc in subCollectionSnapshot.docs) {
             await subDoc.reference.delete();
@@ -272,7 +274,10 @@ class AuthService {
       User? user = _firebaseAuth.currentUser;
       if (user == null) return 'usuário não autenticado';
 
-      await _firestore.collection('users').doc(user.uid).update({'profilePictureUrl': imageUrl});
+      await _firestore
+          .collection('users')
+          .doc(user.uid)
+          .update({'profilePictureUrl': imageUrl});
       return null;
     } catch (e) {
       return 'erro ao atualizar a URL da foto de perfil: $e';
@@ -284,11 +289,23 @@ class AuthService {
       User? user = _firebaseAuth.currentUser;
       if (user == null) return 'usuário não autenticado';
 
-      DocumentSnapshot userDoc = await _firestore.collection('users').doc(user.uid).get();
+      DocumentSnapshot userDoc =
+          await _firestore.collection('users').doc(user.uid).get();
       return userDoc['profilePictureUrl'];
     } catch (e) {
       return 'erro ao obter a URL da foto de perfil: $e';
     }
   }
 
+  Future<bool> resetPassword(String email) async {
+    try {
+      // Simulate a network call
+      await Future.delayed(const Duration(seconds: 2));
+      // Assume the email was sent successfully
+      return true;
+    } catch (e) {
+      // Handle error
+      return false;
+    }
+  }
 }

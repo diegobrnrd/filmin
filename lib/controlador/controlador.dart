@@ -33,4 +33,35 @@ class Controlador {
       throw Exception('Failed to load movie details');
     }
   }
+
+  Future<List<dynamic>> buscarFilmesEmCartaz() async {
+    List<dynamic> filmesEmCartaz = [];
+    int page = 1;
+
+    while (filmesEmCartaz.length < 6) {
+      final response = await http.get(Uri.parse(
+          '$_baseUrl/movie/now_playing?api_key=$_apiKey&language=pt-BR&sort_by=popularity.desc&page=$page'));
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final filmes = data['results']
+            .where((filme) =>
+                filme['original_language'] == 'pt' &&
+                filme['poster_path'] != null &&
+                !filmesEmCartaz
+                    .any((existingFilme) => existingFilme['id'] == filme['id']))
+            .toList();
+        filmesEmCartaz.addAll(filmes);
+
+        if (data['total_pages'] == page) {
+          break;
+        }
+        page++;
+      } else {
+        throw Exception('Failed to load now playing movies');
+      }
+    }
+
+    return filmesEmCartaz.take(6).toList();
+  }
 }

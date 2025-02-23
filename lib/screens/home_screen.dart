@@ -10,6 +10,7 @@ import 'package:filmin/screens/login_screen.dart';
 import 'package:filmin/services/watchlist_service.dart';
 import 'package:filmin/screens/listas_screen.dart';
 import 'package:filmin/screens/mapa_cinemas.dart';
+import 'package:filmin/controlador/controlador.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -21,24 +22,40 @@ class HomeScreen extends StatefulWidget {
 class HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
   AuthService autoService = AuthService();
+  Controlador controlador = Controlador();
 
   String? _nome;
   String? _sobrenome;
   String? _nomeUsuario;
   String? _profilePictureUrl;
+  List<dynamic> _filmesEmCartaz = [];
 
   Future<void> _fetchUserData() async {
     _nome = await autoService.getUserName();
     _sobrenome = await autoService.getUserSurname();
     _nomeUsuario = await autoService.getUserUsername();
     _profilePictureUrl = await autoService.getProfilePictureUrl();
+    _profilePictureUrl = await autoService.getProfilePictureUrl();
     setState(() {});
+  }
+
+  Future<void> _fetchFilmesEmCartaz() async {
+    try {
+      _filmesEmCartaz = await controlador.buscarFilmesEmCartaz();
+      setState(() {});
+    } catch (e) {
+      print('Erro ao carregar filmes em cartaz: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Falha ao carregar filmes em cartaz.')),
+      );
+    }
   }
 
   @override
   void initState() {
     super.initState();
     _fetchUserData();
+    _fetchFilmesEmCartaz();
   }
 
   void _onItemTapped(int index) {
@@ -84,13 +101,13 @@ class HomeScreenState extends State<HomeScreen> {
         child: ListView(
           children: [
             DrawerHeader(
-              decoration: const BoxDecoration(
-              ),
+              decoration: const BoxDecoration(),
               child: Row(
                 children: [
                   CircleAvatar(
                     radius: screenHeight * 0.05,
-                    backgroundImage: _profilePictureUrl != null && _profilePictureUrl!.isNotEmpty
+                    backgroundImage: _profilePictureUrl != null &&
+                            _profilePictureUrl!.isNotEmpty
                         ? NetworkImage(_profilePictureUrl!)
                         : const AssetImage('assets/default_avatar.png'),
                   ),
@@ -183,12 +200,12 @@ class HomeScreenState extends State<HomeScreen> {
                       tituloAppBar: "Quero Assistir",
                       filmes: watchlist
                           .map((movie) => FilmeWidget(
-                        posterPath: movie['poster_path'] ?? '',
-                        movieId: movie['id'],
-                        runtime: movie['runtime'],
-                        releaseDate: movie['release_date'],
-                        dateAdded: movie['dateAdded'],
-                      ))
+                                posterPath: movie['poster_path'] ?? '',
+                                movieId: movie['id'],
+                                runtime: movie['runtime'],
+                                releaseDate: movie['release_date'],
+                                dateAdded: movie['dateAdded'],
+                              ))
                           .toList(),
                     ),
                   ),
@@ -316,6 +333,7 @@ class HomeScreenState extends State<HomeScreen> {
   Widget _buildFilmesContent() {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+
     return Column(
       children: [
         SizedBox(height: screenHeight * 0.025),
@@ -326,9 +344,10 @@ class HomeScreenState extends State<HomeScreen> {
             child: Text(
               'Em Cartaz',
               style: TextStyle(
-                  color: const Color(0xFFAEBBC9),
-                  fontSize: screenHeight * 0.02,
-                  fontWeight: FontWeight.bold),
+                color: const Color(0xFFAEBBC9),
+                fontSize: screenHeight * 0.02,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ),
@@ -337,23 +356,26 @@ class HomeScreenState extends State<HomeScreen> {
           padding: EdgeInsets.only(left: screenWidth * 0.018),
           child: SizedBox(
             height: screenHeight * 0.2,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: 20,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding:
-                  EdgeInsets.symmetric(horizontal: screenHeight * 0.005),
-                  child: const FilmeWidget(
-                    posterPath: '',
-                    movieId: 0, // TODO: 0 enquanto não se tem a busca na API
-                    runtime: 0, // TODO: 0 enquanto não se tem a busca na API
-                    releaseDate: '', // TODO: '' enquanto não se tem a busca na API
-                    dateAdded: null, // TODO: null enquanto não se tem a busca na API
+            child: _filmesEmCartaz.isEmpty
+                ? const Center(child: CircularProgressIndicator())
+                : ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: _filmesEmCartaz.length,
+                    itemBuilder: (context, index) {
+                      final filme = _filmesEmCartaz[index];
+                      return Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: screenHeight * 0.005),
+                        child: FilmeWidget(
+                          posterPath: filme['poster_path'] ?? '',
+                          movieId: filme['id'] ?? 0,
+                          runtime: 0,
+                          releaseDate: filme['release_date'] ?? '',
+                          dateAdded: null,
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
           ),
         )
       ],
