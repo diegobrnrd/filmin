@@ -14,7 +14,6 @@ class _CriarListaScreenState extends State<CriarListaScreen> {
   final TextEditingController _descricaoController = TextEditingController();
 
   final ListsService _listsService = ListsService();
-  String desc = 'Adicionar descrição...';
 
   Future<void> _salvarLista() async {
     if (_formKey.currentState!.validate()) {
@@ -27,18 +26,25 @@ class _CriarListaScreenState extends State<CriarListaScreen> {
       if (!mounted) return;
       // Exemplo de feedback ao usuário
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Lista salva com sucesso!')),
+        const SnackBar(
+            content: Text('lista criada com sucesso',
+                style: TextStyle(color: Color(0xFFF1F3F5))),
+            backgroundColor: Color(0xFF208BFE)),
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
         appBar: AppBar(
-            title: const Text(
+            title: Text(
               'Nova Lista',
-              style: TextStyle(color: Color(0xFFAEBBC9)),
+              style: TextStyle(
+                  color: const Color(0xFFAEBBC9),
+                  fontSize: screenHeight * 0.025),
             ),
             backgroundColor: const Color(0xFF161E27),
             leading: IconButton(
@@ -50,53 +56,80 @@ class _CriarListaScreenState extends State<CriarListaScreen> {
             ),
             actions: [
               IconButton(
-                icon: const Icon(Icons.check,
-                    color: Color(0xFFAEBBC9)), // Ícone de confirmar
-                onPressed: () async {
-                  await _salvarLista();
-                  // ignore: use_build_context_synchronously
-                  Navigator.pop(context);
-                },
-              )
+                  icon: const Icon(Icons.check,
+                      color: Color(0xFFAEBBC9)), // Ícone de confirmar
+                  onPressed: () async {
+                    if (_nomeController.text.isEmpty &&
+                        _descricaoController.text.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'nome e descrição não podem ser vazios',
+                            style: TextStyle(color: Color(0xFFF1F3F5)),
+                          ),
+                          backgroundColor: Color(0xFFF52958),
+                        ),
+                      );
+                    } else if (_nomeController.text.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text(
+                              'nome não pode ser vazio',
+                              style: TextStyle(color: Color(0xFFF1F3F5)),
+                            ),
+                            backgroundColor: Color(0xFFF52958)),
+                      );
+                    } else if (_descricaoController.text.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text(
+                              'descrição não pode ser vazia',
+                              style: TextStyle(color: Color(0xFFF1F3F5)),
+                            ),
+                            backgroundColor: Color(0xFFF52958)),
+                      );
+                    } else {
+                      await _salvarLista();
+                      // ignore: use_build_context_synchronously
+                      Navigator.pop(context);
+                    }
+                  })
             ]),
         body: Padding(
-            padding: const EdgeInsets.all(15),
+            padding: EdgeInsets.all(screenWidth * 0.04),
             child: Form(
                 key: _formKey,
                 child: Column(children: [
                   TextFormField(
                     controller: _nomeController,
-                    decoration: const InputDecoration(
+                    maxLength: 30,
+                    decoration: InputDecoration(
                       labelText: 'Nome da Lista',
+                      counterStyle: TextStyle(color: Color(0xFFAEBBC9)),
                       labelStyle: TextStyle(color: Color(0xFFAEBBC9)),
                       focusedBorder: UnderlineInputBorder(
-                          borderSide:
-                              BorderSide(width: 2.0, color: Color(0xFFAEBBC9))),
+                        borderSide: BorderSide(
+                            width: screenWidth * 0.005,
+                            color: Color(0xFFAEBBC9)),
+                      ),
                       enabledBorder: UnderlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Color(0xFFAEBBC9), width: 2)),
+                        borderSide: BorderSide(
+                            color: Color(0xFFAEBBC9),
+                            width: screenWidth * 0.005),
+                      ),
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Digite um nome para a lista';
-                      }
-                      return null;
-                    },
+                    style: const TextStyle(color: Color(0xFFF1F3F5)),
                   ),
                   TextFormField(
                       controller: _descricaoController,
-                      maxLines: 20,
+                      maxLength: 200,
                       keyboardType: TextInputType.multiline,
-                      style: const TextStyle(color: Color(0xFFAEBBC9)),
-                      cursorColor: const Color(0xFFAEBBC9),
+                      style: const TextStyle(color: Color(0xFFF1F3F5)),
                       decoration: const InputDecoration(
-                          hintText: 'Adicionar Descrição...',
+                          hintText: 'Descrição',
+                          counterStyle: TextStyle(color: Color(0xFFAEBBC9)),
                           hintStyle: TextStyle(color: Color(0xFFAEBBC9)),
                           border: InputBorder.none))
-                        ]
-                  )
-                )
-              )
-            );
-          }
-        }
+                ]))));
+  }
+}

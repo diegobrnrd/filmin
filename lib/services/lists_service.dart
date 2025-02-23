@@ -49,8 +49,9 @@ class ListsService {
                 .toList(),
             'runtime': movie['runtime'],
             'dateAdded': Timestamp.now(),
+            'title': movie['title'],
           });
-        } 
+        }
       }
     }
   }
@@ -58,12 +59,20 @@ class ListsService {
   Future<void> deleteList(String documentId) async {
     final User? user = _auth.currentUser;
     if (user != null) {
-      await _firestore
+      final listRef = _firestore
           .collection('users')
           .doc(user.uid)
           .collection('lists')
-          .doc(documentId)
-          .delete();
+          .doc(documentId);
+
+      // Delete all movies in the list
+      final moviesSnapshot = await listRef.collection('movies').get();
+      for (var doc in moviesSnapshot.docs) {
+        await doc.reference.delete();
+      }
+
+      // Delete the list itself
+      await listRef.delete();
     }
   }
 
@@ -80,7 +89,8 @@ class ListsService {
       if (listaQuery.docs.isNotEmpty) {
         final listaRef = listaQuery.docs.first.reference.collection('movies');
 
-        listaRef.doc(movieId).delete();
+        // Aguarda a conclusão da operação de exclusão
+        await listaRef.doc(movieId).delete();
       }
     }
   }
@@ -107,6 +117,7 @@ class ListsService {
                 'genres': doc['genres'],
                 'runtime': doc['runtime'],
                 'dateAdded': doc['dateAdded'],
+                'title': doc['title'],
               })
           .toList();
     } else {
@@ -129,7 +140,7 @@ class ListsService {
 
       listaRef.update({
         'name': novoNome,
-        'descricao': novaDescricao,
+        'description': novaDescricao,
       });
     }
   }
@@ -156,7 +167,8 @@ class ListsService {
   }
 
   // Novo método para obter todas as listas com seus conteúdos para um usuário específico
-  Future<List<Map<String, dynamic>>> getAllListsWithContentsForUser(String userId) async {
+  Future<List<Map<String, dynamic>>> getAllListsWithContentsForUser(
+      String userId) async {
     final listsSnapshot = await _firestore
         .collection('users')
         .doc(userId)

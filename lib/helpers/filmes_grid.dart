@@ -69,33 +69,40 @@ class FilmeGridState extends State<FilmeGrid> {
         ),
         actions: [
           PopupMenuButton<String>(
+            icon: Icon(Icons.sort, color: const Color(0xFFAEBBC9)),
             onSelected: _ordenarFilmes,
             color: const Color(0xFF1E2936),
             itemBuilder: (BuildContext context) {
               return [
                 const PopupMenuItem<String>(
                   value: 'dataAdicaoAntiga',
-                  child: Text('Data de Adição - Antigos', style: TextStyle(color: Color(0xFF788EA5))),
+                  child: Text('Data de Adição - Antigos',
+                      style: TextStyle(color: Color(0xFF788EA5))),
                 ),
                 const PopupMenuItem<String>(
                   value: 'dataAdicaoRecente',
-                  child: Text('Data de Adição - Recentes', style: TextStyle(color: Color(0xFF788EA5))),
+                  child: Text('Data de Adição - Recentes',
+                      style: TextStyle(color: Color(0xFF788EA5))),
                 ),
                 const PopupMenuItem<String>(
                   value: 'dataLancamentoAntiga',
-                  child: Text('Data de Lançamento - Antigos', style: TextStyle(color: Color(0xFF788EA5))),
+                  child: Text('Data de Lançamento - Antigos',
+                      style: TextStyle(color: Color(0xFF788EA5))),
                 ),
                 const PopupMenuItem<String>(
                   value: 'dataLancamentoRecente',
-                  child: Text('Data de Lançamento - Recentes', style: TextStyle(color: Color(0xFF788EA5))),
+                  child: Text('Data de Lançamento - Recentes',
+                      style: TextStyle(color: Color(0xFF788EA5))),
                 ),
                 const PopupMenuItem<String>(
                   value: 'duracaoMenor',
-                  child: Text('Duração - Curtos', style: TextStyle(color: Color(0xFF788EA5))),
+                  child: Text('Duração - Curtos',
+                      style: TextStyle(color: Color(0xFF788EA5))),
                 ),
                 const PopupMenuItem<String>(
                   value: 'duracaoMaior',
-                  child: Text('Duração - Longos', style: TextStyle(color: Color(0xFF788EA5))),
+                  child: Text('Duração - Longos',
+                      style: TextStyle(color: Color(0xFF788EA5))),
                 ),
               ];
             },

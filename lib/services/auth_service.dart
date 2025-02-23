@@ -308,4 +308,20 @@ class AuthService {
       return false;
     }
   }
+
+  Future<Map<String, String>> getUserProfile(String userId) async {
+    try {
+      DocumentSnapshot userDoc = await _firestore.collection('users').doc(userId).get();
+      return {
+        'username': userDoc['username'],
+        'profilePictureUrl': userDoc['profilePictureUrl'],
+      };
+    } catch (e) {
+      return {
+        'username': 'Unknown',
+        'profilePictureUrl': '',
+      };
+    }
+  }
+
 }

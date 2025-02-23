@@ -1,3 +1,4 @@
+import 'package:filmin/screens/criticas_filme.dart';
 import 'package:filmin/screens/escolher_lista.dart';
 import 'package:flutter/material.dart';
 import 'package:filmin/services/favorite_movie_service.dart';
@@ -5,6 +6,7 @@ import 'package:filmin/services/watchlist_service.dart';
 import 'package:filmin/controlador/controlador.dart';
 import 'package:filmin/screens/escrever_critica_screen.dart';
 import 'package:filmin/services/watched_service.dart';
+
 
 class DetalhesFilmeScreen extends StatefulWidget {
   final int movieId;
@@ -189,6 +191,8 @@ class DetalhesFilmeScreenState extends State<DetalhesFilmeScreen> {
         builder: (context) => TelaEscreverCritica(
           movieTitle: filme.titulo,
           posterUrl: 'https://image.tmdb.org/t/p/w154${filme.posterPath}',
+          movieId: widget.movieId,
+          ano: int.parse(filme.ano),
         ),
       ),
     );
@@ -385,6 +389,34 @@ class DetalhesFilmeScreenState extends State<DetalhesFilmeScreen> {
                   color: const Color(0xFF1E2936),
                   height: screenHeight * 0.001,
                   thickness: screenHeight * 0.002,
+                ),
+                SizedBox(height: screenHeight * 0.04),
+                Center(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      vertical: screenHeight * 0.01,
+                      horizontal: screenWidth * 0.02,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF1E2936),
+                      borderRadius: BorderRadius.circular(screenWidth * 0.025),
+                    ),
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CriticasFilmeScreen(movieId: widget.movieId.toString()),
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        'Ler críticas do filme',
+                        style:
+                            TextStyle(fontSize: 18, color: Color(0xFF788EA5)),
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),

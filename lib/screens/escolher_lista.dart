@@ -30,11 +30,13 @@ class _EscolherListaScreenState extends State<EscolherListaScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Escolha a qual lista o filme deve ser adicionado',
-          style: TextStyle(color: Color(0xFFAEBBC9)),
+        title: Text(
+          'Adição na lista',
+          style: TextStyle(
+              color: Color(0xFFAEBBC9), fontSize: screenHeight * 0.025),
         ),
         backgroundColor: const Color(0xFF161E27),
         centerTitle: true,
@@ -57,31 +59,32 @@ class _EscolherListaScreenState extends State<EscolherListaScreen> {
                     return ListTile(
                       title: Text(
                         userLists[index]['name'],
-                        style: const TextStyle(color: Color(0xFFAEBBC9)),
+                        style: const TextStyle(color: Color(0xFFF1F3F5)),
                       ),
                       subtitle: Text(
                         userLists[index]['description'],
                         style: const TextStyle(
-                          color: Color.fromARGB(255, 152, 163, 175),
+                          color: Color(0xFFF1F3F5),
                         ),
                       ),
                       leading: IconButton(
-                        color: const Color(0xFFAEBBC9),
-                        icon: const Icon(Icons.edit),
-                        onPressed: () {
+                        color: const Color(0xFF208BFE),
+                        icon: const Icon(Icons.list),
+                        onPressed: () async {
+                          await _listsService.addToList(
+                              widget.movie, userLists[index]['name']);
                           Navigator.pop(context); // Retorna à tela anterior
                         },
                       ),
                       onTap: () async {
                         await _listsService.addToList(
                             widget.movie, userLists[index]['name']);
-                            // ignore: use_build_context_synchronously
-                            Navigator.pop(context);
+                        // ignore: use_build_context_synchronously
+                        Navigator.pop(context);
                       },
                     );
                   },
                 ),
     );
-    
   }
 }
