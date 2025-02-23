@@ -68,13 +68,20 @@ class BuscaScreenState extends State<BuscaScreen> {
     );
   }
 
-  void _navegarParaPerfilUsuario(String userId) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => Perfil(anotherUserId: userId)
-      )
-    );
+  void _navegarParaPerfilUsuario(String? userId) {
+    if (userId != null && userId.isNotEmpty) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Perfil(anotherUserId: userId),
+        ),
+      );
+    } else {
+      // Trate o caso de userId nulo ou vazio
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Usuário não encontrado.')),
+      );
+    }
   }
 
   @override
@@ -208,21 +215,21 @@ class BuscaScreenState extends State<BuscaScreen> {
                   );
                 } else if (_selectedIndex == 1) {
                   final user = _searchResults[index];
-                  final username = user['username'] ?? 'Usuário Desconhecido';
+                  final username = user['uid'] ?? 'Usuário Desconhecido';
                   String imageUrl = user['profilePictureUrl'] ?? 'assets/default_avatar.png';
                   if (imageUrl.isEmpty) {
                     imageUrl = 'assets/default_avatar.png';
                   }
-                  final userId = user['id'] ?? '';
+                  final userId = user['uid'];
 
-                  return Padding(
-                    padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01, horizontal: screenWidth * 0.04),
-                    child: GestureDetector(
-                      onTap: () {
-                        if (userId.isNotEmpty) {
-                          _navegarParaPerfilUsuario(userId);
-                        }
-                      },
+                  return InkWell( // Use InkWell para tornar o item clicável
+                    onTap: () {
+                      if (userId.isNotEmpty) {
+                        _navegarParaPerfilUsuario(userId);
+                      }
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01, horizontal: screenWidth * 0.04),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [

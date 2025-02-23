@@ -8,6 +8,8 @@ import 'package:filmin/services/favorite_movie_service.dart';
 import 'package:filmin/services/watchlist_service.dart';
 import 'package:filmin/services/auth_service.dart';
 import 'package:filmin/services/user_service.dart';
+import 'package:filmin/services/lists_service.dart';
+import 'package:filmin/screens/listas_screen.dart';
 
 class Perfil extends StatefulWidget {
   final String? anotherUserId;
@@ -24,6 +26,7 @@ class PerfilState extends State<Perfil> {
   WatchedService watchedService = WatchedService();
   WatchListService watchlistService = WatchListService();
   UserService userService = UserService();
+  ListsService listsService = ListsService();
 
   String? _nome;
   String? _sobrenome;
@@ -31,6 +34,7 @@ class PerfilState extends State<Perfil> {
   late List<Map<String, dynamic>> _favoriteMovies;
   late List<Map<String, dynamic>> _watched;
   late List<Map<String, dynamic>> _watchlist;
+  late List<Map<String, dynamic>> _userLists;
 
   @override
   void initState() {
@@ -44,6 +48,7 @@ class PerfilState extends State<Perfil> {
     _favoriteMovies = await favoriteService.getFavoriteMoviesOnce();
     _watched = await watchedService.getWatched();
     _watchlist = await watchlistService.getWatchlist();
+    _userLists = await listsService.getUserLists();
   }
 
   Future<void> _fetchAnotherUserData(String id) async {
@@ -177,6 +182,9 @@ class PerfilState extends State<Perfil> {
                         _criarBotao(context, 'Favoritos', 'Favoritos',
                             _favoriteMovies.length, screenHeight),
                         SizedBox(height: screenHeight * 0.01),
+                        _criarBotao(context, 'Listas', 'Listas',
+                            _userLists.length, screenHeight),
+                        SizedBox(height: screenHeight * 0.01),
                       ],
                     ),
                   ),
@@ -252,6 +260,13 @@ class PerfilState extends State<Perfil> {
                         ))
                     .toList(),
               ),
+            ),
+          );
+        } else if (tituloBotao == 'Listas') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const ListasScreen(),
             ),
           );
         }
