@@ -18,7 +18,7 @@ class TelaMapaState extends State<TelaMapa> {
   bool _isLoading = false;
   final Map<String, List<Marker>> _cache = {};
   final MapController _mapController = MapController();
-  bool _isDarkMode = false; // Variável para controlar o modo noturno do mapa
+  bool _isDarkMode = false;
 
   @override
   void dispose() {
@@ -33,10 +33,8 @@ class TelaMapaState extends State<TelaMapa> {
     });
 
     try {
-      // Primeiro, busca a cidade no Brasil
       Map<String, double>? cityLocation = await compute(_fetchCityLocation, {'cityName': cityName, 'countryCode': 'BR'});
 
-      // Se não encontrar no Brasil, busca globalmente
       if (cityLocation == null) {
         cityLocation = await compute(_fetchCityLocation, {'cityName': cityName, 'countryCode': null});
         if (cityLocation == null) {
@@ -45,10 +43,8 @@ class TelaMapaState extends State<TelaMapa> {
         }
       }
 
-      // Movendo o mapa para a localização da cidade e ajustando o zoom
       _mapController.move(LatLng(cityLocation['lat']!, cityLocation['lon']!), 13.0);
 
-      // Verifica se os cinemas já estão em cache
       if (_cache.containsKey(cityName)) {
         setState(() {
           _cinemaMarkers.addAll(_cache[cityName]!);
@@ -74,7 +70,11 @@ class TelaMapaState extends State<TelaMapa> {
     final String? countryCode = params['countryCode'];
 
     final geocodeUrl = 'https://nominatim.openstreetmap.org/search?format=json&q=$cityName&countrycodes=${countryCode ?? ''}';
-    final geocodeResponse = await http.get(Uri.parse(geocodeUrl));
+    final geocodeResponse = await http.get(
+      Uri.parse(geocodeUrl),
+      headers: {'User-Agent': 'YourAppName/1.0 (your@email.com)'},
+    );
+
     if (geocodeResponse.statusCode == 200) {
       final geocodeData = jsonDecode(geocodeResponse.body);
       if (geocodeData.isEmpty) return null;
@@ -91,7 +91,7 @@ class TelaMapaState extends State<TelaMapa> {
     final BuildContext context = params['context'];
 
     const overpassUrl = 'https://overpass-api.de/api/interpreter';
-    const radius = 0.1; // Raio de busca em graus (~10 km)
+    const radius = 0.2; // Aumente o raio de busca
     final query = '''
     [out:json];
     node["amenity"="cinema"](${cityLocation['lat']! - radius},${cityLocation['lon']! - radius},${cityLocation['lat']! + radius},${cityLocation['lon']! + radius});
@@ -101,23 +101,29 @@ class TelaMapaState extends State<TelaMapa> {
     final overpassResponse = await http.post(
       Uri.parse(overpassUrl),
       body: query,
-      headers: {'Content-Type': 'text/plain; charset=utf-8'}, // Garante que a requisição use UTF-8
+      headers: {'Content-Type': 'text/plain; charset=utf-8'},
     );
 
     if (overpassResponse.statusCode == 200) {
-      // Decodifica a resposta como UTF-8
       final data = jsonDecode(utf8.decode(overpassResponse.bodyBytes));
       final elements = data['elements'] as List;
-      return elements.map((e) {
+      return await Future.wait(elements.map((e) async {
         final cinemaName = e['tags']['name'] ?? 'Cinema Desconhecido';
+        final address = await _fetchNearestAddress(LatLng(e['lat'], e['lon']));
         return Marker(
           point: LatLng(e['lat'], e['lon']),
           width: 40,
           height: 40,
           child: GestureDetector(
             onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(cinemaName.toLowerCase())),
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CinemaDetailsScreen(
+                    cinemaName: cinemaName,
+                    address: address,
+                  ),
+                ),
               );
             },
             child: const Icon(
@@ -127,9 +133,37 @@ class TelaMapaState extends State<TelaMapa> {
             ),
           ),
         );
-      }).toList();
+      }));
     }
     return [];
+  }
+
+  static Future<String> _fetchNearestAddress(LatLng point) async {
+    final reverseGeocodeUrl = 'https://nominatim.openstreetmap.org/reverse?format=json&lat=${point.latitude}&lon=${point.longitude}&zoom=18&addressdetails=1';
+    try {
+      final response = await http.get(
+        Uri.parse(reverseGeocodeUrl),
+        headers: {'User-Agent': 'YourAppName/1.0 (your@email.com)'},
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final address = data['address'] as Map<String, dynamic>;
+        final street = address['road'] ?? '';
+        final housenumber = address['house_number'] ?? '';
+        final city = address['city'] ?? address['town'] ?? address['village'] ?? '';
+        final postcode = address['postcode'] ?? '';
+
+        final addressParts = [street, housenumber, city, postcode];
+        return addressParts.where((part) => part.isNotEmpty).join(', ');
+      } else {
+        print('Erro na requisição: ${response.statusCode}');
+        return 'Endereço não disponível';
+      }
+    } catch (e) {
+      print('Exceção ao buscar endereço: $e');
+      return 'Endereço não disponível';
+    }
   }
 
   void _showError(String message) {
@@ -209,10 +243,10 @@ class TelaMapaState extends State<TelaMapa> {
                   children: [
                     TileLayer(
                       urlTemplate: _isDarkMode
-                          ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png' // Modo noturno
-                          : 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', // Modo claro
+                          ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png'
+                          : 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                       userAgentPackageName: 'dev.fleaflet.flutter_map.example',
-                      subdomains: const ['a', 'b', 'c'], // Necessário para o CartoDB
+                      subdomains: const ['a', 'b', 'c'],
                     ),
                     MarkerLayer(
                       markers: _cinemaMarkers,
@@ -267,6 +301,52 @@ class TelaMapaState extends State<TelaMapa> {
             style: TextStyle(color: inputTextColor),
           );
         },
+      ),
+    );
+  }
+}
+
+class CinemaDetailsScreen extends StatelessWidget {
+  final String cinemaName;
+  final String address;
+
+  const CinemaDetailsScreen({
+    super.key,
+    required this.cinemaName,
+    required this.address,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Detalhes do Cinema'),
+        foregroundColor:  const Color(0xFF788EA5),
+        backgroundColor: const Color(0xFF2E4052),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              cinemaName,
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF788EA5),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Endereço: $address',
+              style: const TextStyle(
+                fontSize: 18,
+                color: Color(0xFF788EA5),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
