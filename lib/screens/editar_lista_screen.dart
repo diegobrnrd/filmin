@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:filmin/services/lists_service.dart';
-import 'package:filmin/screens/deletar_filmes_lista_screen.dart';
+import 'package:filmin/screens/deletar_filme_lista_screen.dart';
 
 class EditarListaScreen extends StatefulWidget {
   final String nomeAtual;
@@ -148,7 +148,7 @@ class _EditarListaScreenState extends State<EditarListaScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => DeletarFilmesListaScreen(
+                  builder: (context) => DeletarFilmeListaScreen(
                       nomeLista: widget.nomeAtual,
                       descricaoLista: widget.descAtual)),
             );

@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:filmin/services/lists_service.dart';
 
-class DeletarFilmesListaScreen extends StatefulWidget {
+class DeletarFilmeListaScreen extends StatefulWidget {
   final String nomeLista;
   final String descricaoLista;
 
-  const DeletarFilmesListaScreen(
+  const DeletarFilmeListaScreen(
       {super.key, required this.nomeLista, required this.descricaoLista});
 
   @override
-  _DeletarFilmesListaScreenState createState() =>
-      _DeletarFilmesListaScreenState();
+  _DeletarFilmeListaScreenState createState() =>
+      _DeletarFilmeListaScreenState();
 }
 
-class _DeletarFilmesListaScreenState extends State<DeletarFilmesListaScreen> {
+class _DeletarFilmeListaScreenState extends State<DeletarFilmeListaScreen> {
   final ListsService _listsService = ListsService();
   List<Map<String, dynamic>> _movies = [];
   bool _isLoading = true;

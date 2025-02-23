@@ -1,4 +1,4 @@
-import 'package:filmin/screens/criticas_filme.dart';
+import 'package:filmin/screens/criticas_filme_screen.dart';
 import 'package:filmin/screens/escolher_lista.dart';
 import 'package:flutter/material.dart';
 import 'package:filmin/services/favorite_movie_service.dart';
@@ -188,7 +188,7 @@ class DetalhesFilmeScreenState extends State<DetalhesFilmeScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => TelaEscreverCritica(
+        builder: (context) => EscreverCriticaScren(
           movieTitle: filme.titulo,
           posterUrl: 'https://image.tmdb.org/t/p/w154${filme.posterPath}',
           movieId: widget.movieId,

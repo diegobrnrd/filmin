@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:filmin/services/critics_service.dart';
+import 'package:filmin/services/review_service.dart';
 
-class TelaEscreverCritica extends StatefulWidget {
+class EscreverCriticaScren extends StatefulWidget {
   final String movieTitle;
   final String posterUrl;
   final int movieId;
   final int ano;
 
-  const TelaEscreverCritica({
+  const EscreverCriticaScren({
     required this.movieTitle,
     required this.posterUrl,
     required this.movieId,
@@ -16,10 +16,10 @@ class TelaEscreverCritica extends StatefulWidget {
   });
 
   @override
-  _TelaEscreverCriticaState createState() => _TelaEscreverCriticaState();
+  _EscreverCriticaScrenn createState() => _EscreverCriticaScrenn();
 }
 
-class _TelaEscreverCriticaState extends State<TelaEscreverCritica> {
+class _EscreverCriticaScrenn extends State<EscreverCriticaScren> {
   final TextEditingController _controller = TextEditingController();
   bool _isBold = false;
   bool _isItalic = false;
@@ -154,8 +154,11 @@ class _TelaEscreverCriticaState extends State<TelaEscreverCritica> {
 
     try {
       await _reviewService.addReview(
-        widget.movieId.toString(),
+        widget.movieId,
         plainText,
+        widget.posterUrl,
+        widget.ano.toString(),
+        widget.movieTitle,
       );
 
       ScaffoldMessenger.of(context).showSnackBar(

@@ -73,7 +73,7 @@ class BuscaScreenState extends State<BuscaScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => Perfil(anotherUserId: userId),
+          builder: (context) => PerfilScreen(anotherUserId: userId),
         ),
       );
     } else {
@@ -215,7 +215,7 @@ class BuscaScreenState extends State<BuscaScreen> {
                   );
                 } else if (_selectedIndex == 1) {
                   final user = _searchResults[index];
-                  final username = user['uid'] ?? 'Usuário Desconhecido';
+                  final username = user['username'] ?? 'Usuário Desconhecido';
                   String imageUrl = user['profilePictureUrl'] ?? 'assets/default_avatar.png';
                   if (imageUrl.isEmpty) {
                     imageUrl = 'assets/default_avatar.png';

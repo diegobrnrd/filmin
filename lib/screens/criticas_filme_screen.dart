@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:filmin/services/critics_service.dart';
+import 'package:filmin/services/review_service.dart';
 import 'package:filmin/services/auth_service.dart';
 
 class CriticasFilmeScreen extends StatelessWidget {
@@ -10,7 +10,6 @@ class CriticasFilmeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     final ReviewService reviewService = ReviewService();
     final AuthService authService = AuthService();

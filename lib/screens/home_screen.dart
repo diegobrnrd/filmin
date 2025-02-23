@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:filmin/screens/busca_screen.dart';
 import 'package:filmin/screens/configuracoes_screen.dart';
 import 'package:filmin/screens/perfil_screen.dart';
-import 'package:filmin/screens/criticas_screen.dart';
+import 'package:filmin/screens/criticas_usuario_screen.dart';
 import 'package:filmin/services/auth_service.dart';
 import 'package:filmin/helpers/filmes_grid.dart';
 import 'package:filmin/helpers/filme.dart';
@@ -178,7 +178,7 @@ class HomeScreenState extends State<HomeScreen> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Perfil()),
+                  MaterialPageRoute(builder: (context) => PerfilScreen()),
                 );
               },
             ),
@@ -241,7 +241,7 @@ class HomeScreenState extends State<HomeScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const CriticasScreen()),
+                      builder: (context) => const CriticasUsuarioScreen()),
                 );
               },
             ),

@@ -6,24 +6,26 @@ class ReviewService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   // Criar uma crítica
-  Future<void> addReview(String movieId, String content) async {
+  Future<void> addReview(int movieId, String content, String posterPath, String year, String title) async {
     String userId = _auth.currentUser!.uid;
     await _db.collection('reviews').add({
       'userId': userId,
       'movieId': movieId,
       'content': content,
       'timestamp': FieldValue.serverTimestamp(),
+      'poster_path': posterPath,
+      'year': year,
+      'title': title,
     });
   }
 
   // Editar uma crítica
-  Future<void> updateReview(String reviewId, String newContent, double newRating) async {
+  Future<void> updateReview(String reviewId, String newContent) async {
     String userId = _auth.currentUser!.uid;
     DocumentSnapshot doc = await _db.collection('reviews').doc(reviewId).get();
     if (doc.exists && doc['userId'] == userId) {
       await _db.collection('reviews').doc(reviewId).update({
         'content': newContent,
-        'rating': newRating,
         'timestamp': FieldValue.serverTimestamp(),
       });
     }

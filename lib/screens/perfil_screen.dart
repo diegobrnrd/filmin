@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:filmin/helpers/filme.dart';
 import 'package:filmin/helpers/filmes_grid.dart';
-import 'package:filmin/screens/criticas_screen.dart';
+import 'package:filmin/screens/criticas_usuario_screen.dart';
 import 'package:filmin/services/watched_service.dart';
 import 'package:filmin/services/favorite_movie_service.dart';
 import 'package:filmin/services/watchlist_service.dart';
@@ -11,16 +11,16 @@ import 'package:filmin/services/user_service.dart';
 import 'package:filmin/services/lists_service.dart';
 import 'package:filmin/screens/listas_screen.dart';
 
-class Perfil extends StatefulWidget {
+class PerfilScreen extends StatefulWidget {
   final String? anotherUserId;
 
-  const Perfil({super.key, this.anotherUserId});
+  const PerfilScreen({super.key, this.anotherUserId});
 
   @override
   PerfilState createState() => PerfilState();
 }
 
-class PerfilState extends State<Perfil> {
+class PerfilState extends State<PerfilScreen> {
   AuthService autoService = AuthService();
   FavoriteMovieService favoriteService = FavoriteMovieService();
   WatchedService watchedService = WatchedService();
@@ -205,7 +205,7 @@ class PerfilState extends State<Perfil> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const CriticasScreen(),
+              builder: (context) => const CriticasUsuarioScreen(),
             ),
           );
         } else if (tituloBotao == 'Favoritos') {
