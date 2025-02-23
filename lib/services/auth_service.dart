@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 
 class AuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -116,12 +115,13 @@ class AuthService {
             .get();
 
         for (QueryDocumentSnapshot doc in querySnapshot.docs) {
-          // Deletar subcoleções dentro de cada documento
-          CollectionReference subCollectionRef =
-              doc.reference.collection('subCollectionName');
-          QuerySnapshot subCollectionSnapshot = await subCollectionRef.get();
-          for (QueryDocumentSnapshot subDoc in subCollectionSnapshot.docs) {
-            await subDoc.reference.delete();
+          // Se a coleção for "lists", excluir a subcoleção "movies"
+          if (collection == 'lists') {
+            CollectionReference moviesRef = doc.reference.collection('movies');
+            QuerySnapshot moviesSnapshot = await moviesRef.get();
+            for (QueryDocumentSnapshot movieDoc in moviesSnapshot.docs) {
+              await movieDoc.reference.delete();
+            }
           }
           await doc.reference.delete();
         }

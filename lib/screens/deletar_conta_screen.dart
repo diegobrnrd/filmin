@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:filmin/services/auth_service.dart';
 import 'package:filmin/screens/login_screen.dart';
+import 'package:filmin/services/supabase_service.dart';
+
 
 class DeletarContaScreen extends StatelessWidget {
   const DeletarContaScreen({super.key});
@@ -11,6 +13,7 @@ class DeletarContaScreen extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final TextEditingController senhaController = TextEditingController();
     final AuthService authService = AuthService();
+    final SupabaseStorageService supabaseService = SupabaseStorageService();
 
     return Scaffold(
       appBar: AppBar(
@@ -61,6 +64,10 @@ class DeletarContaScreen extends StatelessWidget {
                     textColor: const Color(0xFFF1F3F5),
                     onPressed: () async {
                       String senha = senhaController.text;
+                      final profilePictureUrl = await authService.getProfilePictureUrl();
+                      if (profilePictureUrl != null && profilePictureUrl.isNotEmpty) {
+                        await supabaseService.deleteImage(profilePictureUrl);
+                      }
                       String? result = await authService.deleteAccount(senha: senha);
                       if (result == null) {
                         ScaffoldMessenger.of(context).showSnackBar(
