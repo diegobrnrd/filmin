@@ -16,7 +16,7 @@ class AlterarNomeSobrenomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Alterar nome e sobrenome',
+          'Alterar Nome e Sobrenome',
           style: TextStyle(
               color: const Color(0xFFAEBBC9), fontSize: screenHeight * 0.025),
         ),

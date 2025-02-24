@@ -18,7 +18,7 @@ class DeletarContaScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Deletar conta',
+          'Deletar Conta',
           style: TextStyle(
               color: const Color(0xFFAEBBC9), fontSize: screenHeight * 0.025),
         ),

@@ -112,8 +112,8 @@ class TelaMapaState extends State<TelaMapa> {
         final address = await _fetchNearestAddress(LatLng(e['lat'], e['lon']));
         return Marker(
           point: LatLng(e['lat'], e['lon']),
-          width: 40,
-          height: 40,
+          width: MediaQuery.of(context).size.width * 0.1,
+          height: MediaQuery.of(context).size.width * 0.1,
           child: GestureDetector(
             onTap: () {
               Navigator.push(
@@ -193,7 +193,7 @@ class TelaMapaState extends State<TelaMapa> {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
             child: Row(
               children: [
                 Expanded(
@@ -206,7 +206,7 @@ class TelaMapaState extends State<TelaMapa> {
                     inputTextColor: const Color(0xFFF1F3F5),
                   ),
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: MediaQuery.of(context).size.width * 0.02),
                 ElevatedButton(
                   onPressed: () {
                     if (_cityController.text.isNotEmpty) {
@@ -318,31 +318,39 @@ class CinemaDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Detalhes do Cinema'),
-        foregroundColor:  const Color(0xFF788EA5),
-        backgroundColor: const Color(0xFF2E4052),
+        title: Text(
+          'Detalhes do Cinema',
+          style: TextStyle(fontSize: screenHeight * 0.025),
+        ),
+        foregroundColor:  const Color(0xFFAEBBC9),
+        backgroundColor: const Color(0xFF161E27),
+        iconTheme: const IconThemeData(
+          color: Color(0xFFAEBBC9),
+        ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(screenWidth * 0.04),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               cinemaName,
-              style: const TextStyle(
-                fontSize: 24,
+              style: TextStyle(
+                fontSize: screenHeight * 0.03,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF788EA5),
+                color: Color(0xFFAEBBC9),
               ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: screenHeight * 0.02),
             Text(
               'Endereço: $address',
-              style: const TextStyle(
-                fontSize: 18,
-                color: Color(0xFF788EA5),
+              style: TextStyle(
+                fontSize: screenHeight * 0.022,
+                color: const Color(0xFFAEBBC9),
               ),
             ),
           ],

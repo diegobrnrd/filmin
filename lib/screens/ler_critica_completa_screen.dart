@@ -6,20 +6,22 @@ class LerCriticaCompletaScreen extends StatelessWidget {
   final String textoCritica;
 
   const LerCriticaCompletaScreen({
-    Key? key,
+    super.key,
     required this.reviewId,
     required this.tituloFilme,
     required this.textoCritica,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
         title: Text(
           tituloFilme,
-          style: const TextStyle(color: Color(0xFFAEBBC9)),
-        ),
+          style: TextStyle(
+                color: const Color(0xFFAEBBC9), fontSize: screenHeight * 0.025),
+          ),
         backgroundColor: const Color(0xFF161E27),
         leading: IconButton(
           color: const Color(0xFFAEBBC9),
@@ -30,13 +32,13 @@ class LerCriticaCompletaScreen extends StatelessWidget {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(screenHeight * 0.02),
         child: Text(
           textoCritica,
-          style: const TextStyle(
+          style: TextStyle(
             fontWeight: FontWeight.normal,
-            fontSize: 16,
-            color: Colors.white,
+            fontSize: screenHeight * 0.016,
+            color: Color(0xFFF1F3F5),
           ),
         ),
       ),

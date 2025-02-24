@@ -220,11 +220,11 @@ class BuscaScreenState extends State<BuscaScreen> {
                   if (imageUrl.isEmpty) {
                     imageUrl = 'assets/default_avatar.png';
                   }
-                  final userId = user['uid'];
+                  final userUid = user['uid'];
 
                   return InkWell( // Use InkWell para tornar o item clicável
                     onTap: () {
-                      if (userId.isNotEmpty) {
+                      if (userUid.isNotEmpty) {
                         _navegarParaPerfilUsuario(username);
                       }
                     },

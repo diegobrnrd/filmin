@@ -37,7 +37,7 @@ class _EscreverCriticaScrenn extends State<EscreverCriticaScren> {
       fontWeight: _isBold ? FontWeight.bold : FontWeight.normal,
       fontStyle: _isItalic ? FontStyle.italic : FontStyle.normal,
       decoration:
-      _isUnderlined ? TextDecoration.underline : TextDecoration.none,
+          _isUnderlined ? TextDecoration.underline : TextDecoration.none,
       color: Colors.white,
     );
   }
@@ -51,8 +51,7 @@ class _EscreverCriticaScrenn extends State<EscreverCriticaScren> {
         title: Text(
           'Escrever Crítica',
           style: TextStyle(
-              color: const Color(0xFFAEBBC9),
-              fontSize: screenHeight * 0.025),
+              color: const Color(0xFFAEBBC9), fontSize: screenHeight * 0.025),
         ),
         backgroundColor: const Color(0xFF161E27),
         iconTheme: const IconThemeData(
@@ -99,7 +98,9 @@ class _EscreverCriticaScrenn extends State<EscreverCriticaScren> {
                 IconButton(
                   icon: Icon(
                     Icons.format_bold,
-                    color: _isBold ? const Color(0xFF208BFE) : const Color(0xFF788EA5),
+                    color: _isBold
+                        ? const Color(0xFF208BFE)
+                        : const Color(0xFF788EA5),
                   ),
                   onPressed: () {
                     setState(() {
@@ -110,7 +111,9 @@ class _EscreverCriticaScrenn extends State<EscreverCriticaScren> {
                 IconButton(
                   icon: Icon(
                     Icons.format_italic,
-                    color: _isItalic ? const Color(0xFF208BFE) : const Color(0xFF788EA5),
+                    color: _isItalic
+                        ? const Color(0xFF208BFE)
+                        : const Color(0xFF788EA5),
                   ),
                   onPressed: () {
                     setState(() {
@@ -121,7 +124,9 @@ class _EscreverCriticaScrenn extends State<EscreverCriticaScren> {
                 IconButton(
                   icon: Icon(
                     Icons.format_underline,
-                    color: _isUnderlined ? const Color(0xFF208BFE) : const Color(0xFF788EA5),
+                    color: _isUnderlined
+                        ? const Color(0xFF208BFE)
+                        : const Color(0xFF788EA5),
                   ),
                   onPressed: () {
                     setState(() {
@@ -134,14 +139,13 @@ class _EscreverCriticaScrenn extends State<EscreverCriticaScren> {
             SizedBox(height: screenHeight * 0.02),
             Center(
                 child: ElevatedButton(
-                  onPressed: _saveCritica,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF208BFE), // Cor do fundo
-                    foregroundColor: const Color(0xFFF1F3F5), // Cor da letra
-                  ),
-                  child: const Text('Salvar Crítica'),
-                )
-            ),
+              onPressed: _saveCritica,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF208BFE), // Cor do fundo
+                foregroundColor: const Color(0xFFF1F3F5), // Cor da letra
+              ),
+              child: const Text('Salvar Crítica'),
+            )),
           ],
         ),
       ),
@@ -151,16 +155,28 @@ class _EscreverCriticaScrenn extends State<EscreverCriticaScren> {
 
   void _saveCritica() async {
     final plainText = _controller.text;
+    if (plainText.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text(
+            'a crítica não pode ser vazia',
+            style: TextStyle(color: Color(0xFFF1F3F5)),
+          ),
+          backgroundColor: Color(0xFFF52958),
+        ),
+      );
+      return;
+    }
 
     try {
       await _reviewService.addReview(
-        widget.movieId,
+        widget.movieId.toString(),
         plainText,
         widget.posterUrl,
         widget.ano.toString(),
         widget.movieTitle,
       );
-
+      Navigator.of(context).pop();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -173,9 +189,14 @@ class _EscreverCriticaScrenn extends State<EscreverCriticaScren> {
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Erro ao salvar crítica: $e'),
-        ),
+          content: Text(
+              'Erro ao salvar crítica: $e',
+              style: TextStyle(color: Color(0xFFF1F3F5)),
+          ),
+          backgroundColor: Color(0xFFF52958),
+          ),
       );
+      Navigator.of(context).pop();
     }
   }
 }
@@ -214,12 +235,14 @@ class MovieSection extends StatelessWidget {
             children: [
               Text(
                 movieTitle,
-                style: TextStyle(fontSize: screenWidth * 0.045, color: Color(0xFFAEBBC9)),
+                style: TextStyle(
+                    fontSize: screenWidth * 0.045, color: Color(0xFFAEBBC9)),
                 overflow: TextOverflow.ellipsis,
               ),
               Text(
                 ano.toString(),
-                style: TextStyle(fontSize: screenWidth * 0.035, color: Color(0xFFAEBBC9)),
+                style: TextStyle(
+                    fontSize: screenWidth * 0.035, color: Color(0xFFAEBBC9)),
               ),
             ],
           ),

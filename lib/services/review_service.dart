@@ -6,10 +6,10 @@ class ReviewService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   // Criar uma crítica
-  Future<void> addReview(int movieId, String content, String posterPath, String year, String title) async {
+  Future<void> addReview(String movieId, String content, String posterPath, String year, String title) async {
     String userId = _auth.currentUser!.uid;
     await _db.collection('reviews').add({
-      'userId': userId,
+      'userUid': userId,
       'movieId': movieId,
       'content': content,
       'timestamp': FieldValue.serverTimestamp(),
@@ -23,7 +23,7 @@ class ReviewService {
   Future<void> updateReview(String reviewId, String newContent) async {
     String userId = _auth.currentUser!.uid;
     DocumentSnapshot doc = await _db.collection('reviews').doc(reviewId).get();
-    if (doc.exists && doc['userId'] == userId) {
+    if (doc.exists && doc['userUid'] == userId) {
       await _db.collection('reviews').doc(reviewId).update({
         'content': newContent,
         'timestamp': FieldValue.serverTimestamp(),
@@ -35,7 +35,7 @@ class ReviewService {
   Future<void> deleteReview(String reviewId) async {
     String userId = _auth.currentUser!.uid;
     DocumentSnapshot doc = await _db.collection('reviews').doc(reviewId).get();
-    if (doc.exists && doc['userId'] == userId) {
+    if (doc.exists && doc['userUid'] == userId) {
       await _db.collection('reviews').doc(reviewId).delete();
     }
   }
@@ -43,7 +43,7 @@ class ReviewService {
   // Obter críticas do usuário autenticado
   Stream<QuerySnapshot> getUserReviews() {
     String userId = _auth.currentUser!.uid;
-    return _db.collection('reviews').where('userId', isEqualTo: userId).snapshots();
+    return _db.collection('reviews').where('userUid', isEqualTo: userId).snapshots();
   }
 
   // Obter críticas de um filme específico

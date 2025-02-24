@@ -36,7 +36,7 @@ class _ListasScreenState extends State<ListasScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Suas listas',
+          'Listas',
           style: TextStyle(
               color: const Color(0xFFAEBBC9), fontSize: screenHeight * 0.025),
         ),

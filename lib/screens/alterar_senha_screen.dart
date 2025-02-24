@@ -17,7 +17,7 @@ class AlterarSenhaScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Alterar senha',
+          'Alterar Senha',
           style: TextStyle(
               color: const Color(0xFFAEBBC9), fontSize: screenHeight * 0.025),
         ),

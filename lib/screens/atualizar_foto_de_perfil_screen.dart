@@ -97,7 +97,7 @@ class AtualizarFotoDePerfilScreenState extends State<AtualizarFotoDePerfilScreen
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Atualizar foto de perfil',
+          'Atualizar Foto de Perfil',
           style: TextStyle(
               color: const Color(0xFFAEBBC9), fontSize: screenHeight * 0.025),
         ),

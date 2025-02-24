@@ -34,7 +34,7 @@ class _EscolherListaScreenState extends State<EscolherListaScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Adição na lista',
+          'Adicionar Filme na Lista',
           style: TextStyle(
               color: Color(0xFFAEBBC9), fontSize: screenHeight * 0.025),
         ),

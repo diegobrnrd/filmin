@@ -135,7 +135,7 @@ class PerfilState extends State<PerfilScreen> {
                             _favoriteMovies.length, screenHeight),
                         SizedBox(height: screenHeight * 0.01),
                         _criarBotao(context, 'Listas', 'Listas',
-                            _userLists.length, screenHeight),
+                            _favoriteMovies.length, screenHeight), // TODO: Mudar para quantidade de listas depois que pegar as listas em _fetchAnotherUserData
                         SizedBox(height: screenHeight * 0.01),
                       ],
                     ),

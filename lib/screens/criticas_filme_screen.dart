@@ -17,10 +17,9 @@ class CriticasFilmeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Críticas do filme',
+          'Críticas do Filme',
           style: TextStyle(
-              color: const Color(0xFFAEBBC9),
-              fontSize: screenHeight * 0.025),
+              color: const Color(0xFFAEBBC9), fontSize: screenHeight * 0.025),
         ),
         backgroundColor: const Color(0xFF161E27),
         iconTheme: const IconThemeData(
@@ -35,11 +34,15 @@ class CriticasFilmeScreen extends StatelessWidget {
           }
 
           if (snapshot.hasError) {
-            return const Center(child: Text('Erro ao carregar críticas'));
+            return const Center(
+                child: Text('Erro ao carregar críticas.',
+                    style: TextStyle(color: Color(0xFFAEBBC9))));
           }
 
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(child: Text('Nenhuma crítica encontrada'));
+            return const Center(
+                child: Text('Nenhuma crítica encontrada.',
+                    style: TextStyle(color: Color(0xFFAEBBC9))));
           }
 
           final reviews = snapshot.data!.docs;
@@ -48,10 +51,10 @@ class CriticasFilmeScreen extends StatelessWidget {
             itemCount: reviews.length,
             itemBuilder: (context, index) {
               final review = reviews[index];
-              final userId = review['userId'];
+              final userUid = review['userUid'];
 
               return FutureBuilder<Map<String, String>>(
-                future: authService.getUserProfile(userId),
+                future: authService.getUserProfile(userUid),
                 builder: (context, userSnapshot) {
                   if (userSnapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
@@ -105,38 +108,45 @@ class _ReviewTileState extends State<ReviewTile> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     final isLongReview = widget.reviewContent.length > maxChars;
     final displayContent = isExpanded || !isLongReview
         ? widget.reviewContent
         : widget.reviewContent.substring(0, maxChars) + '...';
 
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+      margin: EdgeInsets.symmetric(
+          vertical: screenHeight * 0.005, horizontal: screenWidth * 0.02),
       child: ListTile(
         title: Row(
           children: [
             CircleAvatar(
               backgroundImage: widget.profilePictureUrl.isNotEmpty
                   ? NetworkImage(widget.profilePictureUrl)
-                  : null,
-              child: widget.profilePictureUrl.isEmpty
-                  ? const Icon(Icons.person)
-                  : null,
+                  : const AssetImage('assets/default_avatar.png'),
             ),
-            const SizedBox(width: 8.0),
+            SizedBox(width: screenWidth * 0.02),
             Text(
               widget.username,
-              style: const TextStyle(color: Color(0xFFAEBBC9)),
+              style: TextStyle(
+                color: const Color(0xFFAEBBC9),
+                fontSize: screenHeight * 0.02,
+              ),
             ),
           ],
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 8.0),
+            SizedBox(height: screenHeight * 0.01),
             Text(
               displayContent,
-              style: const TextStyle(color: Color(0xFFF1F3F5)),
+                style: TextStyle(
+                  fontWeight: FontWeight.normal,
+                  fontSize: screenHeight * 0.016,
+                  color: Color(0xFFF1F3F5),
+            ),
             ),
             if (isLongReview)
               TextButton(

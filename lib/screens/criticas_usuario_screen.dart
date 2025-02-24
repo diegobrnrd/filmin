@@ -18,11 +18,12 @@ class _CriticasUsuarioScreen extends State<CriticasUsuarioScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           "Críticas",
-          style: TextStyle(color: Color(0xFFAEBBC9)),
+          style: TextStyle(color: Color(0xFFAEBBC9), fontSize: screenHeight * 0.025),
         ),
         backgroundColor: const Color(0xFF161E27),
         leading: IconButton(
@@ -40,10 +41,10 @@ class _CriticasUsuarioScreen extends State<CriticasUsuarioScreen> {
             return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasError) {
-            return const Center(child: Text('Erro ao carregar críticas.'));
+            return const Center(child: Text('Erro ao carregar críticas.', style: TextStyle(color: Color(0xFFAEBBC9))));
           }
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(child: Text('Nenhuma crítica encontrada.'));
+            return const Center(child: Text('Nenhuma crítica encontrada.', style: TextStyle(color: Color(0xFFAEBBC9))));
           }
 
           final reviews = snapshot.data!.docs;
@@ -53,7 +54,7 @@ class _CriticasUsuarioScreen extends State<CriticasUsuarioScreen> {
             itemBuilder: (context, index) {
               final review = reviews[index];
               return _buildCritica(
-                review['movieId'],
+                int.parse(review['movieId']),
                 review['title'],
                 review['content'],
                 review['poster_path'],
@@ -68,14 +69,16 @@ class _CriticasUsuarioScreen extends State<CriticasUsuarioScreen> {
   }
 
   Widget _buildCritica(int movieId, String tituloFilme, String textoCritica, String posterPath, String year, String reviewId) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     const int maxLength = 100; // Limite de caracteres
     String truncatedText = textoCritica.length > maxLength
         ? textoCritica.substring(0, maxLength) + '...'
         : textoCritica;
 
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-      padding: const EdgeInsets.all(8.0),
+      margin: EdgeInsets.symmetric(vertical: screenHeight * 0.01, horizontal: screenWidth * 0.02),
+      padding: EdgeInsets.all(screenHeight * 0.01),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -83,24 +86,23 @@ class _CriticasUsuarioScreen extends State<CriticasUsuarioScreen> {
             children: [
               Text(
                 tituloFilme,
-                style: const TextStyle(
+                style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 20,
+                  fontSize: screenHeight * 0.025,
                   color: Color(0xFFAEBBC9),
                 ),
               ),
-              const SizedBox(width: 10),
+              SizedBox(width: screenWidth * 0.02),
               Text(
                 year,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
-                  color: Colors.grey,
+                style: TextStyle(
+                  fontSize: screenHeight * 0.015,
+                  color: Color(0xFFAEBBC9),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 15),
+          SizedBox(height: screenHeight * 0.02),
           Row(
             children: [
               FilmeWidget(
@@ -110,17 +112,17 @@ class _CriticasUsuarioScreen extends State<CriticasUsuarioScreen> {
                 releaseDate: year,
                 dateAdded: null,
               ),
-              const SizedBox(width: 20),
+              SizedBox(width: screenWidth * 0.05),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       truncatedText,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.normal,
-                        fontSize: 13,
-                        color: Colors.white,
+                        fontSize: screenHeight * 0.016,
+                        color: Color(0xFFF1F3F5),
                       ),
                     ),
                     if (textoCritica.length > maxLength)
@@ -140,7 +142,7 @@ class _CriticasUsuarioScreen extends State<CriticasUsuarioScreen> {
                         },
                         child: const Text(
                           'Leia mais',
-                          style: TextStyle(color: Color(0xFFAEBBC9)),
+                          style: TextStyle(color: Color(0xFF208BFE)),
                         ),
                       ),
                   ],

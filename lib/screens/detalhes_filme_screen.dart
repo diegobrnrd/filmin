@@ -307,7 +307,7 @@ class DetalhesFilmeScreenState extends State<DetalhesFilmeScreen> {
                 ),
                 SizedBox(height: screenHeight * 0.02),
                 Container(
-                  padding: EdgeInsets.all(screenWidth * 0.01),
+                  padding: EdgeInsets.all(screenWidth * 0.007),
                   child: Text(
                     filme.sinopse,
                     style: TextStyle(
