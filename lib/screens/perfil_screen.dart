@@ -12,9 +12,9 @@ import 'package:filmin/services/lists_service.dart';
 import 'package:filmin/screens/listas_screen.dart';
 
 class PerfilScreen extends StatefulWidget {
-  final String? anotherUserId;
+  final String? anotherUserName;
 
-  const PerfilScreen({super.key, this.anotherUserId});
+  const PerfilScreen({super.key, this.anotherUserName});
 
   @override
   PerfilState createState() => PerfilState();
@@ -51,63 +51,15 @@ class PerfilState extends State<PerfilScreen> {
     _userLists = await listsService.getUserLists();
   }
 
-  Future<void> _fetchAnotherUserData(String id) async {
-    DocumentSnapshot? userDoc = await userService.getUserDocById(id);
-
-    if (userDoc != null) {
-      Map<String, dynamic>? userData = userDoc.data() as Map<String, dynamic>?;
-
-      setState(() {
-        _nome = userData?['nome'];
-        _sobrenome = userData?['sobrenome'];
-        _profilePictureUrl = userData?['profile_picture'];
-      });
-
-      QuerySnapshot favoriteMoviesSnapshot =
-          await userDoc.reference.collection('favorite_movies').get();
-      QuerySnapshot watchedSnapshot =
-          await userDoc.reference.collection('watched').get();
-      QuerySnapshot watchlistSnapshot =
-          await userDoc.reference.collection('watchlist').get();
-
-      setState(() {
-        _favoriteMovies = favoriteMoviesSnapshot.docs
-            .map((doc) => {
-                  'documentId': doc.id,
-                  'id': doc['id'],
-                  'release_date': doc['release_date'],
-                  'poster_path': doc['poster_path'],
-                  'genres': doc['genres'],
-                  'runtime': doc['runtime'],
-                  'dateAdded': doc['dateAdded'],
-                })
-            .toList();
-
-        _watched = watchedSnapshot.docs
-            .map((doc) => {
-                  'documentId': doc.id,
-                  'id': doc['id'],
-                  'release_date': doc['release_date'],
-                  'poster_path': doc['poster_path'],
-                  'genres': doc['genres'],
-                  'runtime': doc['runtime'],
-                  'dateAdded': doc['dateAdded'],
-                })
-            .toList();
-
-        _watchlist = watchlistSnapshot.docs
-            .map((doc) => {
-                  'documentId': doc.id,
-                  'id': doc['id'],
-                  'release_date': doc['release_date'],
-                  'poster_path': doc['poster_path'],
-                  'genres': doc['genres'],
-                  'runtime': doc['runtime'],
-                  'dateAdded': doc['dateAdded'],
-                })
-            .toList();
-      });
-    }
+  Future<void> _fetchAnotherUserData(String username) async {
+    Map<String, dynamic>? anotherUserData =
+        await userService.getUserDataByUsername(username);
+    _nome = anotherUserData!['nome'];
+    _sobrenome = anotherUserData['sobrenome'];
+    _profilePictureUrl = anotherUserData['profilePictureUrl'];
+    _favoriteMovies = await userService.getAnotherUserFavoriteMovies(username);
+    _watched = await userService.getAnotherUserWatched(username);
+    _watchlist = await userService.getAnotherUserWatchlist(username);
   }
 
   @override
@@ -115,9 +67,9 @@ class PerfilState extends State<PerfilScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     return FutureBuilder(
-      future: widget.anotherUserId != null 
-      ? _fetchAnotherUserData(widget.anotherUserId!) 
-      : _fetchUserData(),
+      future: widget.anotherUserName != null
+          ? _fetchAnotherUserData(widget.anotherUserName!)
+          : _fetchUserData(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(

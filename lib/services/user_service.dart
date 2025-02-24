@@ -25,19 +25,78 @@ class UserService {
     }
   }
 
-  Future<DocumentSnapshot?> getUserDocById(String userId) async {
-    try {
-      DocumentSnapshot userDoc = await _firestore.collection('users').doc(userId).get();
+  Future<List<Map<String, dynamic>>> getAnotherUserWatched(
+      String username) async {
+    final snapshot = await _firestore
+        .collection('users')
+        .where('username', isEqualTo: username.toLowerCase()).get();
 
-      if (userDoc.exists) {
-        return userDoc; 
-      } else {
-        return null; 
-      }
-    } catch (e) {
-      return null; 
+        if (snapshot.docs.isEmpty) {
+      return []; 
     }
-  }
 
+    final userDoc = snapshot.docs.first;
+
+    final watchedSnapshot = await userDoc.reference.collection('watched').get();
+
+    return watchedSnapshot.docs.map((doc) => {
+          'documentId': doc.id,
+          'id': doc['id'],
+          'release_date': doc['release_date'],
+          'poster_path': doc['poster_path'],
+          'genres': doc['genres'],
+          'runtime': doc['runtime'],
+          'dateAdded': doc['dateAdded'],
+        }).toList();
+    }
+
+  Future<List<Map<String, dynamic>>> getAnotherUserWatchlist(
+      String username) async {
+    final snapshot = await _firestore
+        .collection('users')
+        .where('username', isEqualTo: username.toLowerCase()).get();
+
+        if (snapshot.docs.isEmpty) {
+      return []; 
+    }
+
+    final userDoc = snapshot.docs.first;
+
+    final watchedSnapshot = await userDoc.reference.collection('watchlist').get();
+
+    return watchedSnapshot.docs.map((doc) => {
+          'documentId': doc.id,
+          'id': doc['id'],
+          'release_date': doc['release_date'],
+          'poster_path': doc['poster_path'],
+          'genres': doc['genres'],
+          'runtime': doc['runtime'],
+          'dateAdded': doc['dateAdded'],
+        }).toList();
+    }
+
+    Future<List<Map<String, dynamic>>> getAnotherUserFavoriteMovies(
+      String username) async {
+    final snapshot = await _firestore
+        .collection('users')
+        .where('username', isEqualTo: username.toLowerCase()).get();
+
+        if (snapshot.docs.isEmpty) {
+      return []; 
+    }
+
+    final userDoc = snapshot.docs.first;
+
+    final watchedSnapshot = await userDoc.reference.collection('favorite_movies').get();
+
+    return watchedSnapshot.docs.map((doc) => {
+          'documentId': doc.id,
+          'id': doc['id'],
+          'release_date': doc['release_date'],
+          'poster_path': doc['poster_path'],
+          'genres': doc['genres'],
+          'runtime': doc['runtime'],
+          'dateAdded': doc['dateAdded'],
+        }).toList();
+    }
 }
-

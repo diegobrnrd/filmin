@@ -68,12 +68,12 @@ class BuscaScreenState extends State<BuscaScreen> {
     );
   }
 
-  void _navegarParaPerfilUsuario(String? userId) {
-    if (userId != null && userId.isNotEmpty) {
+  void _navegarParaPerfilUsuario(String? username) {
+    if (username != null && username.isNotEmpty) {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => PerfilScreen(anotherUserId: userId),
+          builder: (context) => PerfilScreen(anotherUserName: username),
         ),
       );
     } else {
@@ -225,7 +225,7 @@ class BuscaScreenState extends State<BuscaScreen> {
                   return InkWell( // Use InkWell para tornar o item clicável
                     onTap: () {
                       if (userId.isNotEmpty) {
-                        _navegarParaPerfilUsuario(userId);
+                        _navegarParaPerfilUsuario(username);
                       }
                     },
                     child: Padding(
