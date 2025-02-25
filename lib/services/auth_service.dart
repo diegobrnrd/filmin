@@ -299,17 +299,14 @@ class AuthService {
 
   Future<String?> resetPassword(String email) async {
     try {
-      List<String> methods = await _firebaseAuth.fetchSignInMethodsForEmail(email);
-      if (methods.isNotEmpty) {
-        await _firebaseAuth.sendPasswordResetEmail(email: email);
-        return null;
-      } else {
-        return 'email não encontrado';
-      }
+      await _firebaseAuth.sendPasswordResetEmail(email: email);
+      return null;
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'invalid-email':
           return 'email inválido';
+        case 'missing-email':
+          return 'email não informado';
         default:
           return 'Erro ao enviar email de recuperação: ${e.message}';
       }
