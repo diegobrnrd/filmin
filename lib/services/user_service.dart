@@ -131,10 +131,10 @@ class UserService {
     }).toList(); // Retorna uma lista vazia se o usuário não estiver autenticado
   }
 
-  Stream<QuerySnapshot> getAnotherUserReviews(String userId) {
+  Stream<QuerySnapshot> getAnotherUserReviews(String username) {
     return _firestore
         .collection('reviews')
-        .where('userUid', isEqualTo: userId)
+        .where('username', isEqualTo: username)
         .snapshots();
   }
 
@@ -174,10 +174,10 @@ class UserService {
   Future<int> getAnotherUserReviewsCount(String username) async {
   QuerySnapshot snapshot = await _firestore
       .collection('reviews')
-      .where('useername', isEqualTo: username)
-      .get(); // Obtém os dados uma única vez
+      .where('username', isEqualTo: username)
+      .get(); 
 
-  return snapshot.docs.length; // Retorna o número de documentos
+  return snapshot.docs.length; 
 }
 
 }
