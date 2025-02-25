@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:filmin/services/review_service.dart';
 import 'package:flutter/material.dart';
 import 'package:filmin/helpers/filme.dart';
 import 'package:filmin/helpers/filmes_grid.dart';
@@ -27,6 +28,7 @@ class PerfilState extends State<PerfilScreen> {
   WatchListService watchlistService = WatchListService();
   UserService userService = UserService();
   ListsService listsService = ListsService();
+  ReviewService reviewService = ReviewService();
 
   String? _nome;
   String? _sobrenome;
@@ -35,6 +37,7 @@ class PerfilState extends State<PerfilScreen> {
   late List<Map<String, dynamic>> _watched;
   late List<Map<String, dynamic>> _watchlist;
   late List<Map<String, dynamic>> _userLists;
+  late int _userReviewsLength;
 
   @override
   void initState() {
@@ -49,6 +52,7 @@ class PerfilState extends State<PerfilScreen> {
     _watched = await watchedService.getWatched();
     _watchlist = await watchlistService.getWatchlist();
     _userLists = await listsService.getUserLists();
+    _userReviewsLength = await reviewService.getUserReviewsCount();
   }
 
   Future<void> _fetchAnotherUserData(String username) async {
@@ -61,6 +65,7 @@ class PerfilState extends State<PerfilScreen> {
     _watched = await userService.getAnotherUserWatched(username);
     _watchlist = await userService.getAnotherUserWatchlist(username);
     _userLists = await userService.getAnotherUserLists(username);
+    _userReviewsLength = await userService.getAnotherUserReviewsCount(username);
   }
 
   @override
@@ -127,7 +132,7 @@ class PerfilState extends State<PerfilScreen> {
                             _watched.length, screenHeight, widget.anotherUserName),
                         SizedBox(height: screenHeight * 0.01),
                         _criarBotao(
-                            context, 'Críticas', 'Crítica', 0, screenHeight, widget.anotherUserName),
+                            context, 'Críticas', 'Crítica', _userReviewsLength, screenHeight, widget.anotherUserName),
                         SizedBox(height: screenHeight * 0.01),
                         _criarBotao(context, 'Quero Assistir', 'Quero Assistir',
                             _watchlist.length, screenHeight, widget.anotherUserName),
@@ -159,12 +164,22 @@ class PerfilState extends State<PerfilScreen> {
     return TextButton(
       onPressed: () async {
         if (tituloBotao == 'Críticas') {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => CriticasUsuarioScreen(),
-            ),
-          );
+          if (userName == null) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CriticasUsuarioScreen(),
+              ),
+            );
+          }
+          else {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CriticasUsuarioScreen(anotherUserName: userName),
+              ),
+            );
+          }
         } else if (tituloBotao == 'Favoritos') {
           Navigator.push(
             context,

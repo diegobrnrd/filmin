@@ -170,4 +170,14 @@ class UserService {
             })
         .toList();
   }
+
+  Future<int> getAnotherUserReviewsCount(String username) async {
+  QuerySnapshot snapshot = await _firestore
+      .collection('reviews')
+      .where('useername', isEqualTo: username)
+      .get(); // Obtém os dados uma única vez
+
+  return snapshot.docs.length; // Retorna o número de documentos
+}
+
 }

@@ -51,4 +51,14 @@ class ReviewService {
     return _db.collection('reviews').where('movieId', isEqualTo: movieId).snapshots();
   }
 
+  Future<int> getUserReviewsCount() async {
+  String userId = _auth.currentUser!.uid;
+  QuerySnapshot snapshot = await _db
+      .collection('reviews')
+      .where('userUid', isEqualTo: userId)
+      .get(); // Obtém os dados uma única vez
+
+  return snapshot.docs.length; // Retorna o número de documentos
+}
+
 }
