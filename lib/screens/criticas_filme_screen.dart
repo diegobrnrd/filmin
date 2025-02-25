@@ -1,3 +1,4 @@
+import 'package:filmin/screens/perfil_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:filmin/services/review_service.dart';
@@ -105,6 +106,7 @@ class ReviewTile extends StatefulWidget {
 class _ReviewTileState extends State<ReviewTile> {
   bool isExpanded = false;
   static const int maxChars = 300;
+  final AuthService authService = AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -121,11 +123,27 @@ class _ReviewTileState extends State<ReviewTile> {
       child: ListTile(
         title: Row(
           children: [
-            CircleAvatar(
-              backgroundImage: widget.profilePictureUrl.isNotEmpty
-                  ? NetworkImage(widget.profilePictureUrl)
-                  : const AssetImage('assets/default_avatar.png'),
-            ),
+            GestureDetector(
+                onTap: () {
+                  if (widget.username == authService.getUserUsername()) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const PerfilScreen(),
+                        ));
+                  }
+                  else {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PerfilScreen(anotherUserName: widget.username,),
+                        ));}
+                },
+                child: CircleAvatar(
+                  backgroundImage: widget.profilePictureUrl.isNotEmpty
+                      ? NetworkImage(widget.profilePictureUrl)
+                      : const AssetImage('assets/default_avatar.png'),
+                )),
             SizedBox(width: screenWidth * 0.02),
             Text(
               widget.username,
@@ -142,11 +160,11 @@ class _ReviewTileState extends State<ReviewTile> {
             SizedBox(height: screenHeight * 0.01),
             Text(
               displayContent,
-                style: TextStyle(
-                  fontWeight: FontWeight.normal,
-                  fontSize: screenHeight * 0.016,
-                  color: Color(0xFFF1F3F5),
-            ),
+              style: TextStyle(
+                fontWeight: FontWeight.normal,
+                fontSize: screenHeight * 0.016,
+                color: Color(0xFFF1F3F5),
+              ),
             ),
             if (isLongReview)
               TextButton(

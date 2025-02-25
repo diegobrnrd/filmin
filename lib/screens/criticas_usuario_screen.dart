@@ -159,6 +159,7 @@ class _CriticasUsuarioScreen extends State<CriticasUsuarioScreen> {
                   ],
                 ),
               ),
+              if (widget.anotherUserName == null)
               IconButton(
                 color: const Color(0xFFAEBBC9),
                 onPressed: () {
@@ -173,7 +174,8 @@ class _CriticasUsuarioScreen extends State<CriticasUsuarioScreen> {
                   );
                 },
                 icon: const Icon(Icons.edit),
-              ),
+              ) 
+              ,
             ],
           ),
         ],
