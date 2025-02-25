@@ -56,7 +56,7 @@ class PerfilState extends State<PerfilScreen> {
     _userReviewsLength = await reviewService.getUserReviewsCount();
   }
 
-  Future<void> _fetchAnotherUserData(String username, String userId) async {
+  Future<void> _fetchAnotherUserData(String username) async {
     Map<String, dynamic>? anotherUserData =
         await userService.getUserDataByUsername(username);
     _anotherUserId = anotherUserData!['uid'];
@@ -67,7 +67,10 @@ class PerfilState extends State<PerfilScreen> {
     _watched = await userService.getAnotherUserWatched(username);
     _watchlist = await userService.getAnotherUserWatchlist(username);
     _userLists = await userService.getAnotherUserLists(username);
-    _userReviewsLength = await userService.getAnotherUserReviewsCount(userId);
+  }
+
+  Future<void> _getReviewsLength(String uId) async {
+    _userReviewsLength = await userService.getAnotherUserReviewsCount(uId);
   }
 
   @override
@@ -76,7 +79,7 @@ class PerfilState extends State<PerfilScreen> {
     final screenHeight = MediaQuery.of(context).size.height;
     return FutureBuilder(
       future: widget.anotherUserName != null
-          ? _fetchAnotherUserData(widget.anotherUserName!, '')
+          ? _fetchAnotherUserData(widget.anotherUserName!).then((_) => _getReviewsLength(_anotherUserId!))
           : _fetchUserData(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -114,7 +117,7 @@ class PerfilState extends State<PerfilScreen> {
                 CircleAvatar(
                   radius: screenWidth * 0.13,
                   backgroundImage: _profilePictureUrl != null &&
-                      _profilePictureUrl!.isNotEmpty
+                          _profilePictureUrl!.isNotEmpty
                       ? NetworkImage(_profilePictureUrl!)
                       : const AssetImage('assets/default_avatar.png'),
                 ),
