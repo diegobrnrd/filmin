@@ -162,7 +162,7 @@ class PerfilState extends State<PerfilScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const CriticasUsuarioScreen(),
+              builder: (context) => CriticasUsuarioScreen(),
             ),
           );
         } else if (tituloBotao == 'Favoritos') {

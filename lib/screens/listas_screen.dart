@@ -67,102 +67,145 @@ class _ListasScreenState extends State<ListasScreen> {
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : userLists.isEmpty
-              ? const Center(child: Text("Você não possui listas."))
+              ? Center(
+                  child: widget.anotherUserName == null
+                      ? const Text("Este perfil não possui listas.")
+                      : const Text("Você não possui listas."))
               : ListView.builder(
                   itemCount: userLists.length,
                   itemBuilder: (context, index) {
-                    return Dismissible(
-                        key: Key(userLists[index]
-                            ['name']), // Chave única para identificar o item
-                        direction: DismissDirection
-                            .endToStart, // Define a direção do swipe (direita para esquerda)
-                        background: Container(
-                          alignment: Alignment.centerRight,
-                          padding: EdgeInsets.symmetric(
-                              horizontal: screenHeight * 0.02),
-                          color: const Color(
-                              0xFFF52958), // Cor de fundo ao deslizar
-                          child: const Icon(Icons.delete,
-                              color: Color(0xFFF1F3F5)),
-                        ),
-                        onDismissed: (direction) async {
-                          final removedList = userLists[index];
-                          await _listsService
-                              .deleteList(removedList['documentId']);
-                          setState(() {
-                            userLists.removeAt(index); // Remove o item da lista
-                          });
-
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: const Text(
-                                'lista removida com sucesso',
-                                style: TextStyle(color: Color(0xFFF1F3F5)),
-                              ),
-                              backgroundColor: const Color(0xFF208BFE),
+                    return widget.anotherUserName == null
+                        ? Dismissible(
+                            key: Key(userLists[index][
+                                'name']), // Chave única para identificar o item
+                            direction: DismissDirection
+                                .endToStart, // Define a direção do swipe (direita para esquerda)
+                            background: Container(
+                              alignment: Alignment.centerRight,
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: screenHeight * 0.02),
+                              color: const Color(
+                                  0xFFF52958), // Cor de fundo ao deslizar
+                              child: const Icon(Icons.delete,
+                                  color: Color(0xFFF1F3F5)),
                             ),
-                          );
-                        },
-                        child: ListTile(
-                          title: Text(userLists[index]['name'],
-                              style: const TextStyle(color: Color(0xFFAEBBC9))),
-                          subtitle: Text(
-                            userLists[index]['description'],
-                            style: const TextStyle(
-                                color: Color.fromARGB(255, 152, 163, 175)),
-                          ),
-                          leading: IconButton(
-                            color: const Color(0xFF208BFE),
-                            icon: const Icon(Icons.edit),
-                            onPressed: () {
+                            onDismissed: (direction) async {
+                              final removedList = userLists[index];
+                              await _listsService
+                                  .deleteList(removedList['documentId']);
+                              setState(() {
+                                userLists
+                                    .removeAt(index); // Remove o item da lista
+                              });
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: const Text(
+                                    'lista removida com sucesso',
+                                    style: TextStyle(color: Color(0xFFF1F3F5)),
+                                  ),
+                                  backgroundColor: const Color(0xFF208BFE),
+                                ),
+                              );
+                            },
+                            child: ListTile(
+                              title: Text(userLists[index]['name'],
+                                  style: const TextStyle(
+                                      color: Color(0xFFAEBBC9))),
+                              subtitle: Text(
+                                userLists[index]['description'],
+                                style: const TextStyle(
+                                    color: Color.fromARGB(255, 152, 163, 175)),
+                              ),
+                              leading: IconButton(
+                                color: const Color(0xFF208BFE),
+                                icon: const Icon(Icons.edit),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => EditarListaScreen(
+                                              nomeAtual: userLists[index]
+                                                  ['name'],
+                                              descAtual: userLists[index]
+                                                  ['description'],
+                                            )),
+                                  ); // Retorna à tela anterior
+                                },
+                              ),
+                              onTap: () async {
+                                final listMovies = await ListsService()
+                                    .getList(userLists[index]['name']);
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => FilmeGrid(
+                                      tituloAppBar: userLists[index]['name'],
+                                      filmes: listMovies
+                                          .map((movie) => FilmeWidget(
+                                                posterPath:
+                                                    movie['poster_path'] ?? '',
+                                                movieId: movie['id'],
+                                                runtime: movie['runtime'],
+                                                releaseDate:
+                                                    movie['release_date'],
+                                                dateAdded: movie['dateAdded'],
+                                              ))
+                                          .toList(),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ))
+                        : ListTile(
+                            title: Text(userLists[index]['name'],
+                                style:
+                                    const TextStyle(color: Color(0xFFAEBBC9))),
+                            subtitle: Text(
+                              userLists[index]['description'],
+                              style: const TextStyle(
+                                  color: Color.fromARGB(255, 152, 163, 175)),
+                            ),
+                            onTap: () async {
+                              final listMovies = await _userService.getListFromAnotherUser(
+                                      userLists[index]['name'],
+                                      widget.anotherUserName!);
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => EditarListaScreen(
-                                          nomeAtual: userLists[index]['name'],
-                                          descAtual: userLists[index]
-                                              ['description'],
-                                        )),
-                              ); // Retorna à tela anterior
-                            },
-                          ),
-                          onTap: () async {
-                            final listMovies = await ListsService()
-                                .getList(userLists[index]['name']);
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => FilmeGrid(
-                                  tituloAppBar: userLists[index]['name'],
-                                  filmes: listMovies
-                                      .map((movie) => FilmeWidget(
-                                            posterPath:
-                                                movie['poster_path'] ?? '',
-                                            movieId: movie['id'],
-                                            runtime: movie['runtime'],
-                                            releaseDate: movie['release_date'],
-                                            dateAdded: movie['dateAdded'],
-                                          ))
-                                      .toList(),
+                                  builder: (context) => FilmeGrid(
+                                    tituloAppBar: userLists[index]['name'],
+                                    filmes: listMovies
+                                        .map((movie) => FilmeWidget(
+                                              posterPath:
+                                                  movie['poster_path'] ?? '',
+                                              movieId: movie['id'],
+                                              runtime: movie['runtime'],
+                                              releaseDate:
+                                                  movie['release_date'],
+                                              dateAdded: movie['dateAdded'],
+                                            ))
+                                        .toList(),
+                                  ),
                                 ),
-                              ),
-                            );
-                          },
-                        ));
+                              );
+                            },
+                          );
                   },
                 ),
-      floatingActionButton: widget.anotherUserName == null 
-      ? FloatingActionButton(
-          backgroundColor: const Color(0xFF208BFE),
-          foregroundColor: const Color(0xFFF1F3F5),
-          child: const Icon(Icons.add),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const CriarListaScreen()),
-            );
-          })
-        : null,
+      floatingActionButton: widget.anotherUserName == null
+          ? FloatingActionButton(
+              backgroundColor: const Color(0xFF208BFE),
+              foregroundColor: const Color(0xFFF1F3F5),
+              child: const Icon(Icons.add),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const CriarListaScreen()),
+                );
+              })
+          : null,
     );
   }
 }

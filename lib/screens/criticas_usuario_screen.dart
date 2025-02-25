@@ -4,10 +4,12 @@ import 'package:filmin/services/review_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:filmin/screens/update_delete_critica_screen.dart';
 import 'package:filmin/screens/ler_critica_completa_screen.dart';
-
+import 'package:filmin/services/user_service.dart';
 
 class CriticasUsuarioScreen extends StatefulWidget {
-  const CriticasUsuarioScreen({super.key});
+  String? anotherUserName;
+
+  CriticasUsuarioScreen({super.key, this.anotherUserName});
 
   @override
   _CriticasUsuarioScreen createState() => _CriticasUsuarioScreen();
@@ -15,6 +17,7 @@ class CriticasUsuarioScreen extends StatefulWidget {
 
 class _CriticasUsuarioScreen extends State<CriticasUsuarioScreen> {
   final ReviewService _reviewService = ReviewService();
+  final UserService _userService = UserService();
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +26,8 @@ class _CriticasUsuarioScreen extends State<CriticasUsuarioScreen> {
       appBar: AppBar(
         title: Text(
           "Críticas",
-          style: TextStyle(color: Color(0xFFAEBBC9), fontSize: screenHeight * 0.025),
+          style: TextStyle(
+              color: Color(0xFFAEBBC9), fontSize: screenHeight * 0.025),
         ),
         backgroundColor: const Color(0xFF161E27),
         leading: IconButton(
@@ -35,16 +39,22 @@ class _CriticasUsuarioScreen extends State<CriticasUsuarioScreen> {
         ),
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: _reviewService.getUserReviews(),
+        stream: widget.anotherUserName == null
+            ? _reviewService.getUserReviews()
+            : _userService.getAnotherUserReviews(widget.anotherUserName!),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasError) {
-            return const Center(child: Text('Erro ao carregar críticas.', style: TextStyle(color: Color(0xFFAEBBC9))));
+            return const Center(
+                child: Text('Erro ao carregar críticas.',
+                    style: TextStyle(color: Color(0xFFAEBBC9))));
           }
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(child: Text('Nenhuma crítica encontrada.', style: TextStyle(color: Color(0xFFAEBBC9))));
+            return const Center(
+                child: Text('Nenhuma crítica encontrada.',
+                    style: TextStyle(color: Color(0xFFAEBBC9))));
           }
 
           final reviews = snapshot.data!.docs;
@@ -68,7 +78,8 @@ class _CriticasUsuarioScreen extends State<CriticasUsuarioScreen> {
     );
   }
 
-  Widget _buildCritica(int movieId, String tituloFilme, String textoCritica, String posterPath, String year, String reviewId) {
+  Widget _buildCritica(int movieId, String tituloFilme, String textoCritica,
+      String posterPath, String year, String reviewId) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     const int maxLength = 100; // Limite de caracteres
@@ -77,7 +88,8 @@ class _CriticasUsuarioScreen extends State<CriticasUsuarioScreen> {
         : textoCritica;
 
     return Container(
-      margin: EdgeInsets.symmetric(vertical: screenHeight * 0.01, horizontal: screenWidth * 0.02),
+      margin: EdgeInsets.symmetric(
+          vertical: screenHeight * 0.01, horizontal: screenWidth * 0.02),
       padding: EdgeInsets.all(screenHeight * 0.01),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -131,12 +143,11 @@ class _CriticasUsuarioScreen extends State<CriticasUsuarioScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  LerCriticaCompletaScreen(
-                                    reviewId: reviewId,
-                                    tituloFilme: tituloFilme,
-                                    textoCritica: textoCritica,
-                                  ),
+                              builder: (context) => LerCriticaCompletaScreen(
+                                reviewId: reviewId,
+                                tituloFilme: tituloFilme,
+                                textoCritica: textoCritica,
+                              ),
                             ),
                           );
                         },
@@ -154,11 +165,10 @@ class _CriticasUsuarioScreen extends State<CriticasUsuarioScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>
-                          UpdateDeleteCriticaScreen(
-                            reviewId: reviewId,
-                            initialContent: textoCritica,
-                          ),
+                      builder: (context) => UpdateDeleteCriticaScreen(
+                        reviewId: reviewId,
+                        initialContent: textoCritica,
+                      ),
                     ),
                   );
                 },
