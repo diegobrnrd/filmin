@@ -168,8 +168,7 @@ class _ListasScreenState extends State<ListasScreen> {
                             ),
                             onTap: () async {
                               final listMovies = await _userService.getListFromAnotherUser(
-                                      userLists[index]['name'],
-                                      widget.anotherUserName!);
+                                      widget.anotherUserName!, userLists[index]['name']);
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
