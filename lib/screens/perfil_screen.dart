@@ -76,17 +76,17 @@ class PerfilState extends State<PerfilScreen> {
     final screenHeight = MediaQuery.of(context).size.height;
     return FutureBuilder(
       future: widget.anotherUserName != null
-          ? _fetchAnotherUserData(widget.anotherUserName!, _anotherUserId!)
+          ? _fetchAnotherUserData(widget.anotherUserName!, '')
           : _fetchUserData(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
-            backgroundColor: const Color(0xFF161E27), // Fundo escuro
+            backgroundColor: const Color(0xFF161E27),
             body: Center(child: CircularProgressIndicator()),
           );
         } else if (snapshot.hasError) {
           return Scaffold(
-            backgroundColor: const Color(0xFF161E27), // Fundo escuro
+            backgroundColor: const Color(0xFF161E27),
             body: Center(child: Text('Error: ${snapshot.error}')),
           );
         } else {
@@ -114,7 +114,7 @@ class PerfilState extends State<PerfilScreen> {
                 CircleAvatar(
                   radius: screenWidth * 0.13,
                   backgroundImage: _profilePictureUrl != null &&
-                          _profilePictureUrl!.isNotEmpty
+                      _profilePictureUrl!.isNotEmpty
                       ? NetworkImage(_profilePictureUrl!)
                       : const AssetImage('assets/default_avatar.png'),
                 ),
