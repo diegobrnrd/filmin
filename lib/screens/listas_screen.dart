@@ -4,9 +4,11 @@ import 'package:filmin/screens/criar_lista_screen.dart';
 import 'package:filmin/screens/editar_lista_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:filmin/services/lists_service.dart';
+import 'package:filmin/services/user_service.dart';
 
 class ListasScreen extends StatefulWidget {
-  const ListasScreen({super.key});
+  final String? anotherUserName;
+  const ListasScreen({super.key, this.anotherUserName});
 
   @override
   _ListasScreenState createState() => _ListasScreenState();
@@ -14,17 +16,29 @@ class ListasScreen extends StatefulWidget {
 
 class _ListasScreenState extends State<ListasScreen> {
   final ListsService _listsService = ListsService();
+  final UserService _userService = UserService();
   List<Map<String, dynamic>> userLists = [];
   bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    loadUserLists();
+    if (widget.anotherUserName == null) {
+      loadUserLists();
+    } else {
+      loadAnotherUserLists(widget.anotherUserName!);
+    }
   }
 
   void loadUserLists() async {
     userLists = await _listsService.getUserLists();
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  void loadAnotherUserLists(String username) async {
+    userLists = await _userService.getAnotherUserLists(username);
     setState(() {
       isLoading = false;
     });
@@ -137,7 +151,8 @@ class _ListasScreenState extends State<ListasScreen> {
                         ));
                   },
                 ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: widget.anotherUserName == null 
+      ? FloatingActionButton(
           backgroundColor: const Color(0xFF208BFE),
           foregroundColor: const Color(0xFFF1F3F5),
           child: const Icon(Icons.add),
@@ -146,7 +161,8 @@ class _ListasScreenState extends State<ListasScreen> {
               context,
               MaterialPageRoute(builder: (context) => const CriarListaScreen()),
             );
-          }),
+          })
+        : null,
     );
   }
 }

@@ -99,4 +99,27 @@ class UserService {
           'dateAdded': doc['dateAdded'],
         }).toList();
     }
+
+    Future<List<Map<String, dynamic>>> getAnotherUserLists(String username) async {
+    final snapshot = await _firestore
+        .collection('users')
+        .where('username', isEqualTo: username.toLowerCase()).get();
+        if (snapshot.docs.isEmpty) {
+      return []; 
+    }
+    final userDoc = snapshot.docs.first;
+    final listsSnapshot = await userDoc.reference.collection('lists').get();
+      return listsSnapshot.docs.map((doc) {
+        return {
+          'documentId': doc.id, // ID único da lista
+          'name': doc['name'], // Nome da lista
+          'description': doc['description'], // Descrição da lista
+        };
+      }).toList(); // Retorna uma lista vazia se o usuário não estiver autenticado
+    }
+
+    Stream<QuerySnapshot> getUserReviews(String userId) {
+    return _firestore.collection('reviews').where('userUid', isEqualTo: userId).snapshots();
+  }
 }
+

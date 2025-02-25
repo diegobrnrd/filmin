@@ -60,6 +60,7 @@ class PerfilState extends State<PerfilScreen> {
     _favoriteMovies = await userService.getAnotherUserFavoriteMovies(username);
     _watched = await userService.getAnotherUserWatched(username);
     _watchlist = await userService.getAnotherUserWatchlist(username);
+    _userLists = await userService.getAnotherUserLists(username);
   }
 
   @override
@@ -123,19 +124,23 @@ class PerfilState extends State<PerfilScreen> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         _criarBotao(context, 'Filmes', 'Filmes',
-                            _watched.length, screenHeight),
+                            _watched.length, screenHeight, widget.anotherUserName),
                         SizedBox(height: screenHeight * 0.01),
                         _criarBotao(
-                            context, 'Críticas', 'Crítica', 0, screenHeight),
+                            context, 'Críticas', 'Crítica', 0, screenHeight, widget.anotherUserName),
                         SizedBox(height: screenHeight * 0.01),
                         _criarBotao(context, 'Quero Assistir', 'Quero Assistir',
-                            _watchlist.length, screenHeight),
+                            _watchlist.length, screenHeight, widget.anotherUserName),
                         SizedBox(height: screenHeight * 0.01),
                         _criarBotao(context, 'Favoritos', 'Favoritos',
-                            _favoriteMovies.length, screenHeight),
+                            _favoriteMovies.length, screenHeight, widget.anotherUserName),
                         SizedBox(height: screenHeight * 0.01),
-                        _criarBotao(context, 'Listas', 'Listas',
-                            _favoriteMovies.length, screenHeight), // TODO: Mudar para quantidade de listas depois que pegar as listas em _fetchAnotherUserData
+                        _criarBotao(
+                            context,
+                            'Listas',
+                            'Listas',
+                            _userLists.length,
+                            screenHeight, widget.anotherUserName), 
                         SizedBox(height: screenHeight * 0.01),
                       ],
                     ),
@@ -150,7 +155,7 @@ class PerfilState extends State<PerfilScreen> {
   }
 
   Widget _criarBotao(BuildContext context, String tituloBotao,
-      String tituloAppBar, int quantidade, double screenHeight) {
+      String tituloAppBar, int quantidade, double screenHeight, String? userName) {
     return TextButton(
       onPressed: () async {
         if (tituloBotao == 'Críticas') {
@@ -215,12 +220,22 @@ class PerfilState extends State<PerfilScreen> {
             ),
           );
         } else if (tituloBotao == 'Listas') {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const ListasScreen(),
-            ),
-          );
+          if (userName == null) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const ListasScreen(),
+              ),
+            );
+          }
+          else {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ListasScreen(anotherUserName: userName),
+              ),
+            );
+          }
         }
       },
       style: TextButton.styleFrom(
