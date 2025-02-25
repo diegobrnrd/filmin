@@ -1,4 +1,4 @@
-import 'package:filmin/screens/password_reset_modal.dart';
+import 'package:filmin/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:filmin/screens/login_screen.dart';
 
@@ -9,6 +9,9 @@ class RedefinirSenhaScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
+    final _emailController = TextEditingController();
+    final AuthService authService = AuthService();
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -42,6 +45,7 @@ class RedefinirSenhaScreen extends StatelessWidget {
             SizedBox(height: screenHeight * 0.01),
             _buildTextField(
               'E-mail',
+              controller: _emailController,
               fillColor: const Color(0xFF1E2936),
               textColor: const Color(0xFF788EA5),
               focusedTextColor: const Color(0xFF208BFE),
@@ -53,13 +57,29 @@ class RedefinirSenhaScreen extends StatelessWidget {
               'Redefinir',
               backgroundColor: const Color(0xFF208BFE),
               textColor: const Color(0xFFF1F3F5),
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return const PasswordResetModal();
-                  },
-                );
+              onPressed: () async {
+                String? error = await authService.resetPassword(_emailController.text);
+                if (error == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        'e-mail de recuperação enviado com sucesso',
+                        style: TextStyle(color: Color(0xFFF1F3F5)),
+                      ),
+                      backgroundColor: Color(0xFF208BFE),
+                    ),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        error,
+                        style: TextStyle(color: Color(0xFFF1F3F5)),
+                      ),
+                      backgroundColor: Color(0xFFF52958),
+                    ),
+                  );
+                }
               },
             ),
             SizedBox(height: screenHeight * 0.007),
@@ -82,7 +102,8 @@ class RedefinirSenhaScreen extends StatelessWidget {
   }
 
   Widget _buildTextField(String label,
-      {bool obscureText = false,
+      {required TextEditingController controller,
+      bool obscureText = false,
       Color fillColor = Colors.transparent,
       Color textColor = Colors.black,
       Color focusedTextColor = Colors.black,
@@ -96,6 +117,7 @@ class RedefinirSenhaScreen extends StatelessWidget {
         builder: (context) {
           final isFocused = Focus.of(context).hasFocus;
           return TextFormField(
+            controller: controller,
             decoration: InputDecoration(
               labelText: label,
               labelStyle:

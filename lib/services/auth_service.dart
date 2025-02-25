@@ -297,15 +297,24 @@ class AuthService {
     }
   }
 
-  Future<bool> resetPassword(String email) async {
+  Future<String?> resetPassword(String email) async {
     try {
-      // Simulate a network call
-      await Future.delayed(const Duration(seconds: 2));
-      // Assume the email was sent successfully
-      return true;
+      List<String> methods = await _firebaseAuth.fetchSignInMethodsForEmail(email);
+      if (methods.isNotEmpty) {
+        await _firebaseAuth.sendPasswordResetEmail(email: email);
+        return null;
+      } else {
+        return 'email não encontrado';
+      }
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case 'invalid-email':
+          return 'email inválido';
+        default:
+          return 'Erro ao enviar email de recuperação: ${e.message}';
+      }
     } catch (e) {
-      // Handle error
-      return false;
+      return 'Erro inesperado: $e';
     }
   }
 

@@ -241,7 +241,7 @@ class HomeScreenState extends State<HomeScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const CriticasUsuarioScreen()),
+                      builder: (context) => CriticasUsuarioScreen()),
                 );
               },
             ),
