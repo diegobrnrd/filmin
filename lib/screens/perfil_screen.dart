@@ -33,6 +33,7 @@ class PerfilState extends State<PerfilScreen> {
   String? _nome;
   String? _sobrenome;
   String? _profilePictureUrl;
+  String? _anotherUserId;
   late List<Map<String, dynamic>> _favoriteMovies;
   late List<Map<String, dynamic>> _watched;
   late List<Map<String, dynamic>> _watchlist;
@@ -55,17 +56,18 @@ class PerfilState extends State<PerfilScreen> {
     _userReviewsLength = await reviewService.getUserReviewsCount();
   }
 
-  Future<void> _fetchAnotherUserData(String username) async {
+  Future<void> _fetchAnotherUserData(String username, String userId) async {
     Map<String, dynamic>? anotherUserData =
         await userService.getUserDataByUsername(username);
-    _nome = anotherUserData!['nome'];
+    _anotherUserId = anotherUserData!['uid'];
+    _nome = anotherUserData['nome'];
     _sobrenome = anotherUserData['sobrenome'];
     _profilePictureUrl = anotherUserData['profilePictureUrl'];
     _favoriteMovies = await userService.getAnotherUserFavoriteMovies(username);
     _watched = await userService.getAnotherUserWatched(username);
     _watchlist = await userService.getAnotherUserWatchlist(username);
     _userLists = await userService.getAnotherUserLists(username);
-    _userReviewsLength = await userService.getAnotherUserReviewsCount(username);
+    _userReviewsLength = await userService.getAnotherUserReviewsCount(userId);
   }
 
   @override
@@ -74,7 +76,7 @@ class PerfilState extends State<PerfilScreen> {
     final screenHeight = MediaQuery.of(context).size.height;
     return FutureBuilder(
       future: widget.anotherUserName != null
-          ? _fetchAnotherUserData(widget.anotherUserName!)
+          ? _fetchAnotherUserData(widget.anotherUserName!, _anotherUserId!)
           : _fetchUserData(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -128,24 +130,45 @@ class PerfilState extends State<PerfilScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        _criarBotao(context, 'Filmes', 'Filmes',
-                            _watched.length, screenHeight, widget.anotherUserName),
+                        _criarBotao(
+                            context,
+                            'Filmes',
+                            'Filmes',
+                            _watched.length,
+                            screenHeight,
+                            widget.anotherUserName),
                         SizedBox(height: screenHeight * 0.01),
                         _criarBotao(
-                            context, 'Críticas', 'Crítica', _userReviewsLength, screenHeight, widget.anotherUserName),
+                            context,
+                            'Críticas',
+                            'Crítica',
+                            _userReviewsLength,
+                            screenHeight,
+                            widget.anotherUserName),
                         SizedBox(height: screenHeight * 0.01),
-                        _criarBotao(context, 'Quero Assistir', 'Quero Assistir',
-                            _watchlist.length, screenHeight, widget.anotherUserName),
+                        _criarBotao(
+                            context,
+                            'Quero Assistir',
+                            'Quero Assistir',
+                            _watchlist.length,
+                            screenHeight,
+                            widget.anotherUserName),
                         SizedBox(height: screenHeight * 0.01),
-                        _criarBotao(context, 'Favoritos', 'Favoritos',
-                            _favoriteMovies.length, screenHeight, widget.anotherUserName),
+                        _criarBotao(
+                            context,
+                            'Favoritos',
+                            'Favoritos',
+                            _favoriteMovies.length,
+                            screenHeight,
+                            widget.anotherUserName),
                         SizedBox(height: screenHeight * 0.01),
                         _criarBotao(
                             context,
                             'Listas',
                             'Listas',
                             _userLists.length,
-                            screenHeight, widget.anotherUserName), 
+                            screenHeight,
+                            widget.anotherUserName),
                         SizedBox(height: screenHeight * 0.01),
                       ],
                     ),
@@ -159,8 +182,13 @@ class PerfilState extends State<PerfilScreen> {
     );
   }
 
-  Widget _criarBotao(BuildContext context, String tituloBotao,
-      String tituloAppBar, int quantidade, double screenHeight, String? userName) {
+  Widget _criarBotao(
+      BuildContext context,
+      String tituloBotao,
+      String tituloAppBar,
+      int quantidade,
+      double screenHeight,
+      String? userName) {
     return TextButton(
       onPressed: () async {
         if (tituloBotao == 'Críticas') {
@@ -171,12 +199,12 @@ class PerfilState extends State<PerfilScreen> {
                 builder: (context) => CriticasUsuarioScreen(),
               ),
             );
-          }
-          else {
+          } else {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => CriticasUsuarioScreen(anotherUserName: userName),
+                builder: (context) =>
+                    CriticasUsuarioScreen(anotherUserId: _anotherUserId),
               ),
             );
           }
@@ -242,8 +270,7 @@ class PerfilState extends State<PerfilScreen> {
                 builder: (context) => const ListasScreen(),
               ),
             );
-          }
-          else {
+          } else {
             Navigator.push(
               context,
               MaterialPageRoute(

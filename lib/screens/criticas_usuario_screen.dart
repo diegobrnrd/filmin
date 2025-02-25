@@ -7,9 +7,9 @@ import 'package:filmin/screens/ler_critica_completa_screen.dart';
 import 'package:filmin/services/user_service.dart';
 
 class CriticasUsuarioScreen extends StatefulWidget {
-  String? anotherUserName;
+  String? anotherUserId;
 
-  CriticasUsuarioScreen({super.key, this.anotherUserName});
+  CriticasUsuarioScreen({super.key, this.anotherUserId});
 
   @override
   _CriticasUsuarioScreen createState() => _CriticasUsuarioScreen();
@@ -39,9 +39,9 @@ class _CriticasUsuarioScreen extends State<CriticasUsuarioScreen> {
         ),
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: widget.anotherUserName == null
+        stream: widget.anotherUserId == null
             ? _reviewService.getUserReviews()
-            : _userService.getAnotherUserReviews(widget.anotherUserName!),
+            : _userService.getAnotherUserReviews(widget.anotherUserId!),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -159,7 +159,7 @@ class _CriticasUsuarioScreen extends State<CriticasUsuarioScreen> {
                   ],
                 ),
               ),
-              if (widget.anotherUserName == null)
+              if (widget.anotherUserId == null)
               IconButton(
                 color: const Color(0xFFAEBBC9),
                 onPressed: () {
