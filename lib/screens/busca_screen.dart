@@ -1,4 +1,5 @@
 import 'package:filmin/screens/perfil_screen.dart';
+import 'package:filmin/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:filmin/controlador/controlador.dart';
 import 'package:flutter/foundation.dart';
@@ -16,6 +17,11 @@ class BuscaScreenState extends State<BuscaScreen> {
   int _selectedIndex = 0;
   List<dynamic> _searchResults = [];
   final TextEditingController _controller = TextEditingController();
+  Map<String, bool> _followStatus = {}; // Manter o estado de seguir
+
+  Future<String?> _getCurrentUserId() async {
+    return await AuthService().getCurrentUserId();
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -28,8 +34,7 @@ class BuscaScreenState extends State<BuscaScreen> {
   void _buscarFilmes(String query) async {
     try {
       final results = await Controlador().buscarFilmes(query);
-      final filteredResults =
-      results.where((movie) => movie['original_language'] == 'pt').toList();
+      final filteredResults = results.where((movie) => movie['original_language'] == 'pt').toList();
       setState(() {
         _searchResults = filteredResults;
       });
@@ -77,7 +82,6 @@ class BuscaScreenState extends State<BuscaScreen> {
         ),
       );
     } else {
-      // Trate o caso de userId nulo ou vazio
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Usuário não encontrado.')),
       );
@@ -88,6 +92,7 @@ class BuscaScreenState extends State<BuscaScreen> {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF161E27),
@@ -98,8 +103,7 @@ class BuscaScreenState extends State<BuscaScreen> {
           controller: _controller,
           decoration: InputDecoration(
             hintText: _selectedIndex == 0 ? 'Buscar filme...' : 'Buscar perfil...',
-            hintStyle: TextStyle(
-                color: const Color(0xFFAEBBC9), fontSize: screenHeight * 0.02),
+            hintStyle: TextStyle(color: const Color(0xFFAEBBC9), fontSize: screenHeight * 0.02),
             border: InputBorder.none,
           ),
           style: const TextStyle(color: Color(0xFFAEBBC9)),
@@ -123,138 +127,191 @@ class BuscaScreenState extends State<BuscaScreen> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          Container(
-            color: const Color(0xFF161E27),
-            padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                TextButton(
-                  onPressed: () => _onItemTapped(0),
-                  style: TextButton.styleFrom(
-                    foregroundColor: _selectedIndex == 0
-                        ? const Color(0xFF208BFE)
-                        : const Color(0xFFAEBBC9),
-                  ),
-                  child: const Text("Filme"),
-                ),
-                TextButton(
-                  onPressed: () => _onItemTapped(1),
-                  style: TextButton.styleFrom(
-                    foregroundColor: _selectedIndex == 1
-                        ? const Color(0xFF208BFE)
-                        : const Color(0xFFAEBBC9),
-                  ),
-                  child: const Text('Perfil'),
-                ),
-              ],
-            ),
-          ),
-          Divider(
-            color: const Color(0xFF1E2936),
-            height: screenHeight * 0.001,
-            thickness: screenHeight * 0.002,
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: _searchResults.length,
-              itemBuilder: (context, index) {
-                if (_selectedIndex == 0) {
-                  final movie = _searchResults[index];
-                  final posterPath = movie['poster_path'];
-                  return InkWell(
-                    onTap: () => _navegarParaDetalhesFilme(movie['id']),
-                    child: Container(
-                      padding: EdgeInsets.all(screenWidth * 0.02),
-                      margin: EdgeInsets.symmetric(vertical: screenHeight * 0.005),
-                      child: Row(
-                        children: [
-                          if (posterPath != null && posterPath.isNotEmpty)
-                            Image.network(
-                              'https://image.tmdb.org/t/p/w154$posterPath',
-                              fit: BoxFit.cover,
-                              width: screenWidth * 0.25,
-                              height: screenHeight * 0.2,
-                            )
-                          else
-                            Container(
-                              width: screenWidth * 0.25,
-                              height: screenHeight * 0.2,
-                              color: const Color(0xFF1E2936),
-                              child: const Icon(Icons.image_not_supported),
-                            ),
-                          SizedBox(width: screenWidth * 0.04),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  movie['title'],
-                                  style: TextStyle(
-                                    color: const Color(0xFFAEBBC9),
-                                    fontSize: screenHeight * 0.02,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(height: screenHeight * 0.01),
-                                Text(
-                                  '${movie['release_date'] != null ? movie['release_date'].split('-')[0] : 'N/A'}',
-                                  style: TextStyle(
-                                    color: const Color(0xFFAEBBC9),
-                                    fontSize: screenHeight * 0.02,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                } else if (_selectedIndex == 1) {
-                  final user = _searchResults[index];
-                  final username = user['username'] ?? 'Usuário Desconhecido';
-                  String imageUrl = user['profilePictureUrl'] ?? 'assets/default_avatar.png';
-                  if (imageUrl.isEmpty) {
-                    imageUrl = 'assets/default_avatar.png';
-                  }
-                  final userUid = user['uid'];
+      body: FutureBuilder<String?>(
+        future: _getCurrentUserId(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
 
-                  return InkWell( // Use InkWell para tornar o item clicável
-                    onTap: () {
-                      if (userUid.isNotEmpty) {
-                        _navegarParaPerfilUsuario(username);
-                      }
-                    },
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01, horizontal: screenWidth * 0.04),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          CircleAvatar(
-                            backgroundImage: NetworkImage(imageUrl),
-                            onBackgroundImageError: (_, __) => const AssetImage('assets/default_avatar.png'),
-                            radius: screenHeight * 0.04,
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              username,
-                              style: TextStyle(color: const Color(0xFFAEBBC9), fontSize: screenHeight * 0.02),
-                            ),
-                          ),
-                        ],
+          if (snapshot.hasError) {
+            return Center(child: Text('Erro ao carregar usuário'));
+          }
+
+          if (!snapshot.hasData) {
+            return Center(child: Text('Usuário não encontrado'));
+          }
+
+          final currentUserId = snapshot.data;
+
+          return Column(
+            children: [
+              Container(
+                color: const Color(0xFF161E27),
+                padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    TextButton(
+                      onPressed: () => _onItemTapped(0),
+                      style: TextButton.styleFrom(
+                        foregroundColor: _selectedIndex == 0
+                            ? const Color(0xFF208BFE)
+                            : const Color(0xFFAEBBC9),
                       ),
+                      child: const Text("Filme"),
                     ),
-                  );
-                }
-                return Container();
-              },
-            ),
-          ),
-        ],
+                    TextButton(
+                      onPressed: () => _onItemTapped(1),
+                      style: TextButton.styleFrom(
+                        foregroundColor: _selectedIndex == 1
+                            ? const Color(0xFF208BFE)
+                            : const Color(0xFFAEBBC9),
+                      ),
+                      child: const Text('Perfil'),
+                    ),
+                  ],
+                ),
+              ),
+              Divider(
+                color: const Color(0xFF1E2936),
+                height: screenHeight * 0.001,
+                thickness: screenHeight * 0.002,
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: _searchResults.length,
+                  itemBuilder: (context, index) {
+                    if (_selectedIndex == 0) {
+                      final movie = _searchResults[index];
+                      final posterPath = movie['poster_path'];
+                      return InkWell(
+                        onTap: () => _navegarParaDetalhesFilme(movie['id']),
+                        child: Container(
+                          padding: EdgeInsets.all(screenWidth * 0.02),
+                          margin: EdgeInsets.symmetric(vertical: screenHeight * 0.005),
+                          child: Row(
+                            children: [
+                              if (posterPath != null && posterPath.isNotEmpty)
+                                Image.network(
+                                  'https://image.tmdb.org/t/p/w154$posterPath',
+                                  fit: BoxFit.cover,
+                                  width: screenWidth * 0.25,
+                                  height: screenHeight * 0.2,
+                                )
+                              else
+                                Container(
+                                  width: screenWidth * 0.25,
+                                  height: screenHeight * 0.2,
+                                  color: const Color(0xFF1E2936),
+                                  child: const Icon(Icons.image_not_supported),
+                                ),
+                              SizedBox(width: screenWidth * 0.04),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      movie['title'],
+                                      style: TextStyle(
+                                        color: const Color(0xFFAEBBC9),
+                                        fontSize: screenHeight * 0.02,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    SizedBox(height: screenHeight * 0.01),
+                                    Text(
+                                      '${movie['release_date'] != null ? movie['release_date'].split('-')[0] : 'N/A'}',
+                                      style: TextStyle(
+                                        color: const Color(0xFFAEBBC9),
+                                        fontSize: screenHeight * 0.02,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    } else if (_selectedIndex == 1) {
+                      final user = _searchResults[index];
+                      final username = user['username'] ?? 'Usuário Desconhecido';
+                      String imageUrl = user['profilePictureUrl'] ?? 'assets/default_avatar.png';
+                      final userUid = user['uid'];
+
+                      return FutureBuilder<bool>(
+                        future: UserService().checkIfFollowing(currentUserId, userUid),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return Center(child: CircularProgressIndicator());
+                          } else if (snapshot.hasError) {
+                            return Center(child: Text('Erro ao carregar'));
+                          } else if (!snapshot.hasData) {
+                            return Center(child: Text('Erro inesperado'));
+                          } else {
+                            bool isFollowingUser = snapshot.data!;
+                            _followStatus[userUid] = isFollowingUser; // Armazenar o estado
+
+                            return InkWell(
+                              onTap: () {
+                                _navegarParaPerfilUsuario(username);
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01, horizontal: screenWidth * 0.04),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    CircleAvatar(
+                                      backgroundImage: NetworkImage(imageUrl),
+                                      onBackgroundImageError: (_, __) => const AssetImage('assets/default_avatar.png'),
+                                      radius: screenHeight * 0.04,
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Text(
+                                        username,
+                                        style: TextStyle(color: const Color(0xFFAEBBC9), fontSize: screenHeight * 0.02),
+                                      ),
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () async {
+                                        // Verifique o estado de "seguir" e execute a ação correspondente
+                                        if (isFollowingUser) {
+                                          await UserService().unfollowUser(currentUserId, userUid);
+                                        } else {
+                                          await UserService().followUser(currentUserId, userUid);
+                                        }
+
+                                        // Atualiza a UI
+                                        setState(() {
+                                          _followStatus[userUid] = !isFollowingUser; // Atualiza o estado
+                                        });
+                                      },
+                                      child: Text(
+                                        isFollowingUser ? 'Deixar de Seguir' : 'Seguir',
+                                        style: TextStyle(fontSize: screenHeight * 0.02),
+                                      ),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: const Color(0xFF007BFF), // Cor do botão
+                                        foregroundColor: Colors.white,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                      );
+                    }
+                    return Container(); // Caso não corresponda a nenhuma das opções
+                  },
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

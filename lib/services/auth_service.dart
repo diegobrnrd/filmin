@@ -329,5 +329,25 @@ class AuthService {
       };
     }
   }
+  Future<String?> getCurrentUsername() async {
+  String? userId = FirebaseAuth.instance.currentUser?.uid;
+  if (userId == null) return null;
+
+  try {
+    DocumentSnapshot userDoc =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+
+    // Faz o cast para Map<String, dynamic> antes de acessar os dados
+    final data = userDoc.data() as Map<String, dynamic>?;
+
+    return data?['username'] as String?;
+  } catch (e) {
+    return null; // Em caso de erro, retorna null
+  }
+}
+
+  Future<String?> getCurrentUserId() async {
+  return FirebaseAuth.instance.currentUser?.uid;
+}
 
 }

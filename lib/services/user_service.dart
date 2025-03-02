@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+
 class UserService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -170,6 +171,75 @@ class UserService {
             })
         .toList();
   }
+  Future<void> followUser(String? currentUserId, String targetUserId) async {
+    final userRef = _firestore.collection('users').doc(currentUserId);
+    final targetUserRef = _firestore.collection('users').doc(targetUserId);
+
+    // Obtém os dados do usuário alvo
+    final targetUserSnapshot = await targetUserRef.get();
+    final targetUserData = targetUserSnapshot.data() as Map<String, dynamic>?;
+
+    if (targetUserData != null) {
+      // Adiciona os dados do usuário alvo à subcoleção 'following' do usuário atual
+      await userRef.collection('following').doc(targetUserId).set({
+        'username': targetUserData['username'],
+        'profilePictureUrl': targetUserData['profilePictureUrl'],
+      });
+
+      // Obtém os dados do usuário atual
+      final currentUserSnapshot = await userRef.get();
+      final currentUserData = currentUserSnapshot.data() as Map<String, dynamic>?;
+
+      if (currentUserData != null) {
+        // Adiciona os dados do usuário atual à subcoleção 'followers' do usuário alvo
+        await targetUserRef.collection('followers').doc(currentUserId).set({
+          'username': currentUserData['username'],
+          'profilePictureUrl': currentUserData['profilePictureUrl'],
+        });
+      }
+    }
+
+    await userRef.update({'followingCount': FieldValue.increment(1)});
+    await targetUserRef.update({'followersCount': FieldValue.increment(1)});
+  }
+
+  Future<void> unfollowUser(String? currentUserId, String targetUserId) async {
+    final userRef = _firestore.collection('users').doc(currentUserId);
+    final targetUserRef = _firestore.collection('users').doc(targetUserId);
+
+    await userRef.collection('following').doc(targetUserId).delete();
+    await targetUserRef.collection('followers').doc(currentUserId).delete();
+
+    await userRef.update({'followingCount': FieldValue.increment(-1)});
+    await targetUserRef.update({'followersCount': FieldValue.increment(-1)});
+  }
+
+  Future<int> getFollowersCount(String userId) async {
+    final userDoc = await _firestore.collection('users').doc(userId).get();
+    return userDoc.data()?['followersCount'] ?? 0;
+  }
+
+  Future<int> getFollowingCount(String userId) async {
+    final userDoc = await _firestore.collection('users').doc(userId).get();
+    return userDoc.data()?['followingCount'] ?? 0;
+  }
+
+  Future<bool> isFollowing(String? currentUserId, String targetUserId) async {
+    final doc = await _firestore
+        .collection('users')
+        .doc(currentUserId)
+        .collection('following')
+        .doc(targetUserId)
+        .get();
+    return doc.exists;
+  }
+
+  // Função assíncrona para verificar se o usuário está seguindo
+  Future<bool> checkIfFollowing(String? currentUserId, String userUid) async {
+    return await UserService().isFollowing(currentUserId, userUid);
+  }
+
+  
 
   Future<int> getAnotherUserReviewsCount(String userId) async {
   QuerySnapshot snapshot = await _firestore
