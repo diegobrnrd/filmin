@@ -183,7 +183,7 @@ class UserService {
       // Adiciona os dados do usuário alvo à subcoleção 'following' do usuário atual
       await userRef.collection('following').doc(targetUserId).set({
         'username': targetUserData['username'],
-        'profilePictureUrl': targetUserData['profilePictureUrl'],
+        'profilePictureUrl': targetUserData['profilePictureUrl'] ?? '', // Usar string vazia se nulo
       });
 
       // Obtém os dados do usuário atual
@@ -194,7 +194,7 @@ class UserService {
         // Adiciona os dados do usuário atual à subcoleção 'followers' do usuário alvo
         await targetUserRef.collection('followers').doc(currentUserId).set({
           'username': currentUserData['username'],
-          'profilePictureUrl': currentUserData['profilePictureUrl'],
+          'profilePictureUrl': currentUserData['profilePictureUrl'] ?? '', // Usar string vazia se nulo
         });
       }
     }

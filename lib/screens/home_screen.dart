@@ -11,6 +11,7 @@ import 'package:filmin/services/watchlist_service.dart';
 import 'package:filmin/screens/listas_screen.dart';
 import 'package:filmin/screens/mapa_cinemas.dart';
 import 'package:filmin/controlador/controlador.dart';
+import 'package:filmin/screens/seguir_seguindo_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -242,6 +243,22 @@ class HomeScreenState extends State<HomeScreen> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => CriticasUsuarioScreen()),
+                );
+              },
+            ),ListTile(
+              leading: const Icon(Icons.person_3_outlined, color: Color(0xFFAEBBC9)),
+              title: Text(
+                "Seguidores",
+                style: TextStyle(
+                  color: const Color(0xFFAEBBC9),
+                  fontSize: screenHeight * 0.02,
+                ),
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => FollowersFollowingScreen()),
                 );
               },
             ),
