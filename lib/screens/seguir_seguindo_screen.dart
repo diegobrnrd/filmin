@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:filmin/services/user_service.dart';
-import 'package:filmin/services/auth_service.dart'; // Importe o serviço de autenticação
+import 'package:filmin/services/auth_service.dart';
+import 'package:filmin/screens/perfil_screen.dart'; // Importe a tela PerfilScreen
 
 class FollowersFollowingScreen extends StatefulWidget {
   @override
@@ -10,25 +11,57 @@ class FollowersFollowingScreen extends StatefulWidget {
 }
 
 class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> {
-  int _selectedIndex = 0; // 0 para seguidores, 1 para seguindo
-  String? _currentUserId; // Adiciona uma variável para armazenar o ID do usuário atual
+  int _selectedIndex = 0;
+  String? _currentUserId;
+  Map<String, bool> _followStatus = {};
+  int _followersCount = 0;
+  int _followingCount = 0;
 
   @override
   void initState() {
     super.initState();
-    _getCurrentUserId(); // Chama a função para obter o ID do usuário atual
+    _getCurrentUserId();
   }
 
-  // Função para obter o ID do usuário atual
   Future<void> _getCurrentUserId() async {
     _currentUserId = await AuthService().getCurrentUserId();
     if (mounted) {
-      setState(() {}); // Atualiza o estado após obter o ID
+      setState(() {
+        _fetchCounts();
+      });
+    }
+  }
+
+  Future<void> _fetchCounts() async {
+    if (_currentUserId != null) {
+      _followersCount = await UserService().getFollowersCount(_currentUserId!);
+      _followingCount = await UserService().getFollowingCount(_currentUserId!);
+      if (mounted) {
+        setState(() {});
+      }
+    }
+  }
+
+  void _navegarParaPerfilUsuario(String? username) {
+    if (username != null && username.isNotEmpty) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PerfilScreen(anotherUserName: username),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Usuário não encontrado.')),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Seguidores e Seguindo'),
@@ -38,7 +71,7 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> {
         ),
       ),
       body: _currentUserId == null
-          ? Center(child: CircularProgressIndicator()) // Exibe loading enquanto carrega o ID
+          ? Center(child: CircularProgressIndicator())
           : Column(
               children: [
                 Container(
@@ -52,11 +85,19 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> {
                             _selectedIndex = 0;
                           });
                         },
-                        child: Text('Seguidores',
-                            style: TextStyle(
-                                color: _selectedIndex == 0
-                                    ? const Color(0xFF208BFE)
-                                    : const Color(0xFFAEBBC9))),
+                        child: Row(
+                          children: [
+                            Text('Seguidores',
+                                style: TextStyle(
+                                    color: _selectedIndex == 0
+                                        ? const Color(0xFF208BFE)
+                                        : const Color(0xFFAEBBC9))),
+                            SizedBox(width: 4),
+                            Text('($_followersCount)',
+                                style: TextStyle(
+                                    color: const Color(0xFFAEBBC9))),
+                          ],
+                        ),
                       ),
                       TextButton(
                         onPressed: () {
@@ -64,11 +105,19 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> {
                             _selectedIndex = 1;
                           });
                         },
-                        child: Text('Seguindo',
-                            style: TextStyle(
-                                color: _selectedIndex == 1
-                                    ? const Color(0xFF208BFE)
-                                    : const Color(0xFFAEBBC9))),
+                        child: Row(
+                          children: [
+                            Text('Seguindo',
+                                style: TextStyle(
+                                    color: _selectedIndex == 1
+                                        ? const Color(0xFF208BFE)
+                                        : const Color(0xFFAEBBC9))),
+                            SizedBox(width: 4),
+                            Text('($_followingCount)',
+                                style: TextStyle(
+                                    color: const Color(0xFFAEBBC9))),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -79,20 +128,20 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> {
                   thickness: MediaQuery.of(context).size.height * 0.002,
                 ),
                 Expanded(
-                  child: _buildList(),
+                  child: _buildList(screenHeight, screenWidth),
                 ),
               ],
             ),
     );
   }
 
-  Widget _buildList() {
+  Widget _buildList(double screenHeight, double screenWidth) {
     String collectionName =
-        _selectedIndex == 0 ? 'followers' : 'following'; // Escolhe a coleção correta
+        _selectedIndex == 0 ? 'followers' : 'following';
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
           .collection('users')
-          .doc(_currentUserId) // Usa o ID do usuário atual
+          .doc(_currentUserId)
           .collection(collectionName)
           .snapshots(),
       builder: (context, snapshot) {
@@ -113,16 +162,79 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> {
           itemBuilder: (context, index) {
             final doc = snapshot.data!.docs[index];
             final username = doc['username'];
-            final photoUrl = doc['profilePictureUrl'];
+            final photoUrl =
+                doc['profilePictureUrl'] ?? 'assets/default_avatar.png';
+            final userUid = doc.id;
 
-            return ListTile(
-              leading: CircleAvatar(
-                backgroundImage: NetworkImage(photoUrl),
-                onBackgroundImageError: (_, __) =>
-                    const AssetImage('assets/default_avatar.png'),
-              ),
-              title: Text(username,
-                  style: const TextStyle(color: Color(0xFFAEBBC9))),
+            return FutureBuilder<bool>(
+              future: UserService().checkIfFollowing(_currentUserId, userUid),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Erro ao carregar'));
+                } else if (!snapshot.hasData) {
+                  return Center(child: Text('Erro inesperado'));
+                } else {
+                  bool isFollowingUser = snapshot.data!;
+                  _followStatus[userUid] = isFollowingUser;
+
+                  return InkWell(
+                    onTap: () {
+                      _navegarParaPerfilUsuario(username);
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                          vertical: screenHeight * 0.01,
+                          horizontal: screenWidth * 0.04),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          CircleAvatar(
+                            backgroundImage: NetworkImage(photoUrl),
+                            onBackgroundImageError: (_, __) =>
+                                const AssetImage('assets/default_avatar.png'),
+                            radius: screenHeight * 0.04,
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              username,
+                              style: TextStyle(
+                                  color: const Color(0xFFAEBBC9),
+                                  fontSize: screenHeight * 0.02),
+                            ),
+                          ),
+                          ElevatedButton(
+                            onPressed: () async {
+                              if (isFollowingUser) {
+                                await UserService().unfollowUser(
+                                    _currentUserId, userUid);
+                              } else {
+                                await UserService().followUser(
+                                    _currentUserId, userUid);
+                              }
+
+                              setState(() {
+                                _followStatus[userUid] = !isFollowingUser;
+                                _fetchCounts();
+                              });
+                            },
+                            child: Text(
+                              isFollowingUser ? 'Deixar de Seguir' : 'Seguir',
+                              style: TextStyle(fontSize: screenHeight * 0.02),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF007BFF),
+                              foregroundColor: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+              },
             );
           },
         );
