@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:filmin/screens/detalhes_filme_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:filmin/services/user_service.dart'; // Importe o UserService
 
 class FilmeWidget extends StatelessWidget {
   final String posterPath;
   final int movieId;
   final int runtime;
   final String releaseDate;
-  final Timestamp? dateAdded; // Change to Timestamp
+  final Timestamp? dateAdded;
+  final bool? onTapAction;
 
   const FilmeWidget({
     super.key,
@@ -15,13 +17,16 @@ class FilmeWidget extends StatelessWidget {
     required this.movieId,
     required this.runtime,
     required this.releaseDate,
-    required this.dateAdded, // Change to Timestamp
+    required this.dateAdded,
+    this.onTapAction,
   });
 
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+    final userService = UserService(); // Instancie o UserService
+
     return Container(
       width: screenWidth * 0.25,
       height: screenHeight * 0.2,
@@ -31,13 +36,36 @@ class FilmeWidget extends StatelessWidget {
       ),
       child: posterPath.isNotEmpty
           ? InkWell(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => DetalhesFilmeScreen(movieId: movieId),
-            ),
-          );
+        onTap: () async {
+          if (onTapAction != null) {
+            try {
+              if (onTapAction!) {
+                // Lógica para valor verdadeiro (adicionar filme)
+                await userService.adicionarMelhorFilme(movieId.toString());
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Filme adicionado aos Melhores 4.')),
+                );
+              } else {
+                // Lógica para valor falso (remover filme)
+                await userService.removerMelhorFilme(movieId.toString());
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Filme removido dos Melhores 4.')),
+                );
+              }
+            } catch (e) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Erro: $e')),
+              );
+            }
+          } else {
+            // Caso contrário, navegue para DetalhesFilmeScreen
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => DetalhesFilmeScreen(movieId: movieId),
+              ),
+            );
+          }
         },
         child: Image.network(
           'https://image.tmdb.org/t/p/w154$posterPath',

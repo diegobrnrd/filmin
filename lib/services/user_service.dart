@@ -1,27 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'package:firebase_auth/firebase_auth.dart'; // Importe FirebaseAuth
 
 class UserService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance; // Adicione FirebaseAuth
 
   Future<Map<String, dynamic>?> getUserDataByUsername(String username) async {
     try {
-      // Realiza a consulta no Firestore para buscar o usuário com o nome de usuário fornecido
       QuerySnapshot querySnapshot = await _firestore
           .collection('users')
           .where('username', isEqualTo: username.toLowerCase())
           .get();
 
       if (querySnapshot.docs.isNotEmpty) {
-        // Caso o usuário seja encontrado, retornamos os dados do primeiro documento encontrado
         DocumentSnapshot userDoc = querySnapshot.docs.first;
         return userDoc.data() as Map<String, dynamic>;
       } else {
-        // Caso o nome de usuário não seja encontrado
         return null;
       }
     } catch (e) {
-      // Caso ocorra algum erro
       return {'error': 'Erro ao buscar dados do usuário: $e'};
     }
   }
@@ -125,11 +122,11 @@ class UserService {
     final listsSnapshot = await userDoc.reference.collection('lists').get();
     return listsSnapshot.docs.map((doc) {
       return {
-        'documentId': doc.id, // ID único da lista
-        'name': doc['name'], // Nome da lista
-        'description': doc['description'], // Descrição da lista
+        'documentId': doc.id,
+        'name': doc['name'],
+        'description': doc['description'],
       };
-    }).toList(); // Retorna uma lista vazia se o usuário não estiver autenticado
+    }).toList();
   }
 
   Stream<QuerySnapshot> getAnotherUserReviews(String userId) {
@@ -171,30 +168,27 @@ class UserService {
             })
         .toList();
   }
+
   Future<void> followUser(String? currentUserId, String targetUserId) async {
     final userRef = _firestore.collection('users').doc(currentUserId);
     final targetUserRef = _firestore.collection('users').doc(targetUserId);
 
-    // Obtém os dados do usuário alvo
     final targetUserSnapshot = await targetUserRef.get();
     final targetUserData = targetUserSnapshot.data() as Map<String, dynamic>?;
 
     if (targetUserData != null) {
-      // Adiciona os dados do usuário alvo à subcoleção 'following' do usuário atual
       await userRef.collection('following').doc(targetUserId).set({
         'username': targetUserData['username'],
-        'profilePictureUrl': targetUserData['profilePictureUrl'] ?? '', // Usar string vazia se nulo
+        'profilePictureUrl': targetUserData['profilePictureUrl'] ?? '',
       });
 
-      // Obtém os dados do usuário atual
       final currentUserSnapshot = await userRef.get();
       final currentUserData = currentUserSnapshot.data() as Map<String, dynamic>?;
 
       if (currentUserData != null) {
-        // Adiciona os dados do usuário atual à subcoleção 'followers' do usuário alvo
         await targetUserRef.collection('followers').doc(currentUserId).set({
           'username': currentUserData['username'],
-          'profilePictureUrl': currentUserData['profilePictureUrl'] ?? '', // Usar string vazia se nulo
+          'profilePictureUrl': currentUserData['profilePictureUrl'] ?? '',
         });
       }
     }
@@ -234,20 +228,116 @@ class UserService {
     return doc.exists;
   }
 
-  // Função assíncrona para verificar se o usuário está seguindo
   Future<bool> checkIfFollowing(String? currentUserId, String userUid) async {
-    return await UserService().isFollowing(currentUserId, userUid);
+    return await isFollowing(currentUserId, userUid);
   }
 
-  
-
   Future<int> getAnotherUserReviewsCount(String userId) async {
-  QuerySnapshot snapshot = await _firestore
-      .collection('reviews')
-      .where('userUid', isEqualTo: userId)
-      .get(); 
+    QuerySnapshot snapshot = await _firestore
+        .collection('reviews')
+        .where('userUid', isEqualTo: userId)
+        .get();
 
-  return snapshot.docs.length; 
-}
+    return snapshot.docs.length;
+  }
 
+  Future<void> adicionarMelhorFilme(String filmeId) async {
+    User? user = _auth.currentUser;
+    if (user != null) {
+      try {
+        final userDoc = await _firestore.collection('users').doc(user.uid).get();
+        List<String> melhores4Filmes =
+            (userDoc.data()?['4_melhores'] as List<dynamic>?)
+                    ?.map((item) => item.toString())
+                    .toList() ??
+                [];
+
+        if (melhores4Filmes.length >= 4) {
+          throw Exception('Você já selecionou 4 filmes favoritos.');
+        }
+
+        melhores4Filmes.add(filmeId);
+
+        await _firestore.collection('users').doc(user.uid).update({
+          '4_melhores': melhores4Filmes,
+        });
+        print('Filme favorito adicionado com sucesso!');
+      } catch (e) {
+        print('Erro ao adicionar filme favorito: $e');
+        throw Exception('Erro ao adicionar filme favorito: $e');
+      }
+    } else {
+      throw Exception('Usuário não autenticado.');
+    }
+  }
+
+  Future<bool> verificarLimiteMelhores4Filmes() async {
+    User? user = _auth.currentUser;
+    if (user != null) {
+      try {
+        final userDoc = await _firestore.collection('users').doc(user.uid).get();
+        List<String> melhores4Filmes =
+            (userDoc.data()?['4_melhores'] as List<dynamic>?)
+                    ?.map((item) => item.toString())
+                    .toList() ??
+                [];
+
+        return melhores4Filmes.length >= 4;
+      } catch (e) {
+        print('Erro ao verificar limite de filmes favoritos: $e');
+        return false; // Retorna falso em caso de erro para evitar bloqueio
+      }
+    } else {
+      return false; // Retorna falso se o usuário não estiver autenticado
+    }
+  }
+  Future<void> removerMelhorFilme(String filmeId) async {
+    User? user = _auth.currentUser;
+    if (user != null) {
+      try {
+        final userDoc = await _firestore.collection('users').doc(user.uid).get();
+        List<String> melhores4Filmes =
+            (userDoc.data()?['4_melhores'] as List<dynamic>?)
+                    ?.map((item) => item.toString())
+                    .toList() ??
+                [];
+
+        if (melhores4Filmes.contains(filmeId)) {
+          melhores4Filmes.remove(filmeId);
+
+          await _firestore.collection('users').doc(user.uid).update({
+            '4_melhores': melhores4Filmes,
+          });
+          print('Filme favorito removido com sucesso!');
+        } else {
+          throw Exception('Filme não encontrado na lista de favoritos.');
+        }
+      } catch (e) {
+        print('Erro ao remover filme favorito: $e');
+        throw Exception('Erro ao remover filme favorito: $e');
+      }
+    } else {
+      throw Exception('Usuário não autenticado.');
+    }
+  }
+  Future<List<String>> getMelhores4FilmesIds() async {
+    User? user = _auth.currentUser;
+    if (user != null) {
+      try {
+        final userDoc = await _firestore.collection('users').doc(user.uid).get();
+        List<String> melhores4Filmes =
+            (userDoc.data()?['4_melhores'] as List<dynamic>?)
+                    ?.map((item) => item.toString())
+                    .toList() ??
+                [];
+
+        return melhores4Filmes;
+      } catch (e) {
+        print('Erro ao obter IDs dos melhores 4 filmes: $e');
+        return []; // Retorna uma lista vazia em caso de erro
+      }
+    } else {
+      return []; // Retorna uma lista vazia se o usuário não estiver autenticado
+    }
+  }
 }
