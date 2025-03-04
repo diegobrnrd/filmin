@@ -320,24 +320,26 @@ class UserService {
       throw Exception('Usuário não autenticado.');
     }
   }
-  Future<List<String>> getMelhores4FilmesIds() async {
-    User? user = _auth.currentUser;
-    if (user != null) {
-      try {
-        final userDoc = await _firestore.collection('users').doc(user.uid).get();
-        List<String> melhores4Filmes =
-            (userDoc.data()?['4_melhores'] as List<dynamic>?)
-                    ?.map((item) => item.toString())
-                    .toList() ??
-                [];
+  Future<List<String>> getMelhores4FilmesIds(String? userId) async {
+  try {
+    final userDoc = await _firestore.collection('users').doc(userId).get();
 
-        return melhores4Filmes;
-      } catch (e) {
-        print('Erro ao obter IDs dos melhores 4 filmes: $e');
-        return []; // Retorna uma lista vazia em caso de erro
-      }
-    } else {
-      return []; // Retorna uma lista vazia se o usuário não estiver autenticado
+    if (!userDoc.exists) {
+      print('Usuário com ID $userId não encontrado.');
+      return [];
     }
+
+    List<String> melhores4Filmes =
+        (userDoc.data()?['4_melhores'] as List<dynamic>?)
+                ?.map((item) => item.toString())
+                .toList() ??
+            [];
+
+    return melhores4Filmes;
+  } catch (e) {
+    print('Erro ao obter IDs dos melhores 4 filmes para o usuário $userId: $e');
+    return []; // Retorna uma lista vazia em caso de erro
   }
+}
+
 }

@@ -3,6 +3,7 @@ import 'package:filmin/services/review_service.dart';
 import 'package:flutter/material.dart';
 import 'package:filmin/helpers/filme.dart';
 import 'package:filmin/helpers/filmes_grid.dart';
+import 'package:filmin/helpers/filmes_row.dart'; // Importe FilmeRow
 import 'package:filmin/screens/criticas_usuario_screen.dart';
 import 'package:filmin/services/watched_service.dart';
 import 'package:filmin/services/favorite_movie_service.dart';
@@ -39,6 +40,8 @@ class PerfilState extends State<PerfilScreen> {
   late List<Map<String, dynamic>> _watchlist;
   late List<Map<String, dynamic>> _userLists;
   late int _userReviewsLength;
+  late List<String> _melhores4FilmesIds;
+  late List<FilmeWidget> _melhores4FilmeWidgets;
 
   @override
   void initState() {
@@ -46,28 +49,77 @@ class PerfilState extends State<PerfilScreen> {
   }
 
   Future<void> _fetchUserData() async {
-    _nome = await autoService.getUserName();
-    _sobrenome = await autoService.getUserSurname();
-    _profilePictureUrl = await autoService.getProfilePictureUrl();
-    _favoriteMovies = await favoriteService.getFavoriteMoviesOnce();
-    _watched = await watchedService.getWatched();
-    _watchlist = await watchlistService.getWatchlist();
-    _userLists = await listsService.getUserLists();
-    _userReviewsLength = await reviewService.getUserReviewsCount();
+  String? currentUserId = await autoService.getCurrentUserId();
+
+  _nome = await autoService.getUserName();
+  _sobrenome = await autoService.getUserSurname();
+  _profilePictureUrl = await autoService.getProfilePictureUrl();
+  _favoriteMovies = await favoriteService.getFavoriteMoviesOnce();
+  print("=================================================");
+  print('Filmes favoritos do usuário atual(visão usuário): $_favoriteMovies');
+  _watched = await watchedService.getWatched();
+  _watchlist = await watchlistService.getWatchlist();
+  _userLists = await listsService.getUserLists();
+  _userReviewsLength = await reviewService.getUserReviewsCount();
+
+  // Agora passa o ID correto para buscar os melhores 4 filmes
+  await _fetchMelhores4Filmes(currentUserId);
+}
+
+Future<void> _fetchAnotherUserData(String username) async {
+  Map<String, dynamic>? anotherUserData =
+      await userService.getUserDataByUsername(username);
+
+  if (anotherUserData == null) {
+    print('Erro: Usuário $username não encontrado.');
+    return;
   }
 
-  Future<void> _fetchAnotherUserData(String username) async {
-    Map<String, dynamic>? anotherUserData =
-        await userService.getUserDataByUsername(username);
-    _anotherUserId = anotherUserData!['uid'];
-    _nome = anotherUserData['nome'];
-    _sobrenome = anotherUserData['sobrenome'];
-    _profilePictureUrl = anotherUserData['profilePictureUrl'];
-    _favoriteMovies = await userService.getAnotherUserFavoriteMovies(username);
-    _watched = await userService.getAnotherUserWatched(username);
-    _watchlist = await userService.getAnotherUserWatchlist(username);
-    _userLists = await userService.getAnotherUserLists(username);
+  _anotherUserId = anotherUserData['uid'];
+  _nome = anotherUserData['nome'];
+  _sobrenome = anotherUserData['sobrenome'];
+  _profilePictureUrl = anotherUserData['profilePictureUrl'];
+
+  _favoriteMovies = await userService.getAnotherUserFavoriteMovies(username);
+  print("======================================================");
+  print('Filmes favoritos do usuário acessado: $_favoriteMovies');
+  _watched = await userService.getAnotherUserWatched(username);
+  _watchlist = await userService.getAnotherUserWatchlist(username);
+  _userLists = await userService.getAnotherUserLists(username);
+
+  // Passa o ID do usuário do perfil acessado
+  await _fetchMelhores4Filmes(_anotherUserId!);
+}
+
+Future<void> _fetchMelhores4Filmes(String? userId) async {
+  print('Buscando melhores 4 filmes para o usuário: $userId');
+
+  // Agora passamos o ID correto para pegar os melhores filmes do usuário acessado
+  _melhores4FilmesIds = await userService.getMelhores4FilmesIds(userId);
+
+  print('IDs dos melhores 4 filmes: $_melhores4FilmesIds');
+  print('Filmes favoritos do usuário acessado: $_favoriteMovies');
+
+  if (_melhores4FilmesIds.isEmpty) {
+    print('Nenhum ID de melhores 4 filmes encontrado.');
+    _melhores4FilmeWidgets = [];
+    return;
   }
+
+  _melhores4FilmeWidgets = _favoriteMovies
+      .where((movie) => _melhores4FilmesIds.contains(movie['id'].toString()))
+      .map((movie) => FilmeWidget(
+            posterPath: movie['poster_path'] ?? '',
+            movieId: movie['id'],
+            runtime: movie['runtime'],
+            releaseDate: movie['release_date'],
+            dateAdded: movie['dateAdded'],
+          ))
+      .toList();
+
+  print('Melhores 4 FilmeWidgets carregados: ${_melhores4FilmeWidgets.isNotEmpty}'); // Atualiza a UI
+}
+
 
   Future<void> _getReviewsLength(String uId) async {
     _userReviewsLength = await userService.getAnotherUserReviewsCount(uId);
@@ -113,7 +165,7 @@ class PerfilState extends State<PerfilScreen> {
                   height: screenHeight * 0.001,
                   thickness: screenHeight * 0.002,
                 ),
-                SizedBox(height: screenHeight * 0.05),
+                SizedBox(height: screenHeight * 0.03),
                 CircleAvatar(
                   radius: screenWidth * 0.13,
                   backgroundImage: _profilePictureUrl != null &&
@@ -127,6 +179,16 @@ class PerfilState extends State<PerfilScreen> {
                   height: screenHeight * 0.001,
                   thickness: screenHeight * 0.002,
                 ),
+                if (_melhores4FilmeWidgets.isNotEmpty)
+                  
+                  SizedBox(
+                    height: screenHeight * 0.30,
+                    child: FilmeRow( // Use FilmeRow aqui
+                      filmes: _melhores4FilmeWidgets,
+                    ),
+                  ),
+                  
+
                 SizedBox(height: screenHeight * 0.02),
                 Expanded(
                   child: Center(

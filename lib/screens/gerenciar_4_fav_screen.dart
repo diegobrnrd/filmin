@@ -29,39 +29,46 @@ class QuatroFilmeFavState extends State<QuatroFilmeFav> {
   }
 
   Future<void> _fetchMovies() async {
-    final favoriteMovies = await favoriteService.getFavoriteMoviesOnce();
-    _melhores4FilmesIds = await userService.getMelhores4FilmesIds(); // Obtenha os IDs dos melhores 4 filmes
-
-    setState(() {
-      if (_selectedIndex == 0) {
-        _filmesOrdenados = favoriteMovies
-            .where((movie) => _melhores4FilmesIds.contains(movie['id'].toString())) // Filtra os filmes pelos IDs dos melhores 4
-            .map((movie) => FilmeWidget(
-                  posterPath: movie['poster_path'] ?? '',
-                  movieId: movie['id'],
-                  runtime: movie['runtime'],
-                  releaseDate: movie['release_date'],
-                  dateAdded: movie['dateAdded'],
-                  onTapAction: false, // Remove da lista de melhores 4
-                ))
-            .toList();
-        _tituloAppBar = 'Clique para tirar da lista';
-      } else {
-        _filmesOrdenados = favoriteMovies
-            .map((movie) => FilmeWidget(
-                  posterPath: movie['poster_path'] ?? '',
-                  movieId: movie['id'],
-                  runtime: movie['runtime'],
-                  releaseDate: movie['release_date'],
-                  dateAdded: movie['dateAdded'],
-                  onTapAction: true, // Adiciona à lista de melhores 4
-                ))
-            .toList();
-        _tituloAppBar = 'Clique para adicionar a lista (${favoriteMovies.length})';
-      }
-      _ordenarFilmes('dataLancamentoRecente');
-    });
+  final String? user = await autoService.getCurrentUserId();
+  if (user == null) {
+    print('Erro: Usuário não autenticado.');
+    return;
   }
+
+  final favoriteMovies = await favoriteService.getFavoriteMoviesOnce();
+  _melhores4FilmesIds = await userService.getMelhores4FilmesIds(user); // Passa o userId como argumento
+
+  setState(() {
+    if (_selectedIndex == 0) {
+      _filmesOrdenados = favoriteMovies
+          .where((movie) => _melhores4FilmesIds.contains(movie['id'].toString())) // Filtra os filmes pelos IDs dos melhores 4
+          .map((movie) => FilmeWidget(
+                posterPath: movie['poster_path'] ?? '',
+                movieId: movie['id'],
+                runtime: movie['runtime'],
+                releaseDate: movie['release_date'],
+                dateAdded: movie['dateAdded'],
+                onTapAction: false, // Remove da lista de melhores 4
+              ))
+          .toList();
+      _tituloAppBar = 'Clique para tirar da lista';
+    } else {
+      _filmesOrdenados = favoriteMovies
+          .map((movie) => FilmeWidget(
+                posterPath: movie['poster_path'] ?? '',
+                movieId: movie['id'],
+                runtime: movie['runtime'],
+                releaseDate: movie['release_date'],
+                dateAdded: movie['dateAdded'],
+                onTapAction: true, // Adiciona à lista de melhores 4
+              ))
+          .toList();
+      _tituloAppBar = 'Clique para adicionar à lista (${favoriteMovies.length})';
+    }
+    _ordenarFilmes('dataLancamentoRecente');
+  });
+}
+
 
   void _ordenarFilmes(String criterio) {
     setState(() {
