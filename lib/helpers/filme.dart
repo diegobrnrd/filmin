@@ -42,15 +42,9 @@ class FilmeWidget extends StatelessWidget {
               if (onTapAction!) {
                 // Lógica para valor verdadeiro (adicionar filme)
                 await userService.adicionarMelhorFilme(movieId.toString());
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Filme adicionado aos Melhores 4.')),
-                );
               } else {
                 // Lógica para valor falso (remover filme)
                 await userService.removerMelhorFilme(movieId.toString());
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Filme removido dos Melhores 4.')),
-                );
               }
             } catch (e) {
               ScaffoldMessenger.of(context).showSnackBar(

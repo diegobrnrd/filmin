@@ -64,7 +64,10 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Seguidores e Seguindo'),
+        title: Text(
+          'Seguidores e Seguindo',
+          style: TextStyle(color: Color(0xFFAEBBC9), fontSize: screenHeight * 0.025),
+        ),
         backgroundColor: const Color(0xFF161E27),
         iconTheme: const IconThemeData(
           color: Color(0xFFAEBBC9),
@@ -162,8 +165,7 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> {
           itemBuilder: (context, index) {
             final doc = snapshot.data!.docs[index];
             final username = doc['username'];
-            final photoUrl =
-                doc['profilePictureUrl'] ?? 'assets/default_avatar.png';
+            final photoUrl = (doc['profilePictureUrl'] as String?)?.isNotEmpty == true ? doc['profilePictureUrl'] : 'assets/default_avatar.png';
             final userUid = doc.id;
 
             return FutureBuilder<bool>(
@@ -220,13 +222,13 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> {
                                 _fetchCounts();
                               });
                             },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF007BFF),
+                              foregroundColor: const Color(0xFFF1F3F5),
+                            ),
                             child: Text(
                               isFollowingUser ? 'Deixar de Seguir' : 'Seguir',
                               style: TextStyle(fontSize: screenHeight * 0.02),
-                            ),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF007BFF),
-                              foregroundColor: Colors.white,
                             ),
                           ),
                         ],

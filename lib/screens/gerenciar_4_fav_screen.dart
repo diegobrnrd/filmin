@@ -51,7 +51,7 @@ class QuatroFilmeFavState extends State<QuatroFilmeFav> {
                 onTapAction: false, // Remove da lista de melhores 4
               ))
           .toList();
-      _tituloAppBar = 'Clique para tirar da lista';
+      _tituloAppBar = 'Clique para remover do Top 4';
     } else {
       _filmesOrdenados = favoriteMovies
           .map((movie) => FilmeWidget(
@@ -63,7 +63,7 @@ class QuatroFilmeFavState extends State<QuatroFilmeFav> {
                 onTapAction: true, // Adiciona à lista de melhores 4
               ))
           .toList();
-      _tituloAppBar = 'Clique para adicionar à lista (${favoriteMovies.length})';
+      _tituloAppBar = 'Clique para adicionar ao Top 4 (${favoriteMovies.length})';
     }
     _ordenarFilmes('dataLancamentoRecente');
   });
@@ -166,7 +166,7 @@ class QuatroFilmeFavState extends State<QuatroFilmeFav> {
                     _fetchMovies();
                   });
                 },
-                child: Text('Melhores',
+                child: Text('Top 4',
                     style: TextStyle(
                         color: _selectedIndex == 0
                             ? const Color(0xFF208BFE)

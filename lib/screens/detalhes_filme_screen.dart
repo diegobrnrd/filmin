@@ -365,13 +365,6 @@ class DetalhesFilmeScreenState extends State<DetalhesFilmeScreen> {
                       onPressed: () => navegarParaTelaCritica(filme),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.share, color: Color(0xFFAEBBC9)),
-                      iconSize: screenWidth * 0.08,
-                      onPressed: () {
-                        // Adicionar lógica para "compartilhar"
-                      },
-                    ),
-                    IconButton(
                       icon: const Icon(Icons.library_add,
                           color: Color(0xFFAEBBC9)),
                       iconSize: screenWidth * 0.08,

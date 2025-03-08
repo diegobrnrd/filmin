@@ -71,6 +71,23 @@ class ConfiguracoesScreen extends StatelessWidget {
                       alignment: Alignment.center,
                       child: _buildButton(
                         context,
+                        'Top 4 favoritos',
+                        backgroundColor: const Color(0xFF1E2936),
+                        textColor: const Color(0xFF788EA5),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const QuatroFilmeFav()),
+                          );
+                        },
+                      ),
+                    ),
+                    SizedBox(height: screenHeight * 0.007),
+                    Align(
+                      alignment: Alignment.center,
+                      child: _buildButton(
+                        context,
                         'Alterar nome e sobrenome',
                         backgroundColor: const Color(0xFF1E2936),
                         textColor: const Color(0xFF788EA5),
@@ -134,24 +151,6 @@ class ConfiguracoesScreen extends StatelessWidget {
                         },
                       ),
                     ),
-                      SizedBox(height: screenHeight * 0.007),
-                    Align(
-                      alignment: Alignment.center,
-                      child: _buildButton(
-                        context,
-                        'Escolher 4 Melhores Filmes',
-                        backgroundColor: const Color(0xFF1E2936),
-                        textColor: const Color(0xFF788EA5),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const QuatroFilmeFav()),
-                          );
-                        },
-                      ),
-                    ),
-
                   ],
                 ),
               ),

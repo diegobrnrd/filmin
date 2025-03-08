@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:filmin/services/review_service.dart';
 import 'package:flutter/material.dart';
 import 'package:filmin/helpers/filme.dart';
@@ -180,15 +179,17 @@ Future<void> _fetchMelhores4Filmes(String? userId) async {
                   thickness: screenHeight * 0.002,
                 ),
                 if (_melhores4FilmeWidgets.isNotEmpty)
-                  
                   SizedBox(
                     height: screenHeight * 0.30,
                     child: FilmeRow( // Use FilmeRow aqui
                       filmes: _melhores4FilmeWidgets,
                     ),
                   ),
-                  
-
+                Divider(
+                  color: const Color(0xFF1E2936),
+                  height: screenHeight * 0.001,
+                  thickness: screenHeight * 0.002,
+                ),
                 SizedBox(height: screenHeight * 0.02),
                 Expanded(
                   child: Center(

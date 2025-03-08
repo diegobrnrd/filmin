@@ -237,7 +237,7 @@ class BuscaScreenState extends State<BuscaScreen> {
                     } else if (_selectedIndex == 1) {
                       final user = _searchResults[index];
                       final username = user['username'] ?? 'Usuário Desconhecido';
-                      String imageUrl = user['profilePictureUrl'] ?? 'assets/default_avatar.png';
+                      String imageUrl = user['profilePictureUrl']?.isNotEmpty == true ? user['profilePictureUrl'] : 'assets/default_avatar.png';
                       final userUid = user['uid'];
 
                       return FutureBuilder<bool>(
@@ -276,6 +276,18 @@ class BuscaScreenState extends State<BuscaScreen> {
                                     ),
                                     ElevatedButton(
                                       onPressed: () async {
+                                        if (userUid == currentUserId) {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                'você não pode seguir a si mesmo',
+                                                style: TextStyle(color: Color(0xFFF1F3F5)), // Cor do texto
+                                              ),
+                                              backgroundColor: Color(0xFFF52958), // Cor do fundo
+                                            ),
+                                          );
+                                          return;
+                                        }
                                         // Verifique o estado de "seguir" e execute a ação correspondente
                                         if (isFollowingUser) {
                                           await UserService().unfollowUser(currentUserId, userUid);
@@ -288,13 +300,13 @@ class BuscaScreenState extends State<BuscaScreen> {
                                           _followStatus[userUid] = !isFollowingUser; // Atualiza o estado
                                         });
                                       },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: const Color(0xFF208BFE), // Cor do botão
+                                        foregroundColor: const Color(0xFFF1F3F5),
+                                      ),
                                       child: Text(
                                         isFollowingUser ? 'Deixar de Seguir' : 'Seguir',
                                         style: TextStyle(fontSize: screenHeight * 0.02),
-                                      ),
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(0xFF007BFF), // Cor do botão
-                                        foregroundColor: Colors.white,
                                       ),
                                     ),
                                   ],
