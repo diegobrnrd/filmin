@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "74152208737",
+    "project_id": "filmin-7e708",
+    "storage_bucket": "filmin-7e708.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:74152208737:android:6bf5e247a56686f8463d20",
+        "android_client_info": {
+          "package_name": "filmin.coop.filmin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD1J-RadgCLktOhlbFM5U664_czJFqG1Ak"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
