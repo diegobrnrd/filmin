@@ -1,4 +1,5 @@
 # FilmIn
+![Logo](screenshots/logo.png)
 
 FilmIn é um aplicativo Flutter completo para amantes de cinema. Com ele, você pode:
 
