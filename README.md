@@ -4,7 +4,7 @@
 FilmIn é um aplicativo Flutter completo para amantes de cinema. Com ele, você pode:
 
 * Marcar filmes como **assistidos**, **quero assistir** e **favoritos**
-* Escrever e gerenciar **críticas**
+* Escrever **críticas**
 * Criar **listas personalizadas** de filmes
 * Ver filmes em cartaz e buscar **cinemas** na sua região através de um mapa interativo
 * Encontrar, seguir e ser seguido por **outros usuários**
