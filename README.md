@@ -1,60 +1,101 @@
 # FilmIn
-![Logo](screenshots/logo.png)
 
-FilmIn é um aplicativo Flutter completo para amantes de cinema. Com ele, você pode:
+![FilmIn Logo](screenshots/logo.png)
 
-* Marcar filmes como **assistidos**, **quero assistir** e **favoritos**
-* Escrever **críticas**
-* Criar **listas personalizadas** de filmes
-* Ver filmes em cartaz e buscar **cinemas** na sua região através de um mapa interativo
-* Encontrar, seguir e ser seguido por **outros usuários**
+**FilmIn** é um aplicativo mobile desenvolvido em **Flutter** que combina **descoberta de filmes**, **organização pessoal** e **recursos sociais** para amantes de cinema.  
+Projeto desenvolvido no contexto da disciplina **Desenvolvimento de Sistemas de Informação**.
 
 ---
 
-## Capturas de Tela
+## Sobre o projeto
 
-**Foto 1**: ![Screenshot 1](screenshots/1.png)
+O FilmIn foi pensado para oferecer uma experiência completa para quem gosta de acompanhar lançamentos, montar uma biblioteca pessoal e interagir com outras pessoas por meio de perfis e avaliações.
 
-> Três telas iniciais de acesso ao app: autenticação de usuário, criação de conta e recuperação de senha.
-
-**Foto 2**: ![Screenshot 2](screenshots/2.png)
-
-> Visão geral dos filmes em cartaz, menu lateral de navegação e tela de ajustes do aplicativo.
-
-**Foto 3**: ![Screenshot 3](screenshots/3.png)
-
-> Seção de perfil pessoal, lista de filmes já vistos e filtros para organizar sua coleção.
-
-**Foto 4**: ![Screenshot 4](screenshots/4.png)
-
-> Painel de suas críticas publicadas, lista de filmes que deseja assistir e filmes marcados como favoritos.
-
-**Foto 5**: ![Screenshot 5](screenshots/5.png)
-
-> Gerenciamento de listas customizadas, detalhes de uma lista específica e visualização de crítica do filme.
-
-**Foto 6**: ![Screenshot 6](screenshots/6.png)
-
-> Ferramentas de pesquisa: localização de cinemas, busca por título de filme e página de detalhes do filme.
-
-**Foto 7**: ![Screenshot 7](screenshots/7.png)
-
-> Sistema social: encontre outros usuários, veja seus perfis e acompanhe seguidores e quem você segue.
+### O que você pode fazer no app
+- Marcar filmes como **Assistidos**, **Quero assistir** e **Favoritos**
+- Escrever e visualizar **críticas**
+- Criar e gerenciar **listas personalizadas**
+- Explorar **filmes em cartaz**
+- Encontrar **cinemas próximos** por meio de **mapa interativo**
+- Descobrir usuários, **seguir** perfis e acompanhar **seguidores/seguindo**
 
 ---
 
-## Tecnologias Utilizadas
+## Funcionalidades em destaque
 
-* Flutter
-* Firebase (Autenticação)
-* Supabase (Armazenamento de Foto de Perfil)
-* API TMDB
+### Biblioteca e organização
+- Gestão de filmes por status (assistido / quero assistir / favorito)
+- Filtros para organização e navegação
+- Listas customizadas para curadoria pessoal
+
+### Críticas e social
+- Publicação e visualização de críticas
+- Perfis de usuários
+- Sistema de seguidores/seguindo
+
+### Descoberta e localização
+- Filmes em cartaz e busca por título
+- Mapa interativo para localização de cinemas com **OpenStreetMap (OSM)**
 
 ---
 
-### Colaboradores
+## Capturas de tela
+
+**Acesso e conta**  
+![Screenshot 1](screenshots/1.png)  
+> Autenticação, criação de conta e recuperação de senha.
+
+**Home, navegação e ajustes**  
+![Screenshot 2](screenshots/2.png)  
+> Filmes em cartaz, menu lateral e configurações do app.
+
+**Perfil e biblioteca pessoal**  
+![Screenshot 3](screenshots/3.png)  
+> Perfil, filmes assistidos e filtros de organização.
+
+**Críticas e favoritos**  
+![Screenshot 4](screenshots/4.png)  
+> Críticas publicadas, “quero assistir” e favoritos.
+
+**Listas e detalhes**  
+![Screenshot 5](screenshots/5.png)  
+> Listas personalizadas, detalhes e visualização de crítica.
+
+**Pesquisa e cinemas (OSM)**  
+![Screenshot 6](screenshots/6.png)  
+> Busca por cinemas, busca por filmes e página de detalhes.
+
+**Sistema social**  
+![Screenshot 7](screenshots/7.png)  
+> Descoberta de usuários, perfis e seguidores/seguindo.
+
+---
+
+## Tecnologias e integrações
+
+- **Flutter (Dart)** — desenvolvimento multiplataforma
+- **Firebase Authentication** — autenticação de usuários
+- **Supabase Storage** — armazenamento de foto de perfil
+- **TMDB API** — catálogo e informações de filmes
+- **OpenStreetMap (OSM)** — mapa e recursos de localização
+
+---
+
+## Privacidade e credenciais
+
+Por questões de segurança, **chaves e configurações sensíveis não são disponibilizadas publicamente**.
+
+---
+
+## Colaboradores
 
 - [Guilherme](https://github.com/Morpheus720)
 - [Lucas](https://github.com/lpauloaraujo)
 - [Marcos](https://github.com/Markin005)
 - [Tiago](https://github.com/tigsg)
+
+---
+
+## Licença
+
+Este projeto está sob a licença **Apache 2.0**. Consulte o arquivo de licença do repositório para mais detalhes.
