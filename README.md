@@ -2,92 +2,92 @@
 
 ![FilmIn Logo](screenshots/logo.png)
 
-**FilmIn** é um aplicativo mobile desenvolvido em **Flutter** que combina **descoberta de filmes**, **organização pessoal** e **recursos sociais** para amantes de cinema.  
-Projeto desenvolvido no contexto da disciplina **Desenvolvimento de Sistemas de Informação**.
+**FilmIn** is a mobile application built with **Flutter** that combines **movie discovery**, **personal organization**, and **social features** for movie lovers.
+Project developed as part of the **Information Systems Development** course.
 
 ---
 
-## Sobre o projeto
+## About the project
 
-O FilmIn foi pensado para oferecer uma experiência completa para quem gosta de acompanhar lançamentos, montar uma biblioteca pessoal e interagir com outras pessoas por meio de perfis e avaliações.
+FilmIn was designed to offer a complete experience for people who enjoy following new releases, building a personal library, and interacting with others through profiles and reviews.
 
-### O que você pode fazer no app
-- Marcar filmes como **Assistidos**, **Quero assistir** e **Favoritos**
-- Escrever e visualizar **críticas**
-- Criar e gerenciar **listas personalizadas**
-- Explorar **filmes em cartaz**
-- Encontrar **cinemas próximos** por meio de **mapa interativo**
-- Descobrir usuários, **seguir** perfis e acompanhar **seguidores/seguindo**
-
----
-
-## Funcionalidades em destaque
-
-### Biblioteca e organização
-- Gestão de filmes por status (assistido / quero assistir / favorito)
-- Filtros para organização e navegação
-- Listas customizadas para curadoria pessoal
-
-### Críticas e social
-- Publicação e visualização de críticas
-- Perfis de usuários
-- Sistema de seguidores/seguindo
-
-### Descoberta e localização
-- Filmes em cartaz e busca por título
-- Mapa interativo para localização de cinemas com **OpenStreetMap (OSM)**
+### What you can do in the app
+- Mark movies as **Watched**, **Want to Watch**, and **Favorites**
+- Write and view **reviews**
+- Create and manage **custom lists**
+- Explore **movies currently in theaters**
+- Find **nearby theaters** with an **interactive map**
+- Discover users, **follow** profiles, and track **followers/following**
 
 ---
 
-## Capturas de tela
+## Featured Functionality
 
-**Acesso e conta**  
-![Screenshot 1](screenshots/1.png)  
-> Autenticação, criação de conta e recuperação de senha.
+### Library and organization
+- Manage movies by status (watched / want to watch / favorite)
+- Filters for organization and navigation
+- Custom lists for personal curation
 
-**Home, navegação e ajustes**  
-![Screenshot 2](screenshots/2.png)  
-> Filmes em cartaz, menu lateral e configurações do app.
+### Reviews and social
+- Publishing and viewing reviews
+- User profiles
+- Followers/following system
 
-**Perfil e biblioteca pessoal**  
-![Screenshot 3](screenshots/3.png)  
-> Perfil, filmes assistidos e filtros de organização.
-
-**Críticas e favoritos**  
-![Screenshot 4](screenshots/4.png)  
-> Críticas publicadas, “quero assistir” e favoritos.
-
-**Listas e detalhes**  
-![Screenshot 5](screenshots/5.png)  
-> Listas personalizadas, detalhes e visualização de crítica.
-
-**Pesquisa e cinemas (OSM)**  
-![Screenshot 6](screenshots/6.png)  
-> Busca por cinemas, busca por filmes e página de detalhes.
-
-**Sistema social**  
-![Screenshot 7](screenshots/7.png)  
-> Descoberta de usuários, perfis e seguidores/seguindo.
+### Discovery and location
+- Movies in theaters and title search
+- Interactive map to locate theaters with **OpenStreetMap (OSM)**
 
 ---
 
-## Tecnologias e integrações
+## Screenshots
 
-- **Flutter (Dart)** — desenvolvimento multiplataforma
-- **Firebase Authentication** — autenticação de usuários
-- **Supabase Storage** — armazenamento de foto de perfil
-- **TMDB API** — catálogo e informações de filmes
-- **OpenStreetMap (OSM)** — mapa e recursos de localização
+**Access and account**
+![Screenshot 1](screenshots/1.png)
+> Authentication, account creation, and password recovery.
+
+**Home, navigation, and settings**
+![Screenshot 2](screenshots/2.png)
+> Movies in theaters, side menu, and app settings.
+
+**Profile and personal library**
+![Screenshot 3](screenshots/3.png)
+> Profile, watched movies, and organization filters.
+
+**Reviews and favorites**
+![Screenshot 4](screenshots/4.png)
+> Published reviews, "want to watch," and favorites.
+
+**Lists and details**
+![Screenshot 5](screenshots/5.png)
+> Custom lists, details, and review view.
+
+**Search and theaters (OSM)**
+![Screenshot 6](screenshots/6.png)
+> Theater search, movie search, and details page.
+
+**Social system**
+![Screenshot 7](screenshots/7.png)
+> User discovery, profiles, and followers/following.
 
 ---
 
-## Privacidade e credenciais
+## Technologies and Integrations
 
-Por questões de segurança, **chaves e configurações sensíveis não são disponibilizadas publicamente**.
+- **Flutter (Dart)** — cross-platform development
+- **Firebase Authentication** — user authentication
+- **Supabase Storage** — profile photo storage
+- **TMDB API** — movie catalog and information
+- **OpenStreetMap (OSM)** — map and location features
 
 ---
 
-## Colaboradores
+## Privacy and Credentials
+
+For security reasons, **sensitive keys and configurations are not made publicly available**.
+
+---
+
+## Contributors
 
 - [Guilherme](https://github.com/Morpheus720)
 - [Lucas](https://github.com/lpauloaraujo)
@@ -96,6 +96,6 @@ Por questões de segurança, **chaves e configurações sensíveis não são dis
 
 ---
 
-## Licença
+## License
 
-Este projeto está sob a licença **Apache 2.0**. Consulte o arquivo de licença do repositório para mais detalhes.
+This project is licensed under **Apache 2.0**. See the repository's license file for more details.
